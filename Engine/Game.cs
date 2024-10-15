@@ -49,8 +49,8 @@ namespace DestinyTrail.Engine
             string randomNamesPath = "data/RandomNames.yaml";
             
 
-            Statuses = Utility.LoadYaml<StatusData>(statusesFilePath).Statuses.ToArray();
-            RandomNames = Utility.LoadYaml<RandomNamesData>(randomNamesPath).RandomNames.ToArray();
+            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath).Statuses];
+            RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath).RandomNames];
 
             _party = new WagonParty(RandomNames);
             _display.Write(_party.GetDisplayNames());
@@ -64,9 +64,6 @@ namespace DestinyTrail.Engine
 
             _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
             _rations = _rationData.Rations.MaxBy(rations => rations.Factor)!;
-
-        
-
 
             _currentDate = new DateTime(1860, 10, 1);
         }
