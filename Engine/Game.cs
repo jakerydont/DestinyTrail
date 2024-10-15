@@ -1,4 +1,5 @@
 
+using System.Formats.Asn1;
 using Avalonia.Controls;
 using Avalonia.Threading;
 namespace DestinyTrail.Engine
@@ -11,15 +12,19 @@ namespace DestinyTrail.Engine
         private Pace _pace;
         private DateTime _currentDate;
 
+        private RationData _rationData {get;set;}
+
+        private Rations _rations {get;set;}
+
         private string _weather = "not implemented";
 
         private Display _display {get;set;}
 
         private Display _status;
 
-        public int milesTraveled { get; private set; }
-        public string[] statuses { get; private set; }
-        public string[] randomNames { get; private set; }
+        public int MilesTraveled { get; private set; }
+        public string[] Statuses { get; private set; }
+        public string[] RandomNames { get; private set; }
 
         private WagonParty _party {get;set;}
         private string _milesToNextLandmark = "not implemented";
@@ -41,24 +46,29 @@ namespace DestinyTrail.Engine
         private void Initialize() {
             _cancellationTokenSource = new CancellationTokenSource();
 
-            milesTraveled = 0;
+            MilesTraveled = 0;
 
             string occurrencesFilePath = "data/Occurrences.yaml";
             string statusesFilePath = "data/Statuses.yaml"; 
             string pacesFilePath = "data/Paces.yaml"; 
+            string rationsFilePath = "data/Rations.yaml";
             string randomNamesPath = "data/RandomNames.yaml";
+            
 
-            statuses = Utility.LoadYaml<StatusData>(statusesFilePath).Statuses.ToArray();
-            randomNames = Utility.LoadYaml<RandomNamesData>(randomNamesPath).RandomNames.ToArray();
+            Statuses = Utility.LoadYaml<StatusData>(statusesFilePath).Statuses.ToArray();
+            RandomNames = Utility.LoadYaml<RandomNamesData>(randomNamesPath).RandomNames.ToArray();
 
-            _party = new WagonParty(randomNames);
+            _party = new WagonParty(RandomNames);
             _display.Write(_party.GetNames());
 
-            _occurrenceEngine = new OccurrenceEngine(occurrencesFilePath, _party, statuses);
+            _occurrenceEngine = new OccurrenceEngine(occurrencesFilePath, _party, Statuses);
 
 
             _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
             _pace = _paceData.Paces.First(pace => pace.Name == "grueling");
+
+            _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
+            _rations = _rationData.Rations.First(rations => rations.Name == "gluttonous");
 
             _currentDate = new DateTime(1860, 10, 1);
         }
@@ -70,8 +80,8 @@ namespace DestinyTrail.Engine
             {
                 while (!token.IsCancellationRequested)
                 {
-                    MainLoop(); // Update the UI
-                    await Task.Delay(5000, token); // Wait for 5 seconds
+                    MainLoop(); 
+                    await Task.Delay(5000, token); 
                 }
             }
             catch (TaskCanceledException)
@@ -82,17 +92,19 @@ namespace DestinyTrail.Engine
         public void MainLoop()
         {
             _currentDate = _currentDate.AddDays(1);
-            milesTraveled += CalculateMilesTraveled();
+            MilesTraveled += CalculateMilesTraveled();
 
             Occurrence randomOccurrence = _occurrenceEngine.PickRandomOccurrence();
             var occurrence = _occurrenceEngine.ProcessOccurrence(randomOccurrence);
+
+            _party.UpdateHealth(_pace, _rations);
 
             _status.Clear();
             _status.Write($"Date: {_currentDate:MMMM d, yyyy}");
             _status.Write($"Weather: {_weather}");
             _status.Write($"Health: {_party.GetHealth()}");
             _status.Write($"Distance to next landmark: {_milesToNextLandmark}");
-            _status.Write($"Distance traveled: {milesTraveled} miles ({milesTraveled} km)");
+            _status.Write($"Distance traveled: {MilesTraveled} miles ({MilesTraveled} km)");
 
             _display.Write($"\n{_currentDate:MMMM d, yyyy}\n------\n{occurrence.DisplayText}");
             _display.ScrollToBottom(); 

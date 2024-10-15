@@ -7,6 +7,7 @@ namespace DestinyTrail.Engine
         private int memberCounter = 0;
         public List<Person> Members {get;set;}
         Person Leader {get;set;}
+        public int Health { get; private set; }
 
         public WagonParty(string[] randomNames, int size = 5)
         {
@@ -67,6 +68,11 @@ namespace DestinyTrail.Engine
         internal string GetHealth()
         {
             return "not implemented";
+        }
+
+        internal void UpdateHealth(Pace pace, Rations rations)
+        {
+            Health = 100;
         }
     }
 }

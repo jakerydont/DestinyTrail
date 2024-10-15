@@ -1,0 +1,7 @@
+Rations:
+  - Name: "gluttonous"
+    Factor: 100
+  - Name: "mid"
+    Factor: 70
+  - Name: "girl dinner"
+    Factor: 50
