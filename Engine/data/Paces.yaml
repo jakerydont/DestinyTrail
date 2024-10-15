@@ -1,0 +1,7 @@
+Paces:
+  - Name: "steady"
+    Factor: 8
+  - Name: "strenuous"
+    Factor: 10
+  - Name: "grueling"
+    Factor: 12

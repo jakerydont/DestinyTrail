@@ -16,4 +16,13 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.0" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.csproj" />
+  </ItemGroup>
+
+  <Target Name="CopyEngineData" AfterTargets="Build">
+  <Copy SourceFiles="$(ProjectDir)..\Engine\bin\$(Configuration)\net8.0\data\Statuses.yaml" 
+        DestinationFolder="$(OutputPath)data\" />
+</Target>
 </Project>
