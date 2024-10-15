@@ -63,5 +63,10 @@ namespace DestinyTrail.Engine
             sb.AppendJoin(", ",Members.Select(m=>m.Name));
             return sb.ToString();
         }
+
+        internal string GetHealth()
+        {
+            return "not implemented";
+        }
     }
 }
