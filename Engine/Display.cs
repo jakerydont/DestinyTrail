@@ -5,6 +5,7 @@ namespace DestinyTrail.Engine
 
     public class Display {
         private ListBox? _output {get;set;}
+        public ItemCollection Items => _output?.Items ?? null;
 
         public Display()
         {
@@ -33,6 +34,18 @@ namespace DestinyTrail.Engine
                 Console.WriteLine("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
             }
         }
-    }
 
+         
+        public void ScrollToBottom()
+        {
+            if (_output != null) 
+            {
+                if (_output.Items.Count > 0)
+                {
+                    var lastItem = _output.Items[_output.Items.Count - 1];
+                    _output.ScrollIntoView(lastItem);
+                }
+            }
+        }
+    }
 }

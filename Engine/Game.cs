@@ -70,8 +70,8 @@ namespace DestinyTrail.Engine
             {
                 while (!token.IsCancellationRequested)
                 {
-                    await Task.Delay(5000, token); // Wait for 5 seconds
                     MainLoop(); // Update the UI
+                    await Task.Delay(5000, token); // Wait for 5 seconds
                 }
             }
             catch (TaskCanceledException)
@@ -81,12 +81,13 @@ namespace DestinyTrail.Engine
         }
         public void MainLoop()
         {
-            _status.Clear();
+            _currentDate = _currentDate.AddDays(1);
+            milesTraveled += CalculateMilesTraveled();
 
             Occurrence randomOccurrence = _occurrenceEngine.PickRandomOccurrence();
             var occurrence = _occurrenceEngine.ProcessOccurrence(randomOccurrence);
 
-
+            _status.Clear();
             _status.Write($"Date: {_currentDate:MMMM d, yyyy}");
             _status.Write($"Weather: {_weather}");
             _status.Write($"Health: {_party.GetHealth()}");
@@ -94,18 +95,7 @@ namespace DestinyTrail.Engine
             _status.Write($"Distance traveled: {milesTraveled} miles ({milesTraveled} km)");
 
             _display.Write($"\n{_currentDate:MMMM d, yyyy}\n------\n{occurrence.DisplayText}");
-
-
-            milesTraveled += CalculateMilesTraveled();
-
-
-
-            // Increment the date by one day
-            _currentDate = _currentDate.AddDays(1);
-
-            // Wait for 5 seconds before picking a new occurrence
-            //await Task.Delay(5000); // 5000 milliseconds = 5 seconds
-
+            _display.ScrollToBottom(); 
         }
 
         private int CalculateMilesTraveled()
