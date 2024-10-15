@@ -1,6 +1,6 @@
- namespace DestinyTrail.Engine
+namespace DestinyTrail.Engine
 {
-    public class PaceData
+    public class PaceData : ITravelSettingData
     {
         public required List<Pace> Paces { get; set; }
     }
