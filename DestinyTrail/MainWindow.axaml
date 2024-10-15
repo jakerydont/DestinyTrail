@@ -8,5 +8,6 @@
     <StackPanel>
         <ListBox x:Name="OutputListBox" Height="400" />
         <TextBox x:Name="InputTextBox" Height="30" KeyDown="InputTextBox_KeyDown"/>
+        <ListBox x:Name="Status" Height="170" />
     </StackPanel>
 </Window>

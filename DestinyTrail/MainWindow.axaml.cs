@@ -9,7 +9,7 @@ namespace DestinyTrail
         public MainWindow()
         {
             InitializeComponent();
-            var game = new Game(OutputListBox);
+            var game = new Game(OutputListBox,Status);
             game.StartGameLoop();
         }
 

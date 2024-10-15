@@ -11,21 +11,29 @@ namespace DestinyTrail.Engine
         private Pace _pace;
         private DateTime _currentDate;
 
+        private string _weather = "not implemented";
+
         private Display _display {get;set;}
+
+        private Display _status;
+
         public int milesTraveled { get; private set; }
         public string[] statuses { get; private set; }
         public string[] randomNames { get; private set; }
 
-        private WagonParty party;
+        private WagonParty _party {get;set;}
+        private string _milesToNextLandmark = "not implemented";
 
         public Game() {
             _display = new Display();
+            _status = new Display();
             Initialize();
         }
 
-        public Game(ListBox Output)
+        public Game(ListBox Output, ListBox Status)
         { 
             _display = new Display(Output);
+            _status = new Display(Status);
             Initialize();
         }
 
@@ -35,26 +43,24 @@ namespace DestinyTrail.Engine
 
             milesTraveled = 0;
 
-            string occurrencesFilePath = "data/Occurrences.yaml"; // Update this path as needed
-            string statusesFilePath = "data/Statuses.yaml"; // Path to the new statuses file
-            string pacesFilePath = "data/Paces.yaml"; // Path to the new paces file
+            string occurrencesFilePath = "data/Occurrences.yaml";
+            string statusesFilePath = "data/Statuses.yaml"; 
+            string pacesFilePath = "data/Paces.yaml"; 
             string randomNamesPath = "data/RandomNames.yaml";
 
             statuses = Utility.LoadYaml<StatusData>(statusesFilePath).Statuses.ToArray();
             randomNames = Utility.LoadYaml<RandomNamesData>(randomNamesPath).RandomNames.ToArray();
 
-            party = new WagonParty(randomNames);
-            _display.Write(party.GetNames());
+            _party = new WagonParty(randomNames);
+            _display.Write(_party.GetNames());
 
-            _occurrenceEngine = new OccurrenceEngine(occurrencesFilePath, party, statuses);
+            _occurrenceEngine = new OccurrenceEngine(occurrencesFilePath, _party, statuses);
 
-            // Load paces from the YAML file
+
             _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
             _pace = _paceData.Paces.First(pace => pace.Name == "grueling");
 
-
-            // Start with an initial date
-            _currentDate = new DateTime(1860, 10, 1); // Start from October 1, 1850
+            _currentDate = new DateTime(1860, 10, 1);
         }
         public async void StartGameLoop()
         {
@@ -73,33 +79,38 @@ namespace DestinyTrail.Engine
                 // Task was canceled, handle if needed
             }
         }
-        public void MainLoop() {
-                 
-           
+        public void MainLoop()
+        {
+            _status.Clear();
 
-                _display.Clear();
-
-                // Pick a random occurrence based on probability
-                Occurrence randomOccurrence = _occurrenceEngine.PickRandomOccurrence();
-                var occurrence = _occurrenceEngine.ProcessOccurrence(randomOccurrence);
+            Occurrence randomOccurrence = _occurrenceEngine.PickRandomOccurrence();
+            var occurrence = _occurrenceEngine.ProcessOccurrence(randomOccurrence);
 
 
-                // Output the date and display text of the occurrence along with the person's name
-                _display.Write($"\n{_currentDate:MMMM d, yyyy}\n------\n{occurrence.DisplayText}");
+            _status.Write($"Date: {_currentDate:MMMM d, yyyy}");
+            _status.Write($"Weather: {_weather}");
+            _status.Write($"Health: {_party.GetHealth()}");
+            _status.Write($"Distance to next landmark: {_milesToNextLandmark}");
+            _status.Write($"Distance traveled: {milesTraveled} miles ({milesTraveled} km)");
+
+            _display.Write($"\n{_currentDate:MMMM d, yyyy}\n------\n{occurrence.DisplayText}");
 
 
-                milesTraveled += _pace.Factor;
-                // Output the date and display text of the occurrence along with the person's name
+            milesTraveled += CalculateMilesTraveled();
 
-                _display.Write($"Distance traveled: {milesTraveled} miles ({milesTraveled} km)");
-            
 
-                // Increment the date by one day
-                _currentDate = _currentDate.AddDays(1);
 
-                // Wait for 5 seconds before picking a new occurrence
-                //await Task.Delay(5000); // 5000 milliseconds = 5 seconds
-         
+            // Increment the date by one day
+            _currentDate = _currentDate.AddDays(1);
+
+            // Wait for 5 seconds before picking a new occurrence
+            //await Task.Delay(5000); // 5000 milliseconds = 5 seconds
+
+        }
+
+        private int CalculateMilesTraveled()
+        {
+            return _pace.Factor;
         }
     }
 }
