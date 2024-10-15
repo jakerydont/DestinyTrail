@@ -72,7 +72,7 @@ namespace DestinyTrail.Engine
 
         internal void SpendDailyHealth(Pace pace, Rations rations)
         {
-            double healthChange = -((100 / rations.Factor) * (pace.Factor / 12) - 0.5);
+            double healthChange = -((100 / rations.Factor) * (pace.Factor / 8) - 0.5);
             Health += healthChange;
         }
     }

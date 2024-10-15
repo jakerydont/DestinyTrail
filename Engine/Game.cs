@@ -65,10 +65,10 @@ namespace DestinyTrail.Engine
 
 
             _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
-            _pace = _paceData.Paces.First(pace => pace.Name == "grueling");
+            _pace = _paceData.Paces.MinBy(pace => pace.Factor);
 
             _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
-            _rations = _rationData.Rations.First(rations => rations.Name == "gluttonous");
+            _rations = _rationData.Rations.MaxBy(rations => rations.Factor);
 
         
 
