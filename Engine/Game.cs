@@ -4,7 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 namespace DestinyTrail.Engine
 {
-    public partial class Game {
+    public class Game {
 
         private CancellationTokenSource _cancellationTokenSource {get;set;}
         private OccurrenceEngine _occurrenceEngine;
@@ -18,9 +18,9 @@ namespace DestinyTrail.Engine
 
         private string _weather = "not implemented";
 
-        private Display _display {get;set;}
+        protected Display _display {get;set;}
 
-        private Display _status;
+        protected Display _status {get;set;}
 
         public int MilesTraveled { get; private set; }
         public string[] Statuses { get; private set; }
@@ -29,21 +29,15 @@ namespace DestinyTrail.Engine
         private WagonParty _party {get;set;}
         private string _milesToNextLandmark = "not implemented";
 
-        public Game() {
-            _display = new Display();
-            _status = new Display();
-            Initialize();
-        }
+        public Game() 
+            : this(new Display(), new Display()) {}
 
-        public Game(ListBox Output, ListBox Status)
-        { 
-            _display = new Display(Output);
-            _status = new Display(Status);
-            Initialize();
-        }
-
-
-        private void Initialize() {
+        public Game(ListBox Output, ListBox Status)  
+            : this(new Display(Output), new Display(Status)) {}
+  
+        public Game(Display Output, Display Status) {
+            _display = Output;
+            _status = Status;
             _cancellationTokenSource = new CancellationTokenSource();
 
             MilesTraveled = 0;
@@ -65,10 +59,11 @@ namespace DestinyTrail.Engine
 
 
             _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
-            _pace = _paceData.Paces.MinBy(pace => pace.Factor);
+            _pace = _paceData.Paces.MinBy(pace => pace.Factor)!;
+            
 
             _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
-            _rations = _rationData.Rations.MaxBy(rations => rations.Factor);
+            _rations = _rationData.Rations.MaxBy(rations => rations.Factor)!;
 
         
 
