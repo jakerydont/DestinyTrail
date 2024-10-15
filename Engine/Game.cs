@@ -59,7 +59,7 @@ namespace DestinyTrail.Engine
             RandomNames = Utility.LoadYaml<RandomNamesData>(randomNamesPath).RandomNames.ToArray();
 
             _party = new WagonParty(RandomNames);
-            _display.Write(_party.GetNames());
+            _display.Write(_party.GetDisplayNames());
 
             _occurrenceEngine = new OccurrenceEngine(occurrencesFilePath, _party, Statuses);
 
@@ -69,6 +69,9 @@ namespace DestinyTrail.Engine
 
             _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
             _rations = _rationData.Rations.First(rations => rations.Name == "gluttonous");
+
+        
+
 
             _currentDate = new DateTime(1860, 10, 1);
         }
@@ -97,12 +100,12 @@ namespace DestinyTrail.Engine
             Occurrence randomOccurrence = _occurrenceEngine.PickRandomOccurrence();
             var occurrence = _occurrenceEngine.ProcessOccurrence(randomOccurrence);
 
-            _party.UpdateHealth(_pace, _rations);
+            _party.SpendDailyHealth(_pace, _rations);
 
             _status.Clear();
             _status.Write($"Date: {_currentDate:MMMM d, yyyy}");
             _status.Write($"Weather: {_weather}");
-            _status.Write($"Health: {_party.GetHealth()}");
+            _status.Write($"Health: {_party.GetDisplayHealth()}");
             _status.Write($"Distance to next landmark: {_milesToNextLandmark}");
             _status.Write($"Distance traveled: {MilesTraveled} miles ({MilesTraveled} km)");
 
@@ -112,7 +115,8 @@ namespace DestinyTrail.Engine
 
         private int CalculateMilesTraveled()
         {
-            return _pace.Factor;
+            // TODO: factor in oxen like ( _pace.Factor / (Inventory.currentOxen / Inventory.maximumOxen ))
+            return _pace.Factor ;
         }
     }
 }

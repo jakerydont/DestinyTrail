@@ -7,7 +7,9 @@ namespace DestinyTrail.Engine
         private int memberCounter = 0;
         public List<Person> Members {get;set;}
         Person Leader {get;set;}
-        public int Health { get; private set; }
+        public double Health { get; private set; }
+
+        private int _maxRationFactor {get;set;}
 
         public WagonParty(string[] randomNames, int size = 5)
         {
@@ -21,7 +23,7 @@ namespace DestinyTrail.Engine
                 Members.Add(member);
             }
             Leader = Members.First();
-
+            Health = 100;
         }
 
         public Person GetRandomMember() {
@@ -58,21 +60,20 @@ namespace DestinyTrail.Engine
             };
         }
 
-        internal string GetNames()
+        public string GetDisplayNames()
         {
             var sb = new StringBuilder();
             sb.AppendJoin(", ",Members.Select(m=>m.Name));
             return sb.ToString();
         }
 
-        internal string GetHealth()
-        {
-            return "not implemented";
-        }
+        public string GetDisplayHealth() => Convert.ToInt32(Health).ToString();
+        
 
-        internal void UpdateHealth(Pace pace, Rations rations)
+        internal void SpendDailyHealth(Pace pace, Rations rations)
         {
-            Health = 100;
+            double healthChange = -((100 / rations.Factor) * (pace.Factor / 12) - 0.5);
+            Health += healthChange;
         }
     }
 }
