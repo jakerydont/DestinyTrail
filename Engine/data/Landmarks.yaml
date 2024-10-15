@@ -1,0 +1,27 @@
+# Landmarks are defined in sequence.
+# Distance is measured from previous landmark.
+
+Landmarks:
+  - ID: "INDEPENDENCE_MISSOURI"
+    Name: "Independence, Missouri"
+    Distance: 0 
+    Shop: true
+    Lore: "This place must suck because you're itching to leave. Maybe talk to some locals and find out all the things you're about to screw up."
+
+  - ID: "BIG_BLUE_RIVER"
+    Name: "Big Blue River"
+    Distance: 120
+    Shop: false
+    Lore: "A river that is sure to challenge even the sturdiest of caulks."
+
+  - ID: "BIG_BLUE_RIVER_2"
+    Name: "Bigger Bluer River"
+    Distance: 100
+    Shop: false
+    Lore: "I bet you can walk across this one. Try it."
+
+  - ID: "FORT_PILLOW"
+    Name: "Fort Pillow"
+    Distance: 90
+    Shop: true
+    Lore: "This fort will stay up until bedtime."

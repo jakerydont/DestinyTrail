@@ -16,6 +16,8 @@ namespace DestinyTrail.Engine
 
         private Rations _rations {get;set;}
 
+        private LandmarksData _landmarksData {get;set;}
+
         private string _weather = "not implemented";
 
         protected Display _display {get;set;}
@@ -47,6 +49,7 @@ namespace DestinyTrail.Engine
             string pacesFilePath = "data/Paces.yaml"; 
             string rationsFilePath = "data/Rations.yaml";
             string randomNamesPath = "data/RandomNames.yaml";
+            string landmarksFilePath = "data/Landmarks.yaml";
             
 
             Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath).Statuses];
@@ -60,6 +63,8 @@ namespace DestinyTrail.Engine
 
             _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
             _pace = _paceData.Paces.MinBy(pace => pace.Factor)!;
+
+            _landmarksData = Utility.LoadYaml<LandmarksData>(landmarksFilePath);
             
 
             _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
