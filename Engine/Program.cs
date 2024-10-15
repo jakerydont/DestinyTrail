@@ -12,7 +12,7 @@ namespace DestinyTrail.Engine
     {
         static async Task Main(string[] args)
         {
-            var game=new Game();
+            var game = new Game();
             game.StartGameLoop();
         }
     }
