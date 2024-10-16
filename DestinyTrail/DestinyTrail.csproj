@@ -21,8 +21,9 @@
     <ProjectReference Include="..\Engine\Engine.csproj" />
   </ItemGroup>
 
-  <Target Name="CopyEngineData" AfterTargets="Build">
-  <Copy SourceFiles="$(ProjectDir)..\Engine\bin\$(Configuration)\net8.0\data\Statuses.yaml" 
-        DestinationFolder="$(OutputPath)data\" />
-</Target>
+  <ItemGroup>
+    <AvaloniaResource Include="assets\**" />
+  </ItemGroup>
+
+
 </Project>

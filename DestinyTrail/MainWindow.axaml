@@ -6,10 +6,19 @@
         x:Class="DestinyTrail.MainWindow"
         Title="DestinyTrail"
         WindowState="Maximized"
-        CanResize="True">
+        CanResize="True"
+        Background="Black">
     
     <Window.Styles>
+        <Style Selector="Window">
+            <Setter Property="Background" Value="Black"/>
+        </Style>
+        <Style Selector="Grid">  
+            <Setter Property="Background" Value="Black"/>
+        </Style>
         <Style Selector="ListBoxItem">
+            <Setter Property="Background" Value="#ff111111"/>
+            <Setter Property="Foreground" Value="White"/>
             <Setter Property="Padding" Value="0"/>
             <Setter Property="Margin" Value="0"/>
         </Style>
@@ -17,8 +26,9 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>  <!-- Row for the ListBoxes -->
-            <RowDefinition Height="Auto"/> <!-- Row for the TextBox -->
+            <RowDefinition Height="*"/>  <!-- Row for the images -->
+            <RowDefinition Height="*"/>     <!-- Row for the ListBoxes -->
+            <RowDefinition Height="Auto"/>  <!-- Row for the TextBox -->
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -26,8 +36,15 @@
             <ColumnDefinition Width="*"/>  <!-- Status ListBox column -->
         </Grid.ColumnDefinitions>
 
-        <ListBox x:Name="OutputListBox" Grid.Row="0" Grid.Column="0"/>
-        <ListBox x:Name="Status" Grid.Row="0" Grid.Column="1"/>
-        <TextBox x:Name="InputTextBox" Grid.Row="1" Grid.ColumnSpan="2" KeyDown="InputTextBox_KeyDown"/>
+        <!-- Row for Images -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" 
+           VerticalAlignment="Center">
+            <Image Source="assets/images/wagon-apple2.jpg" Margin="5" Stretch="Uniform"  />
+            <!-- Add more images as needed -->
+        </StackPanel>
+
+        <ListBox x:Name="OutputListBox" Grid.Row="1" Grid.Column="0"/>
+        <ListBox x:Name="Status" Grid.Row="1" Grid.Column="1"/>
+        <TextBox x:Name="InputTextBox" Grid.Row="2" Grid.ColumnSpan="2" KeyDown="InputTextBox_KeyDown"/>
     </Grid>
 </Window>
