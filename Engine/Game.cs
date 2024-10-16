@@ -17,6 +17,7 @@ namespace DestinyTrail.Engine
         private Rations _rations {get;set;}
 
         private LandmarksData _landmarksData {get;set;}
+        private Landmark _nextLandmark {get;set;}
 
         private string _weather = "not implemented";
 
@@ -24,12 +25,15 @@ namespace DestinyTrail.Engine
 
         protected Display _status {get;set;}
 
-        public int MilesTraveled { get; private set; }
+        public double MilesTraveled { get; private set; }
+        public double MilesToNextLandmark {get; private set; }
         public string[] Statuses { get; private set; }
         public string[] RandomNames { get; private set; }
 
         private WagonParty _party {get;set;}
-        private string _milesToNextLandmark = "not implemented";
+
+
+        private bool _advanceDay = true;
 
         public Game() 
             : this(new Display(), new Display()) {}
@@ -42,7 +46,7 @@ namespace DestinyTrail.Engine
             _status = Status;
             _cancellationTokenSource = new CancellationTokenSource();
 
-            MilesTraveled = 0;
+
 
             string occurrencesFilePath = "data/Occurrences.yaml";
             string statusesFilePath = "data/Statuses.yaml"; 
@@ -64,8 +68,12 @@ namespace DestinyTrail.Engine
             _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
             _pace = _paceData.Paces.MinBy(pace => pace.Factor)!;
 
+
             _landmarksData = Utility.LoadYaml<LandmarksData>(landmarksFilePath);
-            
+            _nextLandmark = _landmarksData.Landmarks!.First();
+
+            MilesTraveled = 0;
+            MilesToNextLandmark = (double)_nextLandmark.Distance!;
 
             _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
             _rations = _rationData.Rations.MaxBy(rations => rations.Factor)!;
@@ -91,11 +99,32 @@ namespace DestinyTrail.Engine
         }
         public void MainLoop()
         {
-            _currentDate = _currentDate.AddDays(1);
-            MilesTraveled += CalculateMilesTraveled();
+            _display.Write($"\n{_currentDate:MMMM d, yyyy}\n------");
 
-            Occurrence randomOccurrence = _occurrenceEngine.PickRandomOccurrence();
-            var occurrence = _occurrenceEngine.ProcessOccurrence(randomOccurrence);
+            var todaysMiles = CalculateMilesTraveled();
+            if (todaysMiles > MilesToNextLandmark) 
+            {
+                todaysMiles = MilesToNextLandmark;
+            }
+            MilesTraveled += todaysMiles;
+            MilesToNextLandmark -= todaysMiles;
+
+            string occurrenceMessage = "";
+            if (MilesToNextLandmark <= 0) 
+            {
+               occurrenceMessage = $"You have reached {_nextLandmark.Name}.";
+                _nextLandmark = _landmarksData.Landmarks
+                    .SkipWhile(landmark => landmark.ID != _nextLandmark.ID)
+                    .Skip(1)
+                    .FirstOrDefault() ?? _landmarksData.Landmarks.First();
+                MilesToNextLandmark = _nextLandmark.Distance;
+            }
+            else 
+            {
+                Occurrence randomOccurrence = _occurrenceEngine.PickRandomOccurrence();
+                var occurrence = _occurrenceEngine.ProcessOccurrence(randomOccurrence);
+                occurrenceMessage = occurrence.DisplayText;
+            }
 
             _party.SpendDailyHealth(_pace, _rations);
 
@@ -103,14 +132,18 @@ namespace DestinyTrail.Engine
             _status.Write($"Date: {_currentDate:MMMM d, yyyy}");
             _status.Write($"Weather: {_weather}");
             _status.Write($"Health: {_party.GetDisplayHealth()}");
-            _status.Write($"Distance to next landmark: {_milesToNextLandmark}");
-            _status.Write($"Distance traveled: {MilesTraveled} miles ({MilesTraveled} km)");
+            _status.Write($"Distance to next landmark: {MilesToNextLandmark.Abbreviate()} miles ({MilesToNextLandmark.Abbreviate()} km)");
+            _status.Write($"Distance traveled: {MilesTraveled.Abbreviate()} miles ({MilesTraveled.Abbreviate()} km)");
 
-            _display.Write($"\n{_currentDate:MMMM d, yyyy}\n------\n{occurrence.DisplayText}");
+            _display.Write($"{occurrenceMessage}");
             _display.ScrollToBottom(); 
+
+            if (_advanceDay) {
+                _currentDate = _currentDate.AddDays(1);
+            }
         }
 
-        private int CalculateMilesTraveled()
+        private double CalculateMilesTraveled()
         {
             // TODO: factor in oxen like ( _pace.Factor / (Inventory.currentOxen / Inventory.maximumOxen ))
             return _pace.Factor ;
