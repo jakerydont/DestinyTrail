@@ -1,4 +1,5 @@
 
+using System.Dynamic;
 using System.Formats.Asn1;
 using Avalonia.Controls;
 using Avalonia.Threading;
@@ -34,6 +35,10 @@ namespace DestinyTrail.Engine
 
 
         private bool _advanceDay = true;
+
+        public Modes GameMode {get;set;}
+
+        private bool _shouldInitializeAtLandmark {get;set;}
 
         public Game() 
             : this(new Display(), new Display()) {}
@@ -79,6 +84,8 @@ namespace DestinyTrail.Engine
             _rations = _rationData.Rations.MaxBy(rations => rations.Factor)!;
 
             _currentDate = new DateTime(1860, 10, 1);
+
+            GameMode = Modes.Travelling;
         }
         public async void StartGameLoop()
         {
@@ -88,8 +95,18 @@ namespace DestinyTrail.Engine
             {
                 while (!token.IsCancellationRequested)
                 {
-                    MainLoop(); 
-                    await Task.Delay(5000, token); 
+                    switch (GameMode)
+                    {
+                        case Modes.Travelling:
+                            TravelLoop(); 
+                            break;
+                        case Modes.AtLandmark:
+                            AtLandmarkLoop();
+                            break;
+                        default:
+                            break;
+                    }
+                   await Task.Delay(5000, token); 
                 }
             }
             catch (TaskCanceledException)
@@ -97,7 +114,18 @@ namespace DestinyTrail.Engine
                 // Task was canceled, handle if needed
             }
         }
-        public void MainLoop()
+
+        private void AtLandmarkLoop()
+        {
+            if (!_shouldInitializeAtLandmark) return;
+            _shouldInitializeAtLandmark = false;
+            _display.Clear();
+            _display.Write($"{_nextLandmark.Name}");
+            _display.Write("Press enter to continue");
+            
+        }
+
+        public void TravelLoop()
         {
             _display.Write($"\n{_currentDate:MMMM d, yyyy}\n------");
 
@@ -112,10 +140,9 @@ namespace DestinyTrail.Engine
             string occurrenceMessage = "";
             if (MilesToNextLandmark <= 0) 
             {
-               occurrenceMessage = $"You have reached {_nextLandmark.Name}.";
-                _nextLandmark = _landmarksData.Landmarks.NextOrFirst(landmark => landmark.ID == _nextLandmark.ID);
-                    
-                MilesToNextLandmark = _nextLandmark.Distance;
+                occurrenceMessage = $"You have reached {_nextLandmark.Name}.";
+                GameMode = Modes.AtLandmark;
+                _shouldInitializeAtLandmark = true;
             }
             else 
             {
@@ -145,6 +172,15 @@ namespace DestinyTrail.Engine
         {
             // TODO: factor in oxen like ( _pace.Factor / (Inventory.currentOxen / Inventory.maximumOxen ))
             return _pace.Factor ;
+        }
+
+        public void ContinueTravelling()
+        {
+
+            _display.Items.Add($"You decided to continue.");
+            _nextLandmark = _landmarksData.Landmarks.NextOrFirst(landmark => landmark.ID == _nextLandmark.ID);
+            MilesToNextLandmark = _nextLandmark.Distance;
+            GameMode = Modes.Travelling;
         }
     }
 }

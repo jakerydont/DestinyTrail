@@ -6,10 +6,12 @@ namespace DestinyTrail
 {
     public partial class MainWindow : Window
     {
+
+        Game game {get;set;}
         public MainWindow()
         {
             InitializeComponent();
-            var game = new Game(OutputListBox,Status);
+            game = new Game(OutputListBox,Status);
             game.StartGameLoop();
         }
 
@@ -18,7 +20,7 @@ namespace DestinyTrail
             if (e.Key == Key.Enter)
             {
                 var input = InputTextBox.Text ?? "";
-                OutputListBox.Items.Add($"> {input}");
+               // OutputListBox.Items.Add($"> {input}");
                 ProcessInput(input);
                 InputTextBox.Text = string.Empty; // Clear the input box
                 e.Handled = true;
@@ -29,7 +31,8 @@ namespace DestinyTrail
         {
             // Process the input as needed
             // Example: Add a response to the output
-            OutputListBox.Items.Add($"Response: {input.ToUpper()}");
+            //OutputListBox.Items.Add($"Response: {input.ToUpper()}");
+            game.ContinueTravelling();
         }
     }
 }

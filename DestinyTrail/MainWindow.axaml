@@ -5,7 +5,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
         x:Class="DestinyTrail.MainWindow"
         Title="DestinyTrail">
-    <StackPanel>
+    <StackPanel x:Name="TravelPanels">
         <ListBox x:Name="OutputListBox" Height="400" />
         <TextBox x:Name="InputTextBox" Height="30" KeyDown="InputTextBox_KeyDown"/>
         <ListBox x:Name="Status" Height="170" />
