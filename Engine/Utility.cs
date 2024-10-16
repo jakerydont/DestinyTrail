@@ -12,6 +12,11 @@ namespace DestinyTrail.Engine {
             return deserializer.Deserialize<T>(yaml); 
         }
 
+        public static T NextOrFirst<T>(this IEnumerable<T> collection, Func<T, bool> predicate) => collection
+                .SkipWhile(item => !predicate(item))  
+                .Skip(1)                               
+                .FirstOrDefault() ?? collection.First();
+
         public static string Abbreviate(this double number) => Convert.ToInt32(number).ToString();
         
     }

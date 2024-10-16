@@ -113,10 +113,8 @@ namespace DestinyTrail.Engine
             if (MilesToNextLandmark <= 0) 
             {
                occurrenceMessage = $"You have reached {_nextLandmark.Name}.";
-                _nextLandmark = _landmarksData.Landmarks
-                    .SkipWhile(landmark => landmark.ID != _nextLandmark.ID)
-                    .Skip(1)
-                    .FirstOrDefault() ?? _landmarksData.Landmarks.First();
+                _nextLandmark = _landmarksData.Landmarks.NextOrFirst(landmark => landmark.ID == _nextLandmark.ID);
+                    
                 MilesToNextLandmark = _nextLandmark.Distance;
             }
             else 
