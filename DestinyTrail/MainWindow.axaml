@@ -4,10 +4,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
         x:Class="DestinyTrail.MainWindow"
-        Title="DestinyTrail">
-    <StackPanel x:Name="TravelPanels">
-        <ListBox x:Name="OutputListBox" Height="400" />
-        <TextBox x:Name="InputTextBox" Height="30" KeyDown="InputTextBox_KeyDown"/>
-        <ListBox x:Name="Status" Height="170" />
-    </StackPanel>
+        Title="DestinyTrail"
+        WindowState="Maximized"
+        CanResize="True">
+    
+    <Window.Styles>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>  <!-- Row for the ListBoxes -->
+            <RowDefinition Height="Auto"/> <!-- Row for the TextBox -->
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>  <!-- OutputListBox column -->
+            <ColumnDefinition Width="*"/>  <!-- Status ListBox column -->
+        </Grid.ColumnDefinitions>
+
+        <ListBox x:Name="OutputListBox" Grid.Row="0" Grid.Column="0"/>
+        <ListBox x:Name="Status" Grid.Row="0" Grid.Column="1"/>
+        <TextBox x:Name="InputTextBox" Grid.Row="1" Grid.ColumnSpan="2" KeyDown="InputTextBox_KeyDown"/>
+    </Grid>
 </Window>
