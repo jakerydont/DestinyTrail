@@ -67,7 +67,7 @@ namespace DestinyTrail.Engine
             return sb.ToString();
         }
 
-        public string GetDisplayHealth() => Convert.ToInt32(Health).ToString();
+        public string GetDisplayHealth() => Health.Abbreviate();
         
 
         internal void SpendDailyHealth(Pace pace, Rations rations)

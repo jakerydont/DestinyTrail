@@ -11,5 +11,8 @@ namespace DestinyTrail.Engine {
                 .Build();
             return deserializer.Deserialize<T>(yaml); 
         }
+
+        public static string Abbreviate(this double number) => Convert.ToInt32(number).ToString();
+        
     }
 }
