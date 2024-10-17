@@ -18,6 +18,7 @@ namespace DestinyTrail.Engine {
                 .FirstOrDefault() ?? collection.First();
 
         public static string Abbreviate(this double number) => Convert.ToInt32(number).ToString();
+        public static string GetFormatted(this DateTime date) => $"{date:MMMM d, yyyy}";
         
     }
 }

@@ -119,7 +119,6 @@ namespace DestinyTrail.Engine
         {
             if (!_shouldInitializeAtLandmark) return;
             _shouldInitializeAtLandmark = false;
-            _display.Clear();
             _display.Write($"{_nextLandmark.Name}");
             _display.Write("Press enter to continue");
             
@@ -127,10 +126,10 @@ namespace DestinyTrail.Engine
 
         public void TravelLoop()
         {
-            _display.Write($"\n{_currentDate:MMMM d, yyyy}\n------");
+
 
             var todaysMiles = CalculateMilesTraveled();
-            if (todaysMiles > MilesToNextLandmark) 
+            if (todaysMiles > MilesToNextLandmark)
             {
                 todaysMiles = MilesToNextLandmark;
             }
@@ -138,13 +137,13 @@ namespace DestinyTrail.Engine
             MilesToNextLandmark -= todaysMiles;
 
             string occurrenceMessage = "";
-            if (MilesToNextLandmark <= 0) 
+            if (MilesToNextLandmark <= 0)
             {
                 occurrenceMessage = $"You have reached {_nextLandmark.Name}.";
                 GameMode = Modes.AtLandmark;
                 _shouldInitializeAtLandmark = true;
             }
-            else 
+            else
             {
                 Occurrence randomOccurrence = _occurrenceEngine.PickRandomOccurrence();
                 var occurrence = _occurrenceEngine.ProcessOccurrence(randomOccurrence);
@@ -153,30 +152,40 @@ namespace DestinyTrail.Engine
 
             _party.SpendDailyHealth(_pace, _rations);
 
+            DrawStatusPanel();
+
+            _display.Write($"{_currentDate.GetFormatted()}: {occurrenceMessage}");
+            _display.ScrollToBottom();
+
+            if (_advanceDay)
+            {
+                _currentDate = _currentDate.AddDays(1);
+            }
+        }
+
+        private void DrawStatusPanel()
+        {
             _status.Clear();
-            _status.Write($"Date: {_currentDate:MMMM d, yyyy}");
+            _status.Write($"Date: {_currentDate.GetFormatted()}");
             _status.Write($"Weather: {_weather}");
             _status.Write($"Health: {_party.GetDisplayHealth()}");
             _status.Write($"Distance to next landmark: {MilesToNextLandmark.Abbreviate()} miles ({MilesToNextLandmark.Abbreviate()} km)");
             _status.Write($"Distance traveled: {MilesTraveled.Abbreviate()} miles ({MilesTraveled.Abbreviate()} km)");
 
-            _display.Write($"{occurrenceMessage}");
-            _display.ScrollToBottom(); 
-
-            if (_advanceDay) {
-                _currentDate = _currentDate.AddDays(1);
+            _status.Write($"-----------");
+            foreach(var person in _party.Members) {
+                _status.Write($"{person.Name} ..... {person.Status}");
             }
         }
 
         private double CalculateMilesTraveled()
         {
             // TODO: factor in oxen like ( _pace.Factor / (Inventory.currentOxen / Inventory.maximumOxen ))
-            return _pace.Factor ;
+            return _pace.Factor;
         }
 
         public void ContinueTravelling()
         {
-
             _display.Items.Add($"You decided to continue.");
             _nextLandmark = _landmarksData.Landmarks.NextOrFirst(landmark => landmark.ID == _nextLandmark.ID);
             MilesToNextLandmark = _nextLandmark.Distance;
