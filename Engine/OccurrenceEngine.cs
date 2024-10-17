@@ -22,14 +22,7 @@ namespace DestinyTrail.Engine
 
         private Occurrence[] LoadOccurrences(string yamlFilePath)
         {
-            var yaml = File.ReadAllText(yamlFilePath);
-            var deserializer = new DeserializerBuilder()
-                //.WithNamingConvention(CamelCaseNamingConvention.Instance) // Ensure naming convention matches
-                .Build();
-
-            // Deserialize the YAML into OccurrenceData
-            var occurrenceData = deserializer.Deserialize<OccurrenceData>(yaml);
-            return occurrenceData.Occurrences ?? []; // Ensure this property is being accessed correctly
+            return Utility.LoadYaml<OccurrenceData>(yamlFilePath);
         }
 
 

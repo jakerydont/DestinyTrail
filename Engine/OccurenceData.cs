@@ -1,7 +1,9 @@
 namespace DestinyTrail.Engine
 {
-    public class OccurrenceData
+    public class OccurrenceData : GameData<Occurrence>
     {
-        public Occurrence[]? Occurrences { get; set; }
+        public List<Occurrence> Occurrences { get => _items; set => _items = value; }
+
+        
     }
 }

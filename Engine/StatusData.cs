@@ -2,8 +2,9 @@ using System.Collections.Generic;
 
 namespace DestinyTrail.Engine
 {
-    public class StatusData
+    public class StatusData : GameData<string>
     {
-        public required List<string> Statuses { get; set; } // List of status names as strings
+        public required List<string> Statuses{ get => _items; set => _items = value; }
+        
     }
 }

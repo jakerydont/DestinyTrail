@@ -1,6 +1,6 @@
 namespace DestinyTrail.Engine
 {
-    public class Landmark
+    public class Landmark 
     {
         public string ID { get; set; }
         public string Name { get; set; }

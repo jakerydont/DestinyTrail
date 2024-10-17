@@ -61,8 +61,8 @@ namespace DestinyTrail.Engine
             string landmarksFilePath = "data/Landmarks.yaml";
             
 
-            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath).Statuses];
-            RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath).RandomNames];
+            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];
+            RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath)];
 
             _party = new WagonParty(RandomNames);
             _display.Write(_party.GetDisplayNames());
@@ -71,17 +71,17 @@ namespace DestinyTrail.Engine
 
 
             _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
-            _pace = _paceData.Paces.MinBy(pace => pace.Factor)!;
+            _pace = _paceData.MinBy(pace => pace.Factor)!;
 
 
             _landmarksData = Utility.LoadYaml<LandmarksData>(landmarksFilePath);
-            _nextLandmark = _landmarksData.Landmarks!.First();
+            _nextLandmark = _landmarksData.First();
 
             MilesTraveled = 0;
             MilesToNextLandmark = (double)_nextLandmark.Distance!;
 
             _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
-            _rations = _rationData.Rations.MaxBy(rations => rations.Factor)!;
+            _rations = _rationData.MaxBy(rations => rations.Factor)!;
 
             _currentDate = new DateTime(1860, 10, 1);
 
