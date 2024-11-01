@@ -11,7 +11,7 @@ namespace DestinyTrail.Engine
 
         private int _maxRationFactor {get;set;}
 
-        public WagonParty(string[] randomNames, int size = 5)
+        public WagonParty(string[] randomNames, int size = 26)
         {
             Members = new List<Person>();
 
