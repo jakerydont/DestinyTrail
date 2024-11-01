@@ -8,33 +8,26 @@ namespace DestinyTrail.Engine
     public class Game {
 
         private CancellationTokenSource _cancellationTokenSource {get;set;}
-        private OccurrenceEngine _occurrenceEngine;
-        private PaceData _paceData;
-        private Pace _pace;
-        private DateTime _currentDate;
 
-        private RationData _rationData {get;set;}
+        internal DateTime CurrentDate;
+        private Travel _travel;
 
-        private Rations _rations {get;set;}
 
-        private LandmarksData _landmarksData {get;set;}
-        private Landmark _nextLandmark {get;set;}
+        internal LandmarksData _landmarksData {get;set;}
+        internal Landmark NextLandmark {get;set;}
 
         private string _weather = "not implemented";
 
-        protected Display _display {get;set;}
+        internal Display _display {get;set;}
 
         protected Display _status {get;set;}
 
-        public double MilesTraveled { get; private set; }
-        public double MilesToNextLandmark {get; private set; }
-        public string[] Statuses { get; private set; }
+        internal double MilesTraveled { get; set; }
+        internal double MilesToNextLandmark {get; set; }
         public string[] RandomNames { get; private set; }
 
-        private WagonParty _party {get;set;}
+        internal WagonParty Party {get;set;}
 
-
-        private bool _advanceDay = true;
 
         public Modes GameMode {get;set;}
 
@@ -53,40 +46,36 @@ namespace DestinyTrail.Engine
 
 
 
-            string occurrencesFilePath = "data/Occurrences.yaml";
-            string statusesFilePath = "data/Statuses.yaml"; 
-            string pacesFilePath = "data/Paces.yaml"; 
-            string rationsFilePath = "data/Rations.yaml";
+
+
+   
+
             string randomNamesPath = "data/RandomNames.yaml";
             string landmarksFilePath = "data/Landmarks.yaml";
             
-
-            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];
             RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath)];
 
             Random.Shared.Shuffle(RandomNames);
             var partyNames = RandomNames.Take(26).ToArray();
 
-            _party = new WagonParty(RandomNames);
-            _display.Write(_party.GetDisplayNames());
-
-            _occurrenceEngine = new OccurrenceEngine(occurrencesFilePath, _party, Statuses);
+            Party = new WagonParty(RandomNames);
+            _display.Write(Party.GetDisplayNames());
 
 
-            _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
-            _pace = _paceData.MinBy(pace => pace.Factor)!;
+
+      
 
 
             _landmarksData = Utility.LoadYaml<LandmarksData>(landmarksFilePath);
-            _nextLandmark = _landmarksData.First();
+            NextLandmark = _landmarksData.First();
 
             MilesTraveled = 0;
-            MilesToNextLandmark = (double)_nextLandmark.Distance!;
+            MilesToNextLandmark = (double)NextLandmark.Distance!;
 
-            _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
-            _rations = _rationData.MaxBy(rations => rations.Factor)!;
 
-            _currentDate = new DateTime(1860, 10, 1);
+            CurrentDate = new DateTime(1860, 10, 1);
+
+            _travel = new Travel(this);
 
             GameMode = Modes.Travelling;
         }
@@ -101,7 +90,7 @@ namespace DestinyTrail.Engine
                     switch (GameMode)
                     {
                         case Modes.Travelling:
-                            TravelLoop(); 
+                            _travel.TravelLoop(); 
                             break;
                         case Modes.AtLandmark:
                             AtLandmarkLoop();
@@ -122,77 +111,34 @@ namespace DestinyTrail.Engine
         {
             if (!_shouldInitializeAtLandmark) return;
             _shouldInitializeAtLandmark = false;
-            _display.Write($"{_nextLandmark.Name}");
+            _display.Write($"{NextLandmark.Name}");
             _display.Write("Press enter to continue");
             
         }
 
-        public void TravelLoop()
-        {
 
-
-            var todaysMiles = CalculateMilesTraveled();
-            if (todaysMiles > MilesToNextLandmark)
-            {
-                todaysMiles = MilesToNextLandmark;
-            }
-            MilesTraveled += todaysMiles;
-            MilesToNextLandmark -= todaysMiles;
-
-            string occurrenceMessage = "";
-            if (MilesToNextLandmark <= 0)
-            {
-                occurrenceMessage = $"You have reached {_nextLandmark.Name}.";
-                GameMode = Modes.AtLandmark;
-                _shouldInitializeAtLandmark = true;
-            }
-            else
-            {
-                Occurrence randomOccurrence = _occurrenceEngine.PickRandomOccurrence();
-                var occurrence = _occurrenceEngine.ProcessOccurrence(randomOccurrence);
-                occurrenceMessage = occurrence.DisplayText;
-            }
-
-            _party.SpendDailyHealth(_pace, _rations);
-
-            DrawStatusPanel();
-
-            _display.Write($"{_currentDate.GetFormatted()}: {occurrenceMessage}");
-            _display.ScrollToBottom();
-
-            if (_advanceDay)
-            {
-                _currentDate = _currentDate.AddDays(1);
-            }
-        }
-
-        private void DrawStatusPanel()
+        internal void DrawStatusPanel()
         {
             _status.Clear();
-            _status.Write($"Date: {_currentDate.GetFormatted()}");
+            _status.Write($"Date: {CurrentDate.GetFormatted()}");
             _status.Write($"Weather: {_weather}");
-            _status.Write($"Health: {_party.GetDisplayHealth()}");
+            _status.Write($"Health: {Party.GetDisplayHealth()}");
             _status.Write($"Distance to next landmark: {MilesToNextLandmark.Abbreviate()} miles ({MilesToNextLandmark.Abbreviate()} km)");
             _status.Write($"Distance traveled: {MilesTraveled.Abbreviate()} miles ({MilesTraveled.Abbreviate()} km)");
 
             _status.Write($"-----------");
-            foreach(var person in _party.Members) {
+            foreach(var person in Party.Members) {
                 _status.Write($"{person.Name} ..... {person.Status}");
             }
         }
 
-        private double CalculateMilesTraveled()
+        internal void ChangeMode(Modes mode)
         {
-            // TODO: factor in oxen like ( _pace.Factor / (Inventory.currentOxen / Inventory.maximumOxen ))
-            return _pace.Factor;
-        }
-
-        public void ContinueTravelling()
-        {
-            _display.Items.Add($"You decided to continue.");
-            _nextLandmark = _landmarksData.Landmarks.NextOrFirst(landmark => landmark.ID == _nextLandmark.ID);
-            MilesToNextLandmark = _nextLandmark.Distance;
-            GameMode = Modes.Travelling;
+            GameMode = mode;
+            if (GameMode == Modes.AtLandmark)
+            { 
+                _shouldInitializeAtLandmark = true;
+            }
         }
     }
 }
