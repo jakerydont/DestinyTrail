@@ -5,7 +5,7 @@ using DestinyTrail.Engine;
 
 using Xunit;
 
-namespace DestinyTrail.EngineTest
+namespace DestinyTrail.Engine.Tests
 {
     public class UtilityTests {
         [Fact]

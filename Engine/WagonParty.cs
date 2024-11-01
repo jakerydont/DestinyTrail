@@ -6,7 +6,7 @@ namespace DestinyTrail.Engine
     {
         private int memberCounter = 0;
         public List<Person> Members {get;set;}
-        Person Leader {get;set;}
+        public Person Leader {get;set;}
         public double Health { get; private set; }
 
         private int _maxRationFactor {get;set;}
@@ -70,7 +70,7 @@ namespace DestinyTrail.Engine
         public string GetDisplayHealth() => Health.Abbreviate();
         
 
-        internal void SpendDailyHealth(Pace pace, Rations rations)
+        public void SpendDailyHealth(Pace pace, Rations rations)
         {
             double healthChange = -((100 / rations.Factor) * (pace.Factor / 8) - 0.5);
             Health += healthChange;
