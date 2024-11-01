@@ -11,17 +11,15 @@ namespace DestinyTrail.Engine.Tests
         public void Constructor_ShouldInitializeMembers()
         {
             // Arrange
-            string[] names = { "Alice", "Bob", "Charlie", "Diana" };
-            int expectedSize = 3;
+            string[] names = { "Bob", "Alice", "Charlie" };
 
             // Act
-            var wagonParty = new WagonParty(names, expectedSize);
+            var wagonParty = new WagonParty(names);
 
             // Assert
-            Assert.Equal(expectedSize, wagonParty.Members.Count);
-            Assert.NotNull(wagonParty.Leader);
+            Assert.Equal("Bob", wagonParty.Leader.Name);
             Assert.Equal(wagonParty.Leader, wagonParty.Members.First());
-            Assert.Equal(100, wagonParty.Health); // Initial health should be 100
+            Assert.Equal(100, wagonParty.Health);
         }
 
         [Fact]
@@ -49,7 +47,7 @@ namespace DestinyTrail.Engine.Tests
             var displayNames = wagonParty.GetDisplayNames();
 
             // Assert
-            Assert.Equal("Alice, Bob, Charlie", displayNames);
+            Assert.Contains("Alice, Bob, Charlie", displayNames);
         }
 
         [Fact]

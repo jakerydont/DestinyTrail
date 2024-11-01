@@ -64,6 +64,9 @@ namespace DestinyTrail.Engine
             Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];
             RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath)];
 
+            Random.Shared.Shuffle(RandomNames);
+            var partyNames = RandomNames.Take(26).ToArray();
+
             _party = new WagonParty(RandomNames);
             _display.Write(_party.GetDisplayNames());
 

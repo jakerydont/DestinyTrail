@@ -11,14 +11,11 @@ namespace DestinyTrail.Engine
 
         private int _maxRationFactor {get;set;}
 
-        public WagonParty(string[] randomNames, int size = 26)
-        {
+
+        public WagonParty(string[] names) {
             Members = new List<Person>();
 
-            Random.Shared.Shuffle(randomNames);
-            var partyNames = randomNames.Take(size).ToArray();
-
-            foreach(var name in partyNames) {
+            foreach(var name in names) {
                 var member = GeneratePerson(name);
                 Members.Add(member);
             }
