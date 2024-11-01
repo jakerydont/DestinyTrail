@@ -1,6 +1,6 @@
 namespace DestinyTrail.Engine
 {
-    public struct Occurrence
+    public class Occurrence : GameComponent
     {
         public string DisplayText { get; set; }
         public double Probability { get; set; }

@@ -2,9 +2,8 @@ using System.Collections.Generic;
 
 namespace DestinyTrail.Engine
 {
-    public class Pace : ITravelSetting
+    public class Pace : GameComponent, ITravelSetting
     {
-        public required string Name { get; set; }
         public int Factor { get; set; }
     }
 }
