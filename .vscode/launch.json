@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Avalonia DEBUG",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/DestinyTrail/bin/Debug/net8.0/DestinyTrail.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}/DestinyTrail/bin/Debug/net8.0",
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        }
+    ]
+}
