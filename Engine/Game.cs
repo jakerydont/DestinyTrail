@@ -5,31 +5,31 @@ using Avalonia.Controls;
 using Avalonia.Threading;
 namespace DestinyTrail.Engine
 {
-    public class Game {
+    public class Game : IGame {
 
         private CancellationTokenSource _cancellationTokenSource {get;set;}
 
-        internal DateTime CurrentDate;
-        private Travel _travel;
+        public DateTime CurrentDate {get;set;}
+        public Travel _travel;
 
 
-        internal LandmarksData _landmarksData {get;set;}
-        internal Landmark NextLandmark {get;set;}
+        public LandmarksData _landmarksData {get;set;}
+        public Landmark NextLandmark {get;set;}
 
         private string _weather = "not implemented";
 
-        internal Display _display {get;set;}
+        public Display _display {get;set;}
 
         protected Display _status {get;set;}
 
-        internal double MilesTraveled { get; set; }
-        internal double MilesToNextLandmark {get; set; }
+        public double MilesTraveled { get; set; }
+        public double MilesToNextLandmark {get; set; }
         public string[] RandomNames { get; private set; }
 
-        internal WagonParty Party {get;set;}
+        public WagonParty Party {get;set;}
 
 
-        public Modes GameMode {get;set;}
+        public Modes GameMode {get;private set;}
 
         private bool _shouldInitializeAtLandmark {get;set;}
 
@@ -44,12 +44,6 @@ namespace DestinyTrail.Engine
             _status = Status;
             _cancellationTokenSource = new CancellationTokenSource();
 
-
-
-
-
-   
-
             string randomNamesPath = "data/RandomNames.yaml";
             string landmarksFilePath = "data/Landmarks.yaml";
             
@@ -60,11 +54,6 @@ namespace DestinyTrail.Engine
 
             Party = new WagonParty(RandomNames);
             _display.Write(Party.GetDisplayNames());
-
-
-
-      
-
 
             _landmarksData = Utility.LoadYaml<LandmarksData>(landmarksFilePath);
             NextLandmark = _landmarksData.First();
@@ -117,7 +106,7 @@ namespace DestinyTrail.Engine
         }
 
 
-        internal void DrawStatusPanel()
+        public void DrawStatusPanel()
         {
             _status.Clear();
             _status.Write($"Date: {CurrentDate.GetFormatted()}");
@@ -132,7 +121,7 @@ namespace DestinyTrail.Engine
             }
         }
 
-        internal void ChangeMode(Modes mode)
+        public void ChangeMode(Modes mode)
         {
             GameMode = mode;
             if (GameMode == Modes.AtLandmark)

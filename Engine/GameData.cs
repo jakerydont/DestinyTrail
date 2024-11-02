@@ -15,68 +15,151 @@ namespace DestinyTrail.Engine
             set => _items[index] = value;
         }
 
-        public void Add(T item) => _items.Add(item);
+        public void Add(T item)
+        {
+            _items.Add(item);
+        }
 
-        public void Remove(T item) => _items.Remove(item);
+        public void Remove(T item)
+        {
+            _items.Remove(item);
+        }
 
         public int Count => _items.Count;
 
         public bool IsReadOnly => false; // Indicates that the collection is not read-only
 
-        public int IndexOf(T item) => _items.IndexOf(item);
+        public int IndexOf(T item)
+        {
+            return _items.IndexOf(item);
+        }
 
-        public void Insert(int index, T item) => _items.Insert(index, item);
+        public void Insert(int index, T item)
+        {
+            _items.Insert(index, item);
+        }
 
-        public void RemoveAt(int index) => _items.RemoveAt(index);
+        public void RemoveAt(int index)
+        {
+            _items.RemoveAt(index);
+        }
 
-        public T First() => _items.First();
+        public T First()
+        {
+            return _items.First();
+        }
 
-        public T MinBy<TKey>(Func<T, TKey> keySelector) => _items.OrderBy(keySelector).First();
+        public T MinBy<TKey>(Func<T, TKey> keySelector)
+        {
+            return _items.OrderBy(keySelector).First();
+        }
 
-        public T MaxBy<TKey>(Func<T, TKey> keySelector) => _items.OrderByDescending(keySelector).First();
+        public T MaxBy<TKey>(Func<T, TKey> keySelector)
+        {
+            return _items.OrderByDescending(keySelector).First();
+        }
 
-        public void Clear() => _items.Clear();
+        public void Clear()
+        {
+            _items.Clear();
+        }
 
-        public bool Contains(T item) => _items.Contains(item);
+        public bool Contains(T item)
+        {
+            return _items.Contains(item);
+        }
 
-        public void CopyTo(T[] array, int arrayIndex) => _items.CopyTo(array, arrayIndex);
+        public void CopyTo(T[] array, int arrayIndex)
+        {
+            _items.CopyTo(array, arrayIndex);
+        }
 
-        public T FirstOrDefault() => _items.FirstOrDefault();
+        public T FirstOrDefault()
+        {
+            return _items.FirstOrDefault() ?? throw new NullReferenceException();
+        }
 
-        public T LastOrDefault() => _items.LastOrDefault();
+        public T LastOrDefault()
+        {
+            return _items.LastOrDefault() ?? throw new NullReferenceException();
+        }
 
-        public bool Any() => _items.Any();
+        public bool Any()
+        {
+            return _items.Any();
+        }
 
-        public void Reverse() => _items.Reverse();
+        public void Reverse()
+        {
+            _items.Reverse();
+        }
 
-        public void Sort(Comparison<T> comparison) => _items.Sort(comparison);
+        public void Sort(Comparison<T> comparison)
+        {
+            _items.Sort(comparison);
+        }
 
-        public void Sort(IComparer<T> comparer) => _items.Sort(comparer);
+        public void Sort(IComparer<T> comparer)
+        {
+            _items.Sort(comparer);
+        }
 
-        public IEnumerable<T> AsQueryable() => _items.AsQueryable();
+        public IEnumerable<T> AsQueryable()
+        {
+            return _items.AsQueryable();
+        }
 
-        public T Find(Predicate<T> match) => _items.Find(match);
+        public T Find(Predicate<T> match)
+        {
+            return _items.Find(match) ?? throw new NullReferenceException();
+        }
 
-        public List<T> FindAll(Predicate<T> match) => _items.FindAll(match);
+        public List<T> FindAll(Predicate<T> match)
+        {
+            return _items.FindAll(match);
+        }
 
-        public int RemoveAll(Predicate<T> match) => _items.RemoveAll(match);
+        public int RemoveAll(Predicate<T> match)
+        {
+            return _items.RemoveAll(match);
+        }
 
-        public void ForEach(Action<T> action) => _items.ForEach(action);
+        public void ForEach(Action<T> action)
+        {
+            _items.ForEach(action);
+        }
 
-        public void AddRange(IEnumerable<T> collection) => _items.AddRange(collection);
+        public void AddRange(IEnumerable<T> collection)
+        {
+            _items.AddRange(collection);
+        }
 
-        public List<T> GetRange(int index, int count) => _items.GetRange(index, count);
+        public List<T> GetRange(int index, int count)
+        {
+            return _items.GetRange(index, count);
+        }
 
-        public void TrimExcess() => _items.TrimExcess();
+        public void TrimExcess()
+        {
+            _items.TrimExcess();
+        }
 
-        public T[] ToArray() => _items.ToArray();
+        public T[] ToArray()
+        {
+            return _items.ToArray();
+        }
 
-        public IEnumerator<T> GetEnumerator() => _items.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        public IEnumerator<T> GetEnumerator()
+        {
+            return _items.GetEnumerator();
+        }
 
-        
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
 
-        public static implicit operator T[](GameData<T> data) => data?.ToArray();
+        public static implicit operator T[](GameData<T> data) => data?.ToArray() ?? throw new NullReferenceException();
 
     }
 }

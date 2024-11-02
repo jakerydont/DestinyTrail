@@ -4,20 +4,20 @@ namespace DestinyTrail.Engine;
 
 public class Travel
 {
-    Game _game { get; set; }
+    IGame _game { get; set; }
     public string[] Statuses { get; private set; }
 
-    OccurrenceEngine _occurrenceEngine { get; set; }
+    public OccurrenceEngine _occurrenceEngine { get; set; }
 
     private PaceData _paceData;
-    private Pace _pace;
+    public Pace _pace;
 
-    private Rations _rations {get;set;}
+    public Rations _rations {get;set;}
     private RationData _rationData {get;set;}
     
     private bool _advanceDay = true;
 
-    public Travel(Game game)
+    public Travel(IGame game)
     {
         _game = game;
 
@@ -80,9 +80,9 @@ public class Travel
 
         public void ContinueTravelling()
         {
-            _game._display.Items.Add($"You decided to continue.");
+            _game._display.Write($"You decided to continue.");
             _game.NextLandmark = _game._landmarksData.Landmarks.NextOrFirst(landmark => landmark.ID == _game.NextLandmark.ID);
             _game.MilesToNextLandmark = _game.NextLandmark.Distance;
-            _game.GameMode = Modes.Travelling;
+            _game.ChangeMode(Modes.Travelling);
         }
 }
