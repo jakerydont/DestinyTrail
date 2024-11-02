@@ -29,11 +29,11 @@ public class Travel
 
         string pacesFilePath = "data/Paces.yaml"; 
         _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
-        _pace = _paceData.MinBy(pace => pace.Factor)!;
+        _pace = _paceData.MinBy(pace => pace.Factor);
 
         string rationsFilePath = "data/Rations.yaml";
         _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
-        _rations = _rationData.MaxBy(rations => rations.Factor)!;
+        _rations = _rationData.MaxBy(rations => rations.Factor);
 
     }
         public void TravelLoop()

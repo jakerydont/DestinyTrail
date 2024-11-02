@@ -59,7 +59,7 @@ namespace DestinyTrail.Engine
             NextLandmark = _landmarksData.First();
 
             MilesTraveled = 0;
-            MilesToNextLandmark = (double)NextLandmark.Distance!;
+            MilesToNextLandmark = (double)NextLandmark.Distance;
 
 
             CurrentDate = new DateTime(1860, 10, 1);
