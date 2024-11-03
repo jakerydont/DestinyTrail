@@ -5,7 +5,7 @@ namespace DestinyTrail.Engine
 
     public class Display {
         private ListBox? _output {get;set;}
-        public ItemCollection Items => _output?.Items ?? null!;
+        public ItemCollection Items => _output?.Items ?? throw new NullReferenceException();
 
         public Display()
         {
