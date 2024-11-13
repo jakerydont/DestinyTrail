@@ -27,7 +27,7 @@ namespace DestinyTrail.Engine
                 throw new ArgumentException($"Property '{PropertyName}' not found");
 
             return _items.FirstOrDefault(item =>
-                propertyInfo.GetValue(item, null)?.ToString() == Value);
+                propertyInfo.GetValue(item, null)?.ToString() == Value) ?? throw new NullReferenceException();
         }
 
         public void Add(T item)

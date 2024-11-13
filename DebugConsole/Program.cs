@@ -16,7 +16,7 @@ static void ProcessUserInput(Game game)
         if (Console.IsInputRedirected)
         {
 
-            string input = Console.ReadLine();
+            string input = Console.ReadLine() ?? "";
 
 
             if (game.GameMode == Modes.AtLandmark)
@@ -35,10 +35,10 @@ static void ProcessUserInput(Game game)
             if (game.GameMode == Modes.Shopping) 
             {
                 if (game.ShoppingState == ShoppingState.WaitSelection) {
-                    if (input.ToLower() == "oxen") 
-                    {
-                        game.ShoppingSelection = game.Inventory.Oxen;
-                    }
+
+
+                        game.SelectShoppingItem(input);
+
                 }
             }
         }

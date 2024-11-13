@@ -1,48 +1,56 @@
 InventoryItems:
- - Name: "Oxen"
+  - Name: "Oxen"
     NameSingular: "Ox"
     Unit: ""
     UnitSingular: ""
     Quantity: 0
 
-- Name: "Food"
-      NameSingular: "Food"
-      Unit: "pounds"
-      UnitSingular: "pound"
-      Quantity: 0
+  - Name: "Food"
+    NameSingular: "Food"
+    Unit: "pounds"
+    UnitSingular: "pound"
+    Quantity: 0
 
-- Name: "Bullets"
-      NameSingular: "Bullet"
-      Unit: ""
-      UnitSingular: ""
-      Quantity: 0
+  - Name: "Bullets"
+    NameSingular: "Bullet"
+    Unit: ""
+    UnitSingular: ""
+    Quantity: 0
 
-- Name: "Clothes"
-      NameSingular: "Clothes"
-      Unit: "sets"
-      UnitSingular: "set"
-      Quantity: 0
+  - Name: "Clothes"
+    NameSingular: "Clothes"
+    Unit: "sets"
+    UnitSingular: "set"
+    Quantity: 0
 
-- Name: "Dollars"
-      NameSingular: "Dollar"
-      Unit: ""
-      UnitSingular: ""
-      Quantity: 0
+  - Name: "Dollars"
+    NameSingular: "Dollar"
+    Unit: ""
+    UnitSingular: ""
+    Quantity: 0
 
-- Name: "Wagon Tongues"
-      NameSingular: "Wagon Tongue"
-      Unit: ""
-      UnitSingular: ""
-      Quantity: 0
+  - Name: "Wagon Tongues"
+    NameSingular: "Wagon Tongue"
+    Unit: ""
+    UnitSingular: ""
+    Quantity: 0
 
-- Name: "Wagon Axles"
-      NameSingular: "Wagon Axle"
-      Unit: ""
-      UnitSingular: ""
-      Quantity: 0
-      
-- Name: "Wagon Wheels"
-      NameSingular: "Wagon Wheel"
-      Unit: ""
-      UnitSingular: ""
-      Quantity: 0
+  - Name: "Wagon Axles"
+    NameSingular: "Wagon Axle"
+    Unit: ""
+    UnitSingular: ""
+    Quantity: 0
+
+  - Name: "Wagon Wheels"
+    NameSingular: "Wagon Wheel"
+    Unit: ""
+    UnitSingular: ""
+    Quantity: 0
+
+CustomItems:
+  - Name: "Baja Blast"
+    NameSingular: ""
+    Unit: "ounces"
+    UnitSingular: "ounce"
+    Quantity: 0
+

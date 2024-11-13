@@ -20,7 +20,7 @@ namespace DestinyTrail.Engine
 
         public Inventory Inventory { get; set; }
         public ShoppingState ShoppingState { get; set; }
-        public InventoryItem ShoppingSelection;
+        public InventoryItem ShoppingSelection { get; set; }
 
         public IDisplay _display { get; set; }
 
@@ -72,6 +72,7 @@ namespace DestinyTrail.Engine
 
             GameMode = Modes.Travelling;
             ShoppingState = ShoppingState.Init;
+            ShoppingSelection = Inventory.Default;
         }
         public async Task StartGameLoop()
         {
@@ -106,7 +107,7 @@ namespace DestinyTrail.Engine
 
         private void ShoppingLoop()
         {
-            if (ShoppingState == ShoppingState.Init) 
+            if (ShoppingState == ShoppingState.Init)
             {
                 _display.Write("-----\n\nWelcome to the store. Type what you want to buy. Type \"exit\" to quit.");
                 _display.Write("Oxen, Food, Baja Blast, etc");
@@ -163,6 +164,17 @@ namespace DestinyTrail.Engine
             else if (GameMode == Modes.Shopping)
             {
                 ShoppingState = ShoppingState.Init;
+            }
+        }
+
+        public void SelectShoppingItem(string input)
+        {
+            try
+            { 
+                var selectedItem = Inventory.GetByName(input); 
+            }
+            catch (NullReferenceException) {
+                _display.Write($"Hey, you old poophead, I ain't got no ${input} for sale. Try again.");
             }
         }
     }

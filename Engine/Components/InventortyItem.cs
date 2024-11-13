@@ -10,7 +10,7 @@ namespace DestinyTrail.Engine
         private int _quantity;
 
         [Range(0, int.MaxValue, ErrorMessage = "No negative quantities allowed.")]
-        public required int Quantity
+        public int Quantity
         {
             get => _quantity;
             set
@@ -32,9 +32,19 @@ namespace DestinyTrail.Engine
             }
             set => _unit = value;
         }
-        private string Lore { get; set; } = "";
-        public string UnitSingular { get; internal set; }
 
+        private string _unitSingular = "";
+        public string UnitSingular
+        {
+            get
+            {
+                if (_unitSingular == "") return "";
+                else return _unit + " of ";
+            }
+            set => _unitSingular = value;
+        }
+
+        private string Lore { get; set; } = "";
         public bool Add(int amount)
         {
             _quantity += amount;
