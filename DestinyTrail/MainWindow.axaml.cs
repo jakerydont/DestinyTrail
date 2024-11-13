@@ -7,11 +7,13 @@ namespace DestinyTrail
     public partial class MainWindow : Window
     {
 
-        Game game {get;set;}
+        Game game { get; set; }
         public MainWindow()
         {
             InitializeComponent();
-            game = new Game(OutputListBox,Status);
+            var OutputDisplay = new ADisplay(OutputListBox);
+            var StatusDisplay = new ADisplay(Status);
+            game = new Game(OutputDisplay, StatusDisplay);
             game.StartGameLoop();
         }
 
@@ -20,7 +22,7 @@ namespace DestinyTrail
             if (e.Key == Key.Enter)
             {
                 var input = InputTextBox.Text ?? "";
-               // OutputListBox.Items.Add($"> {input}");
+                // OutputListBox.Items.Add($"> {input}");
                 ProcessInput(input);
                 InputTextBox.Text = string.Empty; // Clear the input box
                 e.Handled = true;
