@@ -1,6 +1,20 @@
 {
     "version": "0.2.0",
     "configurations": [
+
+        {
+            "name": "DEBUG console",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/DebugConsole/bin/Debug/net8.0/DebugConsole.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}/DebugConsole/bin/Debug/net8.0",
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
         {
             "name": "Avalonia DEBUG",
             "type": "coreclr",

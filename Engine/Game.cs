@@ -65,7 +65,7 @@ namespace DestinyTrail.Engine
 
             GameMode = Modes.Travelling;
         }
-        public async void StartGameLoop()
+        public async Task StartGameLoop()
         {
             var token = _cancellationTokenSource.Token;
 
@@ -81,6 +81,9 @@ namespace DestinyTrail.Engine
                         case Modes.AtLandmark:
                             AtLandmarkLoop();
                             break;
+                        case Modes.Shopping:
+                            ShoppingLoop();
+                            break;
                         default:
                             break;
                     }
@@ -91,6 +94,11 @@ namespace DestinyTrail.Engine
             {
                 // Task was canceled, handle if needed
             }
+        }
+
+        private void ShoppingLoop()
+        {
+            throw new NotImplementedException();
         }
 
         private void AtLandmarkLoop()
