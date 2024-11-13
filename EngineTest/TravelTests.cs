@@ -80,13 +80,11 @@ namespace DestinyTrail.Engine.Tests
             travel.ContinueTravelling();
 
             // Assert
-            Assert.Equal("You decided to continue.", ((MockDisplay)_mockGame._display).Items[^1]); // Check display message
-            Assert.NotEqual(previousLandmark, _mockGame.NextLandmark); // Ensure the landmark changed
-            Assert.Equal(_mockGame.NextLandmark.Distance, _mockGame.MilesToNextLandmark); // Check the distance to next landmark
-            Assert.Equal(Modes.Travelling, _mockGame.GameMode); // Check if the game mode changed
+            Assert.Equal("You decided to continue.", ((MockDisplay)_mockGame._display).Items[^1]);
+            Assert.NotEqual(previousLandmark, _mockGame.NextLandmark);
+            Assert.Equal(_mockGame.NextLandmark.Distance, _mockGame.MilesToNextLandmark);
+            Assert.Equal(Modes.Travelling, _mockGame.GameMode);
         }
-
-
     }
 
     // Mock classes for testing purposes
@@ -118,4 +116,5 @@ namespace DestinyTrail.Engine.Tests
 
         }
     }
+
 }
