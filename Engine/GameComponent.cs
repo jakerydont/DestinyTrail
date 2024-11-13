@@ -6,6 +6,8 @@ namespace DestinyTrail.Engine
 
         public override string ToString() => Name;
 
+        public static implicit operator string(GameComponent gc) => gc.Name;
+
         public override int GetHashCode() => HashCode.Combine(Name);
         
     }

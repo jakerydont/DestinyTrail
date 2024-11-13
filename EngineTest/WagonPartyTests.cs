@@ -91,7 +91,7 @@ namespace DestinyTrail.Engine.Tests
 
             // Assert
             Assert.Contains(person.Name, names);
-            Assert.Equal("Good", person.Status.Name);
+            Assert.Equal("Good", person.Status);
         }
     }
 
