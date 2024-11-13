@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace DestinyTrail.Engine
 {
@@ -27,7 +28,7 @@ namespace DestinyTrail.Engine
 
         public int Count => _items.Count;
 
-        public bool IsReadOnly => false; // Indicates that the collection is not read-only
+        public bool IsReadOnly => false;
 
         public int IndexOf(T item)
         {

@@ -8,7 +8,7 @@ namespace DestinyTrail.Engine.Tests
         private readonly MockGame _mockGame;
 
         private Landmark testLandmark = new Landmark { ID = "TESTLANDMARK", Name = "Test Landmark", Distance = 100, Lore = "Test Lore" };
-
+        private Landmark secondTestLandmark = new Landmark { ID = "SECONDTESTLANDMARK", Name = "Second Test Landmark", Distance = 80, Lore = "Second Test Lore" };
         public TravelTests()
         {
             // Initialize a mock Game object with required properties
@@ -20,7 +20,7 @@ namespace DestinyTrail.Engine.Tests
                 NextLandmark = testLandmark,
                 MilesTraveled = 0,
                 _display = new MockDisplay(),
-                _landmarksData = new LandmarksData{ Landmarks = new List<Landmark>{testLandmark}}
+                _landmarksData = new LandmarksData { Landmarks = new List<Landmark> { testLandmark, secondTestLandmark } }
             };
         }
 
@@ -43,13 +43,13 @@ namespace DestinyTrail.Engine.Tests
         {
             // Arrange
             var travel = new Travel(_mockGame);
-            _mockGame.MilesToNextLandmark = 50; 
+            _mockGame.MilesToNextLandmark = 50;
 
             // Act
             travel.TravelLoop();
 
             // Assert
-            Assert.NotEqual(50, _mockGame.MilesTraveled); 
+            Assert.NotEqual(50, _mockGame.MilesTraveled);
             Assert.InRange(_mockGame.MilesToNextLandmark, 0, 50);
         }
 
@@ -80,22 +80,21 @@ namespace DestinyTrail.Engine.Tests
             travel.ContinueTravelling();
 
             // Assert
-            Assert.Equal("You decided to continue.", _mockGame._display.Items[^1]); // Check display message
-            Assert.NotEqual(previousLandmark, _mockGame.NextLandmark); // Ensure the landmark changed
-            Assert.Equal(_mockGame.NextLandmark.Distance, _mockGame.MilesToNextLandmark); // Check the distance to next landmark
-            Assert.Equal(Modes.Travelling, _mockGame.GameMode); // Check if the game mode changed
+            Assert.Equal("You decided to continue.", ((MockDisplay)_mockGame._display).Items[^1]);
+            Assert.NotEqual(previousLandmark, _mockGame.NextLandmark);
+            Assert.Equal(_mockGame.NextLandmark.Distance, _mockGame.MilesToNextLandmark); 
+            Assert.Equal(Modes.Travelling, _mockGame.GameMode);
+
         }
-
-
     }
 
     // Mock classes for testing purposes
-    public class MockDisplay : Display
+    public class MockDisplay : IDisplay
     {
-        public new dynamic Items { get; set; } = new List<string>();
-
+        public List<string> Items { get; set; } = new List<string>();
         public new void Write(string message) => Items.Add(message);
         public new void ScrollToBottom() { }
+        public void Clear() { }
     }
     public class MockGame : IGame
     {
@@ -104,19 +103,18 @@ namespace DestinyTrail.Engine.Tests
         public double MilesToNextLandmark { get; set; }
         public required Landmark NextLandmark { get; set; }
         public double MilesTraveled { get; set; }
-        public required Display _display { get; set; }
+        public required IDisplay _display { get; set; }
         public Modes GameMode { get; set; }
         public required LandmarksData _landmarksData { get; set; }
 
-        public void ChangeMode(Modes atLandmark)
+        public void ChangeMode(Modes gameMode)
         {
-            
+            GameMode = gameMode;
         }
 
         public void DrawStatusPanel()
         {
-            
+
         }
     }
-
 }

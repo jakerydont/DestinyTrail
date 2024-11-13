@@ -18,9 +18,9 @@ namespace DestinyTrail.Engine
 
         private string _weather = "not implemented";
 
-        public Display _display {get;set;}
+        public IDisplay _display {get;set;}
 
-        protected Display _status {get;set;}
+        protected IDisplay _status {get;set;}
 
         public double MilesTraveled { get; set; }
         public double MilesToNextLandmark {get; set; }
@@ -36,10 +36,7 @@ namespace DestinyTrail.Engine
         public Game() 
             : this(new Display(), new Display()) {}
 
-        public Game(ListBox Output, ListBox Status)  
-            : this(new Display(Output), new Display(Status)) {}
-  
-        public Game(Display Output, Display Status) {
+        public Game(IDisplay Output, IDisplay Status) {            
             _display = Output;
             _status = Status;
             _cancellationTokenSource = new CancellationTokenSource();

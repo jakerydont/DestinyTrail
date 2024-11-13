@@ -7,7 +7,7 @@ namespace DestinyTrail.Engine
         public double MilesToNextLandmark { get; set; }
         public Landmark NextLandmark { get; set; }
         public double MilesTraveled { get; set; }
-        public Display _display { get; set; }
+        public IDisplay _display { get; set; }
         public Modes GameMode { get; }
 
         public LandmarksData _landmarksData { get; set; }
