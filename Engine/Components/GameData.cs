@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace DestinyTrail.Engine
 {
-    public abstract class GameData<T> : IGameData<T>, IEnumerable<T>
+    public abstract class GameData<T> : IGameData<T>, IEnumerable<T> 
     {
         protected List<T> _items = new List<T>();
 
@@ -14,6 +14,20 @@ namespace DestinyTrail.Engine
         {
             get => _items[index];
             set => _items[index] = value;
+        }
+        public T GetByName(string Value)
+        {
+            return GetByPropertyValue("Name", Value);
+        }
+
+        public T GetByPropertyValue(string PropertyName, string Value)
+        {
+            var propertyInfo = typeof(T).GetProperty(PropertyName);
+            if (propertyInfo == null)
+                throw new ArgumentException($"Property '{PropertyName}' not found");
+
+            return _items.FirstOrDefault(item =>
+                propertyInfo.GetValue(item, null)?.ToString() == Value);
         }
 
         public void Add(T item)
@@ -59,6 +73,9 @@ namespace DestinyTrail.Engine
         {
             return _items.OrderByDescending(keySelector).First();
         }
+
+
+
 
         public void Clear()
         {

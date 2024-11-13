@@ -3,7 +3,10 @@ using System.ComponentModel.DataAnnotations;
 namespace DestinyTrail.Engine
 {
     public class InventoryItem : GameComponent, IInventoryItem
-    {   
+    {
+
+        public string NameSingular { get; set; } = "";
+
         private int _quantity;
 
         [Range(0, int.MaxValue, ErrorMessage = "No negative quantities allowed.")]
@@ -19,8 +22,18 @@ namespace DestinyTrail.Engine
             }
         }
 
+        private string _unit = "";
+        public string Unit
+        {
+            get
+            {
+                if (_unit == "") return "";
+                else return _unit + " of ";
+            }
+            set => _unit = value;
+        }
         private string Lore { get; set; } = "";
-
+        public string UnitSingular { get; internal set; }
 
         public bool Add(int amount)
         {

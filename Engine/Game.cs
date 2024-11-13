@@ -1,49 +1,55 @@
 
 using System.Dynamic;
 using System.Formats.Asn1;
-using Avalonia.Controls;
-using Avalonia.Threading;
+
 namespace DestinyTrail.Engine
 {
-    public class Game : IGame {
+    public class Game : IGame
+    {
 
-        private CancellationTokenSource _cancellationTokenSource {get;set;}
+        private CancellationTokenSource _cancellationTokenSource { get; set; }
 
-        public DateTime CurrentDate {get;set;}
+        public DateTime CurrentDate { get; set; }
         public Travel _travel;
 
 
-        public LandmarksData _landmarksData {get;set;}
-        public Landmark NextLandmark {get;set;}
+        public LandmarksData _landmarksData { get; set; }
+        public Landmark NextLandmark { get; set; }
 
         private string _weather = "not implemented";
 
-        public IDisplay _display {get;set;}
+        public Inventory Inventory { get; set; }
+        public ShoppingState ShoppingState { get; set; }
+        public InventoryItem ShoppingSelection;
 
-        protected IDisplay _status {get;set;}
+        public IDisplay _display { get; set; }
+
+        protected IDisplay _status { get; set; }
 
         public double MilesTraveled { get; set; }
-        public double MilesToNextLandmark {get; set; }
+        public double MilesToNextLandmark { get; set; }
         public string[] RandomNames { get; private set; }
 
-        public WagonParty Party {get;set;}
+        public WagonParty Party { get; set; }
 
 
-        public Modes GameMode {get;private set;}
+        public Modes GameMode { get; private set; }
 
-        private bool _shouldInitializeAtLandmark {get;set;}
+        private bool _shouldInitializeAtLandmark { get; set; }
 
-        public Game() 
-            : this(new Display(), new Display()) {}
+        public Game()
+            : this(new Display(), new Display()) { }
 
-        public Game(IDisplay Output, IDisplay Status) {            
+        public Game(IDisplay Output, IDisplay Status)
+        {
             _display = Output;
             _status = Status;
             _cancellationTokenSource = new CancellationTokenSource();
 
             string randomNamesPath = "data/RandomNames.yaml";
             string landmarksFilePath = "data/Landmarks.yaml";
-            
+            string inventoryFilePath = "data/Inventory.yaml";
+
             RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath)];
 
             Random.Shared.Shuffle(RandomNames);
@@ -58,12 +64,14 @@ namespace DestinyTrail.Engine
             MilesTraveled = 0;
             MilesToNextLandmark = (double)NextLandmark.Distance;
 
+            Inventory = Utility.LoadYaml<Inventory>(inventoryFilePath);
 
             CurrentDate = new DateTime(1860, 10, 1);
 
             _travel = new Travel(this);
 
             GameMode = Modes.Travelling;
+            ShoppingState = ShoppingState.Init;
         }
         public async Task StartGameLoop()
         {
@@ -76,7 +84,7 @@ namespace DestinyTrail.Engine
                     switch (GameMode)
                     {
                         case Modes.Travelling:
-                            _travel.TravelLoop(); 
+                            _travel.TravelLoop();
                             break;
                         case Modes.AtLandmark:
                             AtLandmarkLoop();
@@ -87,7 +95,7 @@ namespace DestinyTrail.Engine
                         default:
                             break;
                     }
-                   await Task.Delay(5000, token); 
+                    await Task.Delay(1000, token);
                 }
             }
             catch (TaskCanceledException)
@@ -98,7 +106,25 @@ namespace DestinyTrail.Engine
 
         private void ShoppingLoop()
         {
-            throw new NotImplementedException();
+            if (ShoppingState == ShoppingState.Init) 
+            {
+                _display.Write("-----\n\nWelcome to the store. Type what you want to buy. Type \"exit\" to quit.");
+                _display.Write("Oxen, Food, Baja Blast, etc");
+                ShoppingState = ShoppingState.WaitSelection;
+            }
+            else if (ShoppingState == ShoppingState.WaitSelection)
+            {
+                // noop
+            }
+            else if (ShoppingState == ShoppingState.HowMany)
+            {
+                _display.Write($"How many ${ShoppingSelection.Unit}${ShoppingSelection.NameSingular} do you want?");
+                ShoppingState = ShoppingState.WaitQuantity;
+            }
+            else if (ShoppingState == ShoppingState.WaitQuantity)
+            {
+                // noop
+            }
         }
 
         private void AtLandmarkLoop()
@@ -106,8 +132,8 @@ namespace DestinyTrail.Engine
             if (!_shouldInitializeAtLandmark) return;
             _shouldInitializeAtLandmark = false;
             _display.Write($"{NextLandmark.Name}");
-            _display.Write("Press enter to continue");
-            
+            _display.Write("Press enter to continue. Type \"buy\" to buy something.");
+
         }
 
 
@@ -121,7 +147,8 @@ namespace DestinyTrail.Engine
             _status.Write($"Distance traveled: {MilesTraveled.Abbreviate()} miles ({MilesTraveled.Abbreviate()} km)");
 
             _status.Write($"-----------");
-            foreach(var person in Party.Members) {
+            foreach (var person in Party.Members)
+            {
                 _status.Write($"{person.Name} ..... {person.Status}");
             }
         }
@@ -130,8 +157,12 @@ namespace DestinyTrail.Engine
         {
             GameMode = mode;
             if (GameMode == Modes.AtLandmark)
-            { 
+            {
                 _shouldInitializeAtLandmark = true;
+            }
+            else if (GameMode == Modes.Shopping)
+            {
+                ShoppingState = ShoppingState.Init;
             }
         }
     }
