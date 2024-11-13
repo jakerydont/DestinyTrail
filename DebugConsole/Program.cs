@@ -18,11 +18,29 @@ static void ProcessUserInput(Game game)
 
             string input = Console.ReadLine();
 
-            if (input == "") 
+
+            if (game.GameMode == Modes.AtLandmark)
             {
-                game._travel.ContinueTravelling();
+                if (input == "")
+                {
+                    game._travel.ContinueTravelling();
+                }
+
+                if (input == "buy")
+                {
+                    game.ChangeMode(Modes.Shopping);
+                }
             }
 
+            if (game.GameMode == Modes.Shopping) 
+            {
+                if (game.ShoppingState == ShoppingState.WaitSelection) {
+                    if (input.ToLower() == "oxen") 
+                    {
+                        game.ShoppingSelection = game.Inventory.Oxen;
+                    }
+                }
+            }
         }
         else
         {
