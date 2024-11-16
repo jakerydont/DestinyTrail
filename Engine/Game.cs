@@ -55,6 +55,7 @@ namespace DestinyTrail.Engine
             string randomNamesPath = "data/RandomNames.yaml";
             string landmarksFilePath = "data/Landmarks.yaml";
             string inventoryFilePath = "data/Inventory.yaml";
+            string inventoryCustomItemsFilePath = "data/InventoryCustomItems.yaml";
 
             RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath)];
 
@@ -71,7 +72,7 @@ namespace DestinyTrail.Engine
             MilesToNextLandmark = (double)NextLandmark.Distance;
 
             Inventory = Utility.LoadYaml<Inventory>(inventoryFilePath);
-
+            Inventory.CustomItems = Utility.LoadYaml<List<InventoryItem>>(inventoryCustomItemsFilePath);
             CurrentDate = new DateTime(1860, 10, 1);
 
             _travel = new Travel(this);

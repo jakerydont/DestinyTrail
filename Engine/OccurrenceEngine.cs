@@ -14,11 +14,12 @@ namespace DestinyTrail.Engine
         private readonly Utility Utility;
 
         public OccurrenceEngine(string yamlFilePath,  WagonParty party, string[] statuses )
-        {
+        { 
+            Utility = new Utility();
             _occurrences = LoadOccurrences(yamlFilePath);
             _statuses = statuses;
             _party = party;
-            Utility = new Utility();
+           
 
         }
 

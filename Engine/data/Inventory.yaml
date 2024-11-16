@@ -1,4 +1,4 @@
-InventoryItems:
+
   - Name: "Oxen"
     NameSingular: "Ox"
     Unit: ""
@@ -45,12 +45,5 @@ InventoryItems:
     NameSingular: "Wagon Wheel"
     Unit: ""
     UnitSingular: ""
-    Quantity: 0
-
-CustomItems:
-  - Name: "Baja Blast"
-    NameSingular: ""
-    Unit: "ounces"
-    UnitSingular: "ounce"
     Quantity: 0
 
