@@ -5,7 +5,12 @@ namespace DestinyTrail.Engine
     public class InventoryItem : GameComponent, IInventoryItem
     {
 
+        public string SingularOrPluralName(int Quantity) {
+            return (Quantity == 1) ? NameSingular : NamePlural;
+        }
         public string NameSingular { get; set; } = "";
+
+        public string NamePlural => Name;
 
         private int _quantity;
 
@@ -45,6 +50,8 @@ namespace DestinyTrail.Engine
         }
 
         private string Lore { get; set; } = "";
+
+
         public bool Add(int amount)
         {
             _quantity += amount;
