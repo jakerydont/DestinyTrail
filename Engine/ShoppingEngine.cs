@@ -33,6 +33,7 @@ namespace DestinyTrail.Engine
                     break;
                 case ShoppingState.AskSelection:
                     _display.Write("What'll it be?");
+                    ShoppingState = ShoppingState.AwaitSelection;
                     break;
                 case ShoppingState.AwaitSelection:
                     break;
@@ -45,6 +46,7 @@ namespace DestinyTrail.Engine
                     break;
                 case ShoppingState.ConfirmPurchase:
                     _display.Write($"{Quantity} {Selection.Unit}{Selection.SingularOrPluralName(Quantity)}? That'll be {CalculatePrice()}. Deal?");
+                    ShoppingState = ShoppingState.AwaitConfirm;
                     break;
                 case ShoppingState.AwaitConfirm:
                     break;
@@ -85,7 +87,7 @@ namespace DestinyTrail.Engine
                     if (quantity > 0)
                     {
                         Quantity = quantity;
-                        ShoppingState = ShoppingState.AwaitConfirm;
+                        ShoppingState = ShoppingState.ConfirmPurchase;
                     }
                     else
                     {
