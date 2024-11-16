@@ -5,6 +5,9 @@ namespace DestinyTrail.Engine;
 public class Travel
 {
     IGame _game { get; set; }
+
+    private IUtility Utility;
+
     public string[] Statuses { get; private set; }
 
     public OccurrenceEngine _occurrenceEngine { get; set; }
@@ -17,9 +20,12 @@ public class Travel
     
     private bool _advanceDay = true;
 
-    public Travel(IGame game)
+    public Travel(IGame game) : this(game, new Utility()){}
+
+    public Travel(IGame game, IUtility utility)
     {
         _game = game;
+        Utility = utility;
 
         string statusesFilePath = "data/Statuses.yaml"; 
         Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];        
@@ -64,7 +70,7 @@ public class Travel
 
             _game.DrawStatusPanel();
 
-            _game._display.Write($"{_game.CurrentDate.GetFormatted()}: {occurrenceMessage}");
+            _game._display.Write($"{Utility.GetFormatted(_game.CurrentDate)}: {occurrenceMessage}");
             _game._display.ScrollToBottom();
 
             if (_advanceDay)
@@ -81,7 +87,7 @@ public class Travel
         public void ContinueTravelling()
         {
             _game._display.Write($"You decided to continue.");
-            _game.NextLandmark = _game._landmarksData.Landmarks.NextOrFirst(landmark => landmark.ID == _game.NextLandmark.ID);
+            _game.NextLandmark = Utility.NextOrFirst(_game._landmarksData.Landmarks, landmark => landmark.ID == _game.NextLandmark.ID);
             _game.MilesToNextLandmark = _game.NextLandmark.Distance;
             _game.ChangeMode(Modes.Travelling);
         }

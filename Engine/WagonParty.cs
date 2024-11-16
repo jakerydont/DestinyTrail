@@ -5,14 +5,17 @@ namespace DestinyTrail.Engine
     public class WagonParty
     {
         private int memberCounter = 0;
+        private Utility Utility;
+
         public List<Person> Members {get;set;}
         public Person Leader {get;set;}
         public double Health { get; private set; }
 
         private int _maxRationFactor {get;set;}
 
-
-        public WagonParty(string[] names) {
+        public WagonParty(string[] names) : this(names, new Utility()) {}
+        public WagonParty(string[] names, Utility utility) {
+            Utility = utility;
             Members = new List<Person>();
 
             foreach(var name in names) {
@@ -64,7 +67,7 @@ namespace DestinyTrail.Engine
             return sb.ToString();
         }
 
-        public string GetDisplayHealth() => Health.Abbreviate();
+        public string GetDisplayHealth() => Utility.Abbreviate(Health);
         
 
         public void SpendDailyHealth(Pace pace, Rations rations)
