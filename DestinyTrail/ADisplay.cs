@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Avalonia.Controls;
 using DestinyTrail.Engine;
 
@@ -11,7 +13,17 @@ public class ADisplay : IDisplay
 
 
     private ListBox? _output { get; set; }
-    public ItemCollection Items => _output?.Items ?? throw new NullReferenceException();
+    public ItemCollection AvaloniaItems => _output?.Items ?? throw new NullReferenceException();
+
+    public List<string> Items
+    {
+        get
+        {
+            return (List<string>)AvaloniaItems.Cast<string>();
+        }
+    }
+
+
 
     public ADisplay(ListBox output)
     {

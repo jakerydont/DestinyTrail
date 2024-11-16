@@ -11,7 +11,7 @@ namespace DestinyTrail.Engine
         private CancellationTokenSource _cancellationTokenSource { get; set; }
 
         public DateTime CurrentDate { get; set; }
-        public Travel _travel;
+        public Travel Travel {get;set;}
 
 
         public LandmarksData _landmarksData { get; set; }
@@ -20,7 +20,7 @@ namespace DestinyTrail.Engine
         private string _weather = "not implemented";
 
         public Inventory Inventory { get; set; }
-
+        public InputHandler InputHandler { get; private set; }
 
         public IDisplay _display { get; set; }
 
@@ -36,7 +36,7 @@ namespace DestinyTrail.Engine
 
 
         public Modes GameMode { get; private set; }
-        public ShoppingEngine ShoppingEngine { get; private set; }
+        public ShoppingEngine ShoppingEngine { get; set; }
         private bool _shouldInitializeAtLandmark { get; set; }
 
 
@@ -47,6 +47,7 @@ namespace DestinyTrail.Engine
 
         public Game(IDisplay Output, IDisplay Status, IUtility Utility)
         {
+            InputHandler = new InputHandler(this);
             _display = Output;
             _status = Status;
             _utility = Utility;
@@ -75,7 +76,7 @@ namespace DestinyTrail.Engine
             Inventory.CustomItems = Utility.LoadYaml<List<InventoryItem>>(inventoryCustomItemsFilePath);
             CurrentDate = new DateTime(1860, 10, 1);
 
-            _travel = new Travel(this);
+            Travel = new Travel(this);
 
             GameMode = Modes.Travelling;
             ShoppingEngine = new ShoppingEngine(_display, Inventory);
@@ -92,7 +93,7 @@ namespace DestinyTrail.Engine
                     switch (GameMode)
                     {
                         case Modes.Travelling:
-                            _travel.TravelLoop();
+                            Travel.TravelLoop();
                             break;
                         case Modes.AtLandmark:
                             AtLandmarkLoop();

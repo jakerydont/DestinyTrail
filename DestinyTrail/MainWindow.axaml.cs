@@ -34,7 +34,7 @@ namespace DestinyTrail
             // Process the input as needed
             // Example: Add a response to the output
             //OutputListBox.Items.Add($"Response: {input.ToUpper()}");
-            game._travel.ContinueTravelling();
+            game.Travel.ContinueTravelling();
         }
     }
 }

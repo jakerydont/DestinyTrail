@@ -12,7 +12,6 @@ namespace DestinyTrail.Engine
         {
             _display = display;
             Inventory = inventory;
-            InitializeState();
         }
 
         public void InitializeState()
@@ -53,6 +52,20 @@ namespace DestinyTrail.Engine
             }
         }
 
+        internal void ProcessInput(string input)
+        {
+            if (ShoppingState == ShoppingState.AwaitSelection)
+            {
+                SelectShoppingItem(input);
+
+            }
+
+            if (ShoppingState == ShoppingState.AwaitQuantity)
+            {
+                SelectQuantity(input);
+            }
+        }
+
         private string CalculatePrice()
         {
             return "free because I haven't coded this yet.";
@@ -71,7 +84,7 @@ namespace DestinyTrail.Engine
             }
             catch (NullReferenceException)
             {
-                _display.Write($"Hey, you old poophead, I ain't got no ${input} for sale. Try again.");
+                _display.Write($"Hey, you old poophead, I ain't got no \"${input}\" for sale. Try again.");
             }
         }
 

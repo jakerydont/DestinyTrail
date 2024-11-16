@@ -18,31 +18,7 @@ static void ProcessUserInput(Game game)
 
             string input = Console.ReadLine() ?? "";
 
-
-            if (game.GameMode == Modes.AtLandmark)
-            {
-                if (input == "")
-                {
-                    game._travel.ContinueTravelling();
-                }
-
-                if (input == "buy")
-                {
-                    game.ChangeMode(Modes.Shopping);
-                }
-            }
-
-            if (game.GameMode == Modes.Shopping) 
-            {
-                if (game.ShoppingEngine.ShoppingState == ShoppingState.AwaitSelection) {
-                        game.ShoppingEngine.SelectShoppingItem(input);
-
-                }
-
-                if (game.ShoppingEngine.ShoppingState == ShoppingState.AwaitQuantity) {
-                        game.ShoppingEngine.SelectQuantity(input);
-                }
-            }
+            game.InputHandler.ProcessCommand(input);
         }
         else
         {

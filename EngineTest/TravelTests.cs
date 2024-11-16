@@ -32,7 +32,7 @@ namespace DestinyTrail.Engine.Tests
         {
                         
             // Act
-            var travel = new Travel(_mockGame, _mockUtility.Object);
+            var travel = new TravelEngine(_mockGame, _mockUtility.Object);
 
             // Assert
             Assert.NotNull(travel.Statuses);
@@ -46,7 +46,7 @@ namespace DestinyTrail.Engine.Tests
         public void TravelLoop_ShouldUpdateMilesTraveled()
         {
             // Arrange
-            var travel = new Travel(_mockGame);
+            var travel = new TravelEngine(_mockGame);
             _mockGame.MilesToNextLandmark = 50;
 
             // Act
@@ -61,7 +61,7 @@ namespace DestinyTrail.Engine.Tests
         public void TravelLoop_ShouldProcessOccurrences()
         {
             // Arrange
-            var travel = new Travel(_mockGame);
+            var travel = new TravelEngine(_mockGame);
             _mockGame.MilesToNextLandmark = 150; // Set a distance greater than the default pace
 
             // Act
@@ -76,7 +76,7 @@ namespace DestinyTrail.Engine.Tests
         public void ContinueTravelling_ShouldUpdateGameState()
         {
             // Arrange
-            var travel = new Travel(_mockGame);
+            var travel = new TravelEngine(_mockGame);
             var previousLandmark = _mockGame.NextLandmark;
             _mockGame.GameMode = Modes.AtLandmark;
 
