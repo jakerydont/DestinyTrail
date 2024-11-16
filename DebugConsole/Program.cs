@@ -35,17 +35,12 @@ static void ProcessUserInput(Game game)
             if (game.GameMode == Modes.Shopping) 
             {
                 if (game.ShoppingEngine.ShoppingState == ShoppingState.AwaitSelection) {
-
-
                         game.ShoppingEngine.SelectShoppingItem(input);
 
                 }
 
                 if (game.ShoppingEngine.ShoppingState == ShoppingState.AwaitQuantity) {
-
-
                         game.ShoppingEngine.SelectQuantity(input);
-
                 }
             }
         }
