@@ -7,7 +7,8 @@ namespace DestinyTrail.Engine.Tests
     public class TravelTests
     {
         private readonly Mock<IUtility> _mockUtility;
-        private readonly MockGame _mockGame;
+        private Mock<IDisplay> _mockDisplay;
+        private readonly Mock<IGame> _mockGame;
 
         private Landmark testLandmark = new Landmark { ID = "TESTLANDMARK", Name = "Test Landmark", Distance = 100, Lore = "Test Lore" };
         private Landmark secondTestLandmark = new Landmark { ID = "SECONDTESTLANDMARK", Name = "Second Test Landmark", Distance = 80, Lore = "Second Test Lore" };
@@ -15,16 +16,19 @@ namespace DestinyTrail.Engine.Tests
         {
             _mockUtility = new Mock<IUtility>();
             // Initialize a mock Game object with required properties
-            _mockGame = new MockGame
-            {
-                Party = new WagonParty(new string[] { "Alice", "Bob" }),
-                CurrentDate = DateTime.Now,
-                MilesToNextLandmark = 100,
-                NextLandmark = testLandmark,
-                MilesTraveled = 0,
-                _display = new MockDisplay(),
-                _landmarksData = new LandmarksData { Landmarks = new List<Landmark> { testLandmark, secondTestLandmark } }
-            };
+            _mockDisplay = new Mock<IDisplay>();
+            _mockGame = new Mock<IGame>();
+
+          
+            _mockGame.Object.Party = new WagonParty(new string[] { "Alice", "Bob" });
+
+            _mockGame.Object.CurrentDate = DateTime.Now;
+            _mockGame.Object.MilesToNextLandmark = 100;
+            _mockGame.Object.NextLandmark = testLandmark;
+            _mockGame.Object.MilesTraveled = 0;
+            _mockGame.Object._display = _mockDisplay.Object;
+            _mockGame.Object._landmarksData = new LandmarksData { Landmarks = new List<Landmark> { testLandmark, secondTestLandmark } };
+          
         }
 
         [Fact]
@@ -32,7 +36,7 @@ namespace DestinyTrail.Engine.Tests
         {
                         
             // Act
-            var travel = new TravelEngine(_mockGame, _mockUtility.Object);
+            var travel = new Travel(_mockGame.Object, _mockUtility.Object);
 
             // Assert
             Assert.NotNull(travel.Statuses);
@@ -46,79 +50,48 @@ namespace DestinyTrail.Engine.Tests
         public void TravelLoop_ShouldUpdateMilesTraveled()
         {
             // Arrange
-            var travel = new TravelEngine(_mockGame);
-            _mockGame.MilesToNextLandmark = 50;
+            Travel? travel = new Travel(_mockGame.Object);
+            _mockGame.Object.MilesToNextLandmark = 50;
 
             // Act
             travel.TravelLoop();
 
             // Assert
-            Assert.NotEqual(50, _mockGame.MilesTraveled);
-            Assert.InRange(_mockGame.MilesToNextLandmark, 0, 50);
+            Assert.NotEqual(50, _mockGame.Object.MilesTraveled);
+            Assert.InRange(_mockGame.Object.MilesToNextLandmark, 0, 50);
         }
 
         [Fact]
         public void TravelLoop_ShouldProcessOccurrences()
         {
             // Arrange
-            var travel = new TravelEngine(_mockGame);
-            _mockGame.MilesToNextLandmark = 150; // Set a distance greater than the default pace
+            var travel = new Travel(_mockGame.Object);
+            _mockGame.Object.MilesToNextLandmark = 150; // Set a distance greater than the default pace
 
             // Act
             travel.TravelLoop();
 
             // Assert
-            Assert.True(_mockGame.MilesTraveled > 0); // Miles should have been traveled
-            Assert.True(_mockGame.MilesToNextLandmark < 150); // Check if it decreased correctly
+            Assert.True(_mockGame.Object.MilesTraveled > 0); // Miles should have been traveled
+            Assert.True(_mockGame.Object.MilesToNextLandmark < 150); // Check if it decreased correctly
         }
 
         [Fact]
         public void ContinueTravelling_ShouldUpdateGameState()
         {
             // Arrange
-            var travel = new TravelEngine(_mockGame);
-            var previousLandmark = _mockGame.NextLandmark;
-            _mockGame.GameMode = Modes.AtLandmark;
+            var travel = new Travel(_mockGame.Object);
+            var previousLandmark = _mockGame.Object.NextLandmark;
+            _mockGame.Object.ChangeMode( Modes.AtLandmark);
 
             // Act
             travel.ContinueTravelling();
 
             // Assert
-            Assert.Equal("You decided to continue.", ((MockDisplay)_mockGame._display).Items[^1]);
-            Assert.NotEqual(previousLandmark, _mockGame.NextLandmark);
-            Assert.Equal(_mockGame.NextLandmark.Distance, _mockGame.MilesToNextLandmark);
-            Assert.Equal(Modes.Travelling, _mockGame.GameMode);
+            Assert.Equal("You decided to continue.", _mockGame.Object._display.Items[^1]);
+            Assert.NotEqual(previousLandmark, _mockGame.Object.NextLandmark);
+            Assert.Equal(_mockGame.Object.NextLandmark.Distance, _mockGame.Object.MilesToNextLandmark);
+            Assert.Equal(Modes.Travelling, _mockGame.Object.GameMode);
         }
     }
-
-    // Mock classes for testing purposes
-    public class MockDisplay : IDisplay
-    {
-        public List<string> Items { get; set; } = new List<string>();
-        public void Write(string message) => Items.Add(message);
-        public void ScrollToBottom() { }
-        public void Clear() { }
-    }
-    public class MockGame : IGame
-    {
-        public required WagonParty Party { get; set; }
-        public DateTime CurrentDate { get; set; }
-        public double MilesToNextLandmark { get; set; }
-        public required Landmark NextLandmark { get; set; }
-        public double MilesTraveled { get; set; }
-        public required IDisplay _display { get; set; }
-        public Modes GameMode { get; set; }
-        public required LandmarksData _landmarksData { get; set; }
-
-        public void ChangeMode(Modes gameMode)
-        {
-            GameMode = gameMode;
-        }
-
-        public void DrawStatusPanel()
-        {
-
-        }
-    }
-
 }

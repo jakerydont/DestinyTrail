@@ -13,7 +13,7 @@ namespace DestinyTrail.Engine
         public Travel Travel {get;set;}
         public LandmarksData _landmarksData { get; set; }
         public ShoppingEngine ShoppingEngine { get; set; }
-        public void ChangeMode(Modes atLandmark);
+        public void ChangeMode(Modes mode);
         public void DrawStatusPanel();
     }
 }

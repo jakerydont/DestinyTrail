@@ -12,6 +12,7 @@ namespace DestinyTrail.Engine
         {
             _display = display;
             Inventory = inventory;
+            InitializeState();
         }
 
         public void InitializeState()
