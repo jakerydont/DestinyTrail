@@ -60,7 +60,7 @@ namespace DestinyTrail.Engine
 
             Random.Shared.Shuffle(RandomNames);
             var partyNames = RandomNames.Take(26).ToArray();
-
+            //RandomNames = ["alice","bob"];
             Party = new WagonParty(RandomNames);
             _display.Write(Party.GetDisplayNames());
 

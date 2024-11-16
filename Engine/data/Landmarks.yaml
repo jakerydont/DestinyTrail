@@ -1,7 +1,7 @@
 # Landmarks are defined in sequence.
 # Distance is measured from previous landmark.
 
-Landmarks:
+
   - ID: "INDEPENDENCE_MISSOURI"
     Name: "Independence, Missouri"
     Distance: 0 
