@@ -1,6 +1,7 @@
 
 using System.Dynamic;
 using System.Formats.Asn1;
+using System.Runtime.CompilerServices;
 
 namespace DestinyTrail.Engine
 {
@@ -19,12 +20,13 @@ namespace DestinyTrail.Engine
         private string _weather = "not implemented";
 
         public Inventory Inventory { get; set; }
-        public ShoppingState ShoppingState { get; set; }
-        public InventoryItem ShoppingSelection { get; set; }
+
 
         public IDisplay _display { get; set; }
 
         protected IDisplay _status { get; set; }
+
+        private IUtility _utility { get; set; }
 
         public double MilesTraveled { get; set; }
         public double MilesToNextLandmark { get; set; }
@@ -34,16 +36,20 @@ namespace DestinyTrail.Engine
 
 
         public Modes GameMode { get; private set; }
-
+        public ShoppingEngine ShoppingEngine { get; private set; }
         private bool _shouldInitializeAtLandmark { get; set; }
 
-        public Game()
-            : this(new Display(), new Display()) { }
 
+        public Game()
+            : this(new Display(), new Display(), new Utility()) { }
         public Game(IDisplay Output, IDisplay Status)
+            : this(Output, Status, new Utility()) { }
+
+        public Game(IDisplay Output, IDisplay Status, IUtility Utility)
         {
             _display = Output;
             _status = Status;
+            _utility = Utility;
             _cancellationTokenSource = new CancellationTokenSource();
 
             string randomNamesPath = "data/RandomNames.yaml";
@@ -71,8 +77,8 @@ namespace DestinyTrail.Engine
             _travel = new Travel(this);
 
             GameMode = Modes.Travelling;
-            ShoppingState = ShoppingState.Init;
-            ShoppingSelection = Inventory.Default;
+            ShoppingEngine = new ShoppingEngine(_display, Inventory);
+
         }
         public async Task StartGameLoop()
         {
@@ -91,7 +97,7 @@ namespace DestinyTrail.Engine
                             AtLandmarkLoop();
                             break;
                         case Modes.Shopping:
-                            ShoppingLoop();
+                            ShoppingEngine.ShoppingLoop();
                             break;
                         default:
                             break;
@@ -102,29 +108,6 @@ namespace DestinyTrail.Engine
             catch (TaskCanceledException)
             {
                 // Task was canceled, handle if needed
-            }
-        }
-
-        private void ShoppingLoop()
-        {
-            if (ShoppingState == ShoppingState.Init)
-            {
-                _display.Write("-----\n\nWelcome to the store. Type what you want to buy. Type \"exit\" to quit.");
-                _display.Write("Oxen, Food, Baja Blast, etc");
-                ShoppingState = ShoppingState.WaitSelection;
-            }
-            else if (ShoppingState == ShoppingState.WaitSelection)
-            {
-                // noop
-            }
-            else if (ShoppingState == ShoppingState.HowMany)
-            {
-                _display.Write($"How many ${ShoppingSelection.Unit}${ShoppingSelection.NameSingular} do you want?");
-                ShoppingState = ShoppingState.WaitQuantity;
-            }
-            else if (ShoppingState == ShoppingState.WaitQuantity)
-            {
-                // noop
             }
         }
 
@@ -141,11 +124,11 @@ namespace DestinyTrail.Engine
         public void DrawStatusPanel()
         {
             _status.Clear();
-            _status.Write($"Date: {CurrentDate.GetFormatted()}");
+            _status.Write($"Date: {_utility.GetFormatted(CurrentDate)}");
             _status.Write($"Weather: {_weather}");
             _status.Write($"Health: {Party.GetDisplayHealth()}");
-            _status.Write($"Distance to next landmark: {MilesToNextLandmark.Abbreviate()} miles ({MilesToNextLandmark.Abbreviate()} km)");
-            _status.Write($"Distance traveled: {MilesTraveled.Abbreviate()} miles ({MilesTraveled.Abbreviate()} km)");
+            _status.Write($"Distance to next landmark: {_utility.Abbreviate(MilesToNextLandmark)} miles ({_utility.Abbreviate(MilesToNextLandmark)} km)");
+            _status.Write($"Distance traveled: {_utility.Abbreviate(MilesTraveled)} miles ({_utility.Abbreviate(MilesTraveled)} km)");
 
             _status.Write($"-----------");
             foreach (var person in Party.Members)
@@ -163,19 +146,119 @@ namespace DestinyTrail.Engine
             }
             else if (GameMode == Modes.Shopping)
             {
-                ShoppingState = ShoppingState.Init;
+                ShoppingEngine.InitializeState();
             }
+        }
+
+    }
+    public class ShoppingEngine
+    {
+        public ShoppingState ShoppingState { get; set; }
+        public InventoryItem Selection { get; set; }
+        public int Quantity { get; private set; }
+        private IDisplay _display { get; }
+        private Inventory Inventory { get; }
+
+        public ShoppingEngine(IDisplay display, Inventory inventory)
+        {
+            _display = display;
+            Inventory = inventory;
+            ShoppingState = ShoppingState.Init;
+            Selection = Inventory.Default;
+            Quantity = 0;
+        }
+
+        public void InitializeState()
+        {
+            ShoppingState = ShoppingState.Init;
+            Selection = Inventory.Default;
+            Quantity = 0;
+        }
+
+
+        public void ShoppingLoop()
+        {
+            switch (ShoppingState)
+            {
+                case ShoppingState.Init:
+                    _display.Write("-----\n\nWelcome to the store. Type what you want to buy. Type \"exit\" to quit.");
+                    _display.Write("Oxen, Food, Baja Blast, etc");
+                    ShoppingState = ShoppingState.AskSelection;
+                    break;
+                case ShoppingState.AskSelection:
+                    _display.Write("What'll it be?");
+                    break;
+                case ShoppingState.AwaitSelection:
+                    break;
+                case ShoppingState.AskQuantity:
+                    _display.Write($"{Selection}? Yeah I got some.");
+                    _display.Write($"How many {Selection.Unit}{Selection} do you want?");
+                    ShoppingState = ShoppingState.AwaitQuantity;
+                    break;
+                case ShoppingState.AwaitQuantity:
+                    break;
+                case ShoppingState.ConfirmPurchase:
+                    _display.Write($"{Quantity} {Selection.Unit}{Selection.SingularOrPluralName(Quantity)}? That'll be {CalculatePrice()}. Deal?");
+                    break;
+                case ShoppingState.AwaitConfirm:
+                    break;
+            }
+        }
+
+        private string CalculatePrice()
+        {
+            return "free because I haven't coded this yet.";
         }
 
         public void SelectShoppingItem(string input)
         {
             try
-            { 
-                var selectedItem = Inventory.GetByName(input); 
+            {
+                var selectedItem = Inventory.GetByName(input);
+                if (selectedItem != null)
+                {
+                    Selection = selectedItem;
+                    ShoppingState = ShoppingState.AskQuantity;
+                }
             }
-            catch (NullReferenceException) {
+            catch (NullReferenceException)
+            {
                 _display.Write($"Hey, you old poophead, I ain't got no ${input} for sale. Try again.");
             }
         }
+
+        public void SelectQuantity(string input)
+        {
+            try
+            {
+                int quantity = 0;
+                var isNumber = Int32.TryParse(input, out quantity);
+
+                if (isNumber)
+                {
+                    if (quantity > 0)
+                    {
+                        Quantity = quantity;
+                        ShoppingState = ShoppingState.AwaitConfirm;
+                    }
+                    else
+                    {
+                        _display.Write($"Change yer mind?");
+                        ShoppingState = ShoppingState.AskSelection;
+                    }
+                }
+                else
+                {
+                    _display.Write($"That ain't no number I've ever heard of.");
+                }
+
+            }
+            catch (NullReferenceException)
+            {
+                _display.Write($"Hey, you old poophead, I ain't got no ${input} for sale. Try again.");
+            }
+        }
+
+
     }
 }
