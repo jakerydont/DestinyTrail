@@ -1,16 +1,19 @@
 using System;
+using Moq;
 using Xunit;
 
 namespace DestinyTrail.Engine.Tests
 {
     public class TravelTests
     {
+        private readonly Mock<IUtility> _mockUtility;
         private readonly MockGame _mockGame;
 
         private Landmark testLandmark = new Landmark { ID = "TESTLANDMARK", Name = "Test Landmark", Distance = 100, Lore = "Test Lore" };
         private Landmark secondTestLandmark = new Landmark { ID = "SECONDTESTLANDMARK", Name = "Second Test Landmark", Distance = 80, Lore = "Second Test Lore" };
         public TravelTests()
         {
+            _mockUtility = new Mock<IUtility>();
             // Initialize a mock Game object with required properties
             _mockGame = new MockGame
             {
@@ -27,8 +30,9 @@ namespace DestinyTrail.Engine.Tests
         [Fact]
         public void Constructor_ShouldLoadStatusesAndInitializeComponents()
         {
+                        
             // Act
-            var travel = new Travel(_mockGame);
+            var travel = new Travel(_mockGame, _mockUtility.Object);
 
             // Assert
             Assert.NotNull(travel.Statuses);
@@ -91,8 +95,8 @@ namespace DestinyTrail.Engine.Tests
     public class MockDisplay : IDisplay
     {
         public List<string> Items { get; set; } = new List<string>();
-        public new void Write(string message) => Items.Add(message);
-        public new void ScrollToBottom() { }
+        public void Write(string message) => Items.Add(message);
+        public void ScrollToBottom() { }
         public void Clear() { }
     }
     public class MockGame : IGame
