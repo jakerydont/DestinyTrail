@@ -1,25 +1,35 @@
-
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace DestinyTrail.Engine {
-    public static class Utility {
-        public static T LoadYaml<T>(string yamlFilePath)
+namespace DestinyTrail.Engine
+{
+    public class Utility : IUtility
+    {
+        public T LoadYaml<T>(string yamlFilePath)
         {
             var yaml = File.ReadAllText(yamlFilePath);
             var deserializer = new DeserializerBuilder()
                 .Build();
-            return deserializer.Deserialize<T>(yaml); 
+            return deserializer.Deserialize<T>(yaml);
         }
 
-        public static T NextOrFirst<T>(this IEnumerable<T> collection, Func<T, bool> predicate) => collection
+        public T NextOrFirst<T>(IEnumerable<T> collection, Func<T, bool> predicate)
+        {
+            return collection
                 .SkipWhile(item => !predicate(item))  
                 .Skip(1)                               
                 .FirstOrDefault() ?? collection.First();
+        }
 
-        public static string Abbreviate(this double number) => Convert.ToInt32(number).ToString();
-        public static string GetFormatted(this DateTime date) => $"{date:MMMM d, yyyy}";
-        
+        public string Abbreviate(double number)
+        {
+            return Convert.ToInt32(number).ToString();
+        }
+
+        public string GetFormatted(DateTime date)
+        {
+            return $"{date:MMMM d, yyyy}";
+        }
     }
 }

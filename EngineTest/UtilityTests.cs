@@ -8,13 +8,19 @@ using Xunit;
 namespace DestinyTrail.Engine.Tests
 {
     public class UtilityTests {
+        private Utility _utility;
+
+        public UtilityTests()
+        {
+            _utility =  new Utility();
+        }
         [Fact]
         public void LoadYaml_ShouldReturnDeserializedObject_WhenYamlFileExists() {
             // Arrange
             var yamlFilePath = "data/Test.yaml";
 
             // Act
-            var result = Utility.LoadYaml<TestTypeData>(yamlFilePath);
+            var result = _utility.LoadYaml<TestTypeData>(yamlFilePath);
 
             // Assert
             Assert.Collection(result,
@@ -31,7 +37,7 @@ namespace DestinyTrail.Engine.Tests
             Func<int, bool> predicate = x => x == 2;
 
             // Act
-            var result = collection.NextOrFirst(predicate);
+            var result = _utility.NextOrFirst(collection, predicate);
 
             // Assert
             Assert.Equal(3, result);
@@ -44,7 +50,7 @@ namespace DestinyTrail.Engine.Tests
             Func<int, bool> predicate = x => x == 5;
 
             // Act
-            var result = collection.NextOrFirst(predicate);
+            var result = _utility.NextOrFirst(collection, predicate);
 
             // Assert
             Assert.Equal(0, result);
@@ -56,7 +62,7 @@ namespace DestinyTrail.Engine.Tests
             double number = 1234.56;
 
             // Act
-            var result = Utility.Abbreviate(number);
+            var result = _utility.Abbreviate(number);
 
             // Assert
             Assert.Equal("1235", result);
@@ -68,7 +74,7 @@ namespace DestinyTrail.Engine.Tests
             DateTime date = new DateTime(2024, 11, 1);
 
             // Act
-            var result = date.GetFormatted();
+            var result = _utility.GetFormatted(date);
 
             // Assert
             Assert.Equal("November 1, 2024", result);
