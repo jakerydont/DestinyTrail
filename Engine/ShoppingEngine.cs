@@ -1,8 +1,6 @@
-using System;
-
 namespace DestinyTrail.Engine
-
-{    public class ShoppingEngine
+{
+    public class ShoppingEngine : IShoppingEngine
     {
         public ShoppingState ShoppingState { get; set; }
         public InventoryItem Selection { get; set; }
@@ -14,9 +12,7 @@ namespace DestinyTrail.Engine
         {
             _display = display;
             Inventory = inventory;
-            ShoppingState = ShoppingState.Init;
-            Selection = Inventory.Default;
-            Quantity = 0;
+            InitializeState();
         }
 
         public void InitializeState()
@@ -25,7 +21,6 @@ namespace DestinyTrail.Engine
             Selection = Inventory.Default;
             Quantity = 0;
         }
-
 
         public void ShoppingLoop()
         {
