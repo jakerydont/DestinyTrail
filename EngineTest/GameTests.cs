@@ -97,7 +97,7 @@ namespace DestinyTrail.Engine.Tests
             _game.ShoppingEngine.SelectShoppingItem(itemName);
 
             // Assert: The shopping selection should be the "Oxen" item
-            Assert.Equal(itemName, _game.ShoppingEngine.Selection.Name);
+            Assert.Equal(itemName, _game.ShoppingEngine.SelectedItem.Name);
         }
 
         [Fact]

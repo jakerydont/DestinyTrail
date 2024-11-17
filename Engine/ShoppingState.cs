@@ -2,13 +2,14 @@ namespace DestinyTrail.Engine
 {
     public enum ShoppingState
     {
-        Init,
+        Init,     
+        AskSelection,
         AwaitSelection,
         AskQuantity,
         AwaitQuantity,
         ConfirmPurchase,
         AwaitConfirm,
         Complete,
-        AskSelection
+        Leave,
     }
 }

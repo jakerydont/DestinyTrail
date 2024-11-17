@@ -5,6 +5,12 @@ namespace DestinyTrail.Engine
     public class InventoryItem : GameComponent, IInventoryItem
     {
 
+        public static implicit operator int(InventoryItem item)
+        {
+            if (item == null) throw new ArgumentNullException(nameof(item));
+            return item.Quantity;
+        }
+        
         public string SingularOrPluralName(int Quantity) {
             return (Quantity == 1) ? NameSingular : NamePlural;
         }
@@ -71,5 +77,7 @@ namespace DestinyTrail.Engine
             Quantity -= amount;
             return true;
         }
+
+
     }
 }
