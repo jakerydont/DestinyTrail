@@ -42,7 +42,7 @@ namespace DestinyTrail.Engine
                     break;
                 case ShoppingState.AskQuantity:
                     _display.Write($"{SelectedItem}? Yeah I got some.");
-                    _display.Write($"How many {SelectedItem.Unit}{SelectedItem} do you want?");
+                    _display.Write($"How many {SelectedItem.Unit}{SelectedItem.ToLower()} do you want?");
                     ShoppingState = ShoppingState.AwaitQuantity;
                     break;
                 case ShoppingState.AwaitQuantity:
@@ -122,7 +122,7 @@ namespace DestinyTrail.Engine
             }
             catch (NullReferenceException)
             {
-                _display.Write($"Hey, you old poophead, I ain't got no \"${input}\" for sale. Try again.");
+                _display.Write($"Hey, you old poophead, I ain't got no \"{input}\" for sale. Try again.");
             }
         }
 
@@ -154,7 +154,7 @@ namespace DestinyTrail.Engine
             }
             catch (NullReferenceException)
             {
-                _display.Write($"Hey, you old poophead, I ain't got no ${input} for sale. Try again.");
+                _display.Write($"Hey, you old poophead, I ain't got no {input} for sale. Try again.");
             }
         }
 
