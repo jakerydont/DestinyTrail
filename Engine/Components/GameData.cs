@@ -29,8 +29,13 @@ namespace DestinyTrail.Engine
                 throw new ArgumentException($"Property '{propertyName}' not found");
 
             return this.FirstOrDefault(item =>
-                propertyInfo.GetValue(item, null)?.ToString() == value) ?? throw new NullReferenceException();
+                string.Equals(
+                    propertyInfo.GetValue(item, null)?.ToString(),
+                    value,
+                    StringComparison.OrdinalIgnoreCase)) 
+                ?? throw new NullReferenceException();
         }
+
 
         public T FirstOrDefaultSafe()
         {
