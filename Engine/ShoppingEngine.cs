@@ -167,6 +167,10 @@ namespace DestinyTrail.Engine
                 {
                     _display.Write("A deal ain't a deal unless you answer.");
                 }
+                else if (!input.ToLower().StartsWith("y") && !input.ToLower().StartsWith("n")) 
+                {
+                    _display.Write($"Hey, you old poophead, {input} ain't no kind of answer. A yes or no will do.");
+                }
                 else if (input.ToLower().StartsWith("y"))
                 {
                     var wasAbleToPay = Inventory.Dollars.Subtract(_price);
@@ -192,14 +196,14 @@ namespace DestinyTrail.Engine
                     }
 
                 }
-                else if (input.ToLower().StartsWith("n"))
+                else // if (input.ToLower().StartsWith("n"))
                 {
                     _display.Write("Have it your way.");
                 }
             }
             catch (NullReferenceException)
             {
-                _display.Write($"Hey, you old poophead, {input} ain't no kind of answer. A yes or no will do.");
+                _display.Write("The game broke.");
             }
         }
     }

@@ -15,7 +15,7 @@ namespace DestinyTrail.Engine
         public InventoryItem Food => GetByName("Food");
         public InventoryItem Bullets => GetByName("Bullets");
         public InventoryItem Clothes => GetByName("Clothes");
-        public InventoryItem Dollars => GetByName("Money");
+        public InventoryItem Dollars => GetByName("Dollars");
         public InventoryItem WagonTongues => GetByName("Wagon Tongues");
         public InventoryItem WagonAxles => GetByName("Wagon Axles");
         public InventoryItem WagonWheels => GetByName("Wagon Wheels");
