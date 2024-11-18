@@ -1,15 +1,9 @@
-using System.Collections.Generic;
-using System.IO;
-using DestinyTrail.Engine;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
-
 namespace DestinyTrail.Engine
 {
-    public class Inventory : GameData<InventoryItem>
+    public class Inventory : GameData<InventoryItem>, IInventory
     {
         public static InventoryItem Default = new InventoryItem{ Name = "none" };
-
+        InventoryItem IInventory.Default => Default;
         public List<InventoryItem> InventoryItems { get => _items; set => _items = value; }
         public InventoryItem Oxen => GetByName("Oxen");
         public InventoryItem Food => GetByName("Food");

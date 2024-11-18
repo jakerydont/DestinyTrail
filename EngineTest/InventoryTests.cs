@@ -1,7 +1,7 @@
 using System;
 using Xunit;
 
-namespace Engine.Tests
+namespace DestinyTrail.Engine.Tests
 {
     public class InventoryTests
     {

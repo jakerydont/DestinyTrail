@@ -58,7 +58,7 @@ namespace DestinyTrail.Engine
         private string Lore { get; set; } = "";
 
 
-        public bool Add(int amount)
+        public virtual bool Add(int amount)
         {
             _quantity += amount;
             return true;
@@ -71,7 +71,7 @@ namespace DestinyTrail.Engine
         /// </summary>
         /// <param name="amount">The amount to remove.</param>
         /// <returns>Returns true if there was enough of the item to remove. Otherwise returns false.</returns>
-        public bool Subtract(int amount)
+        public virtual bool Subtract(int amount)
         {
             if (Quantity < amount) { return false; }
             Quantity -= amount;

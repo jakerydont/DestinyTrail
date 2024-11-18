@@ -7,7 +7,6 @@ namespace DestinyTrail.Engine
         int Quantity { get; }
         void InitializeState();
         void ShoppingLoop();
-        void SelectShoppingItem(string input);
-        void SelectQuantity(string input);
+        void ProcessInput(string input);
     }
 }

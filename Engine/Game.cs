@@ -19,7 +19,7 @@ namespace DestinyTrail.Engine
 
         private string _weather = "not implemented";
 
-        public Inventory Inventory { get; set; }
+        public IInventory Inventory { get; set; }
         public InputHandler InputHandler { get; private set; }
 
         public IDisplay _display { get; set; }
