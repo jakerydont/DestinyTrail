@@ -117,8 +117,8 @@ namespace DestinyTrail.Engine
         {
             if (!_shouldInitializeAtLandmark) return;
             _shouldInitializeAtLandmark = false;
-            _display.Write($"{NextLandmark.Name}");
-            _display.Write("Press enter to continue. Type \"buy\" to buy something.");
+            _display.WriteTitle(NextLandmark.Name);
+            _display.Write("Press enter to continue.");
 
         }
 
