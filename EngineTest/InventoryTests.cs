@@ -112,6 +112,23 @@ namespace DestinyTrail.Engine.Tests
             Assert.Null(item);
         }
 
-        // Additional tests can be added based on functionality (e.g., handling specific edge cases, or when CustomItems are empty).
+        [Fact]
+        public void ListInventoryItems_ShouldReturnCommaSeparatedList() {
+            // Arrange
+            var mockItems = new List<InventoryItem>
+            {
+                new InventoryItem { Name = "Item 1" },
+                new InventoryItem { Name = "Item 2" },
+                new InventoryItem { Name = "Item 3" }
+            };
+            _inventory.InventoryItems = mockItems;
+
+            // Act
+            var inventoryItemsList = _inventory.ListInventoryItems();
+
+            // Assert
+            Assert.Equal("Item 1, Item 2, Item 3", inventoryItemsList);
+        }
+        
     }
 }

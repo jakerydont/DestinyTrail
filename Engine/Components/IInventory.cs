@@ -35,5 +35,12 @@ namespace DestinyTrail.Engine
         /// <param name="name">The name of the inventory item.</param>
         /// <returns>The inventory item if found, otherwise Default.</returns>
         InventoryItem GetByName(string name);
+
+
+        /// <summary>
+        /// Lists all inventory items by name.
+        /// </summary>
+        /// <returns>Comma-separated list of inventory items.</returns>
+        string ListInventoryItems();
     }
 }

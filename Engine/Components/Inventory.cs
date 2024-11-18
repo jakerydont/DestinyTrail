@@ -17,6 +17,13 @@ namespace DestinyTrail.Engine
         private List<InventoryItem> _customItems = new List<InventoryItem>();
         public List<InventoryItem> CustomItems { get => _customItems; set => _customItems = value; }
 
+        public string ListInventoryItems()
+        {
+            var itemNames = new List<string>(InventoryItems.Select(item=>item.Name));
+            itemNames.AddRange(CustomItems.Select(item => item.Name));
+            return string.Join(", ", itemNames);
+        }
+
     }
 }
 
