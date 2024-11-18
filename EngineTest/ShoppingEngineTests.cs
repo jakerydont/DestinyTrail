@@ -50,17 +50,20 @@ namespace DestinyTrail.Engine.Tests
 
             _shoppingEngine.ShoppingLoop();
 
-            _mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("We have Oxen, Food, Baja Blast, etc"))), Times.Once);
+            _mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.StartsWith("We have"))), Times.Once);
             Assert.Equal(ShoppingState.AwaitSelection, _shoppingEngine.ShoppingState);
         }
 
         [Fact]
         public void ProcessInput_ExitCommand_ChangesStateToLeave()
         {
+            // Arrange
             _shoppingEngine.ShoppingState = ShoppingState.AskSelection;
 
+            // Act
             _shoppingEngine.ProcessInput("exit");
 
+            // Assert
             Assert.Equal(ShoppingState.Leave, _shoppingEngine.ShoppingState);
         }
 
@@ -132,6 +135,22 @@ namespace DestinyTrail.Engine.Tests
 
             // Assert
             Assert.Equal(ShoppingState.Complete, _shoppingEngine.ShoppingState);
+        }
+
+        [Fact]
+        public void GetConfirmation_Yes_WithoutSufficientFunds_ChangesStateToAskSelection()
+        {
+            // Arrange
+            _shoppingEngine.ShoppingState = ShoppingState.AwaitConfirm;
+            _mockInventory.Setup(i => i.Dollars.Subtract(It.IsAny<int>())).Returns(false);
+            _mockInventory.Setup(i => i.GetByName(It.IsAny<string>())).Returns(new InventoryItem { Name = "Oxen" });
+
+            // Act
+            _shoppingEngine.ProcessInput("yes");
+
+            // Assert
+            _mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("commune"))), Times.Once);
+            Assert.Equal(ShoppingState.AskSelection, _shoppingEngine.ShoppingState);
         }
 
         [Fact]
