@@ -34,7 +34,7 @@ namespace DestinyTrail.Engine
                     ShoppingState = ShoppingState.AskSelection;
                     break;
                 case ShoppingState.AskSelection:
-                    _display.Write("We have Oxen, Food, Baja Blast, etc");
+                    _display.Write($"We have {Inventory.ListInventoryItems()}");
                     _display.Write("What'll it be?");
                     ShoppingState = ShoppingState.AwaitSelection;
                     break;
