@@ -16,7 +16,8 @@ namespace DestinyTrail.Engine.Tests
             _mockDisplay = new Mock<IDisplay>();
             _mockInventory = new Mock<IInventory>();
             _mockInventory.Setup(i => i.Default).Returns(Inventory.Default);
-
+            _mockInventory.Setup(i => i.Dollars).Returns(new InventoryItem{Name="Dollars", Quantity=10});
+            
             _shoppingEngine = new ShoppingEngine(_mockDisplay.Object, _mockInventory.Object);
             
         }
@@ -138,12 +139,18 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
-        public void GetConfirmation_Yes_WithoutSufficientFunds_ChangesStateToAskSelection()
+        public void GetConfirmation_Yes_WithoutSufficientFunds_AboveZero_ChangesStateToAskSelection()
         {
             // Arrange
-            _shoppingEngine.ShoppingState = ShoppingState.AwaitConfirm;
+            _mockInventory.Setup(i => i.Dollars).Returns(new InventoryItem { Name = "Dollars", Quantity = 5 });
             _mockInventory.Setup(i => i.Dollars.Subtract(It.IsAny<int>())).Returns(false);
-            _mockInventory.Setup(i => i.GetByName(It.IsAny<string>())).Returns(new InventoryItem { Name = "Oxen" });
+            
+            Assert.Equal(5, _mockInventory.Object.Dollars.Quantity);
+            
+            _mockInventory.Setup(i => i.GetByName("Oxen")).Returns(new InventoryItem { Name = "Oxen" });
+
+            _shoppingEngine.ShoppingState = ShoppingState.AwaitConfirm;
+            _shoppingEngine.SelectedItem = _mockInventory.Object.Oxen;  // Manually select Oxen item
 
             // Act
             _shoppingEngine.ProcessInput("yes");
@@ -151,6 +158,24 @@ namespace DestinyTrail.Engine.Tests
             // Assert
             _mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("commune"))), Times.Once);
             Assert.Equal(ShoppingState.AskSelection, _shoppingEngine.ShoppingState);
+        }
+
+
+        [Fact]
+        public void GetConfirmation_Yes_WithoutSufficientFunds_AtZero_ChangesStateToLeave()
+        {
+            // Arrange
+            _shoppingEngine.ShoppingState = ShoppingState.AwaitConfirm;
+            _mockInventory.Setup(i=>i.Dollars).Returns(new InventoryItem{Name="Dollars",Quantity = 0});
+            _mockInventory.Setup(i => i.Dollars.Subtract(It.IsAny<int>())).Returns(false);
+            _mockInventory.Setup(i => i.GetByName(It.IsAny<string>())).Returns(new InventoryItem { Name = "Oxen" });
+
+            // Act
+            _shoppingEngine.ProcessInput("yes");
+
+            // Assert
+            _mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("hobo"))), Times.Once);
+            Assert.Equal(ShoppingState.Leave, _shoppingEngine.ShoppingState);
         }
 
         [Fact]
