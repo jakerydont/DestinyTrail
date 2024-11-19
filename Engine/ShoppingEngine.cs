@@ -6,11 +6,11 @@ namespace DestinyTrail.Engine
         public InventoryItem SelectedItem { get; set; }
         public int Quantity { get; private set; }
         private IDisplay _display { get; }
-        private Inventory Inventory { get; }
+        private IInventory Inventory { get; }
         private int _price;
 
         private bool BoughtAnything { get; set; }
-        public ShoppingEngine(IDisplay display, Inventory inventory)
+        public ShoppingEngine(IDisplay display, IInventory inventory)
         {
             _display = display;
             Inventory = inventory;
@@ -34,7 +34,7 @@ namespace DestinyTrail.Engine
                     ShoppingState = ShoppingState.AskSelection;
                     break;
                 case ShoppingState.AskSelection:
-                    _display.Write("We have Oxen, Food, Baja Blast, etc");
+                    _display.Write($"We have {Inventory.ListInventoryItems()}");
                     _display.Write("What'll it be?");
                     ShoppingState = ShoppingState.AwaitSelection;
                     break;
@@ -72,7 +72,7 @@ namespace DestinyTrail.Engine
             }
         }
 
-        internal void ProcessInput(string input)
+        public void ProcessInput(string input)
         {
             if (input.ToLower().StartsWith("help"))
             {
@@ -103,13 +103,13 @@ namespace DestinyTrail.Engine
         /// TODO: Put in a price table for goods
         /// </summary>
         /// <returns></returns>
-        private string CalculatePrice()
+        public string CalculatePrice()
         {
             _price = 0;
             return "free because I haven't coded this yet.";
         }
 
-        public void SelectShoppingItem(string input)
+        protected void SelectShoppingItem(string input)
         {
             try
             {
@@ -126,7 +126,7 @@ namespace DestinyTrail.Engine
             }
         }
 
-        public void SelectQuantity(string input)
+        protected void SelectQuantity(string input)
         {
             try
             {
@@ -159,7 +159,7 @@ namespace DestinyTrail.Engine
         }
 
 
-        private void GetConfirmation(string input)
+        protected void GetConfirmation(string input)
         {
             try
             {
@@ -199,6 +199,7 @@ namespace DestinyTrail.Engine
                 else // if (input.ToLower().StartsWith("n"))
                 {
                     _display.Write("Have it your way.");
+                    ShoppingState = ShoppingState.AskSelection;
                 }
             }
             catch (NullReferenceException)

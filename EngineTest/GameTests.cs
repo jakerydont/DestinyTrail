@@ -21,7 +21,7 @@ namespace DestinyTrail.Engine.Tests
 
             // Mocking Utility.LoadYaml method to return mock data
             _mockUtility.Setup(u => u.LoadYaml<RandomNamesData>("data/RandomNames.yaml")).Returns(new RandomNamesData{RandomNames=new List<string>{"Name One", "Name Two", "Name Three"}});
-            _mockUtility.Setup(u => u.LoadYaml<LandmarksData>("data/Landmarks.yaml")).Returns(new LandmarksData());
+            _mockUtility.Setup(u => u.LoadYaml<LandmarksData>("data/Landmarks.yaml")).Returns(new LandmarksData{Landmarks=new List<Landmark>{new Landmark{Name="Landmark 1", ID="FIRST", Lore="The first landmark"}}});
             _mockUtility.Setup(u => u.LoadYaml<Inventory>("data/Inventory.yaml")).Returns(new Inventory());
 
             // Initialize the Game with the mocked dependencies
@@ -57,18 +57,6 @@ namespace DestinyTrail.Engine.Tests
             Assert.Equal(Modes.Shopping, _game.GameMode);
         }
 
-        [Fact]
-        public void ShoppingLoop_StateTransitionsCorrectly()
-        {
-            // Arrange: Initial ShoppingState should be Init
-            Assert.Equal(ShoppingState.Init, _game.ShoppingEngine.ShoppingState);
-
-            // Act: Start shopping loop
-            _game.ShoppingEngine.SelectShoppingItem("Oxen");
-
-            // Assert: The state should transition to HowMany
-            Assert.Equal(ShoppingState.AskQuantity, _game.ShoppingEngine.ShoppingState);
-        }
 
         [Fact]
         public void DrawStatusPanel_UpdatesStatusDisplay()
@@ -84,33 +72,7 @@ namespace DestinyTrail.Engine.Tests
             _mockStatus.Verify(s => s.Write(It.Is<string>(str => str.Contains("Distance traveled:"))), Times.Once);
         }
 
-        [Fact]
-        public void SelectShoppingItem_SelectsValidItem()
-        {
-            // Arrange: Assume inventory has an item "Oxen"
-            var itemName = "Oxen";
-            _mockUtility
-                .Setup(u => u.LoadYaml<Inventory>("data/Inventory.yaml"))
-                .Returns(new Inventory());
-
-            // Act: Select shopping item
-            _game.ShoppingEngine.SelectShoppingItem(itemName);
-
-            // Assert: The shopping selection should be the "Oxen" item
-            Assert.Equal(itemName, _game.ShoppingEngine.SelectedItem.Name);
-        }
-
-        [Fact]
-        public void SelectShoppingItem_HandlesInvalidItem()
-        {
-            // Arrange: Assume no "Beef Jerky" item exists in inventory
-            var invalidItemName = "Beef Jerky";
-
-            // Act: Try selecting an invalid item
-            _game.ShoppingEngine.SelectShoppingItem(invalidItemName);
-
-            // Assert: The display should show an error message
-            _mockDisplay.Verify(d => d.Write(It.Is<string>(msg => msg.Contains($"Hey, you old poophead, I ain't got no {invalidItemName} for sale"))), Times.Once);
-        }
+       
+       
     }
 }

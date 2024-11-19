@@ -32,8 +32,8 @@ namespace DestinyTrail.Engine
                 string.Equals(
                     propertyInfo.GetValue(item, null)?.ToString(),
                     value,
-                    StringComparison.OrdinalIgnoreCase)) 
-                ?? throw new NullReferenceException();
+                    StringComparison.OrdinalIgnoreCase))!;
+             
         }
 
 

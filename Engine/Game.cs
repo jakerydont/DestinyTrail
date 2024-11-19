@@ -19,7 +19,7 @@ namespace DestinyTrail.Engine
 
         private string _weather = "not implemented";
 
-        public Inventory Inventory { get; set; }
+        public IInventory Inventory { get; set; }
         public InputHandler InputHandler { get; private set; }
 
         public IDisplay _display { get; set; }
@@ -117,8 +117,8 @@ namespace DestinyTrail.Engine
         {
             if (!_shouldInitializeAtLandmark) return;
             _shouldInitializeAtLandmark = false;
-            _display.Write($"{NextLandmark.Name}");
-            _display.Write("Press enter to continue. Type \"buy\" to buy something.");
+            _display.WriteTitle(NextLandmark.Name);
+            _display.Write("Press enter to continue.");
 
         }
 

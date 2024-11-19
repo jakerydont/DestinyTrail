@@ -12,7 +12,7 @@ public class ADisplay : IDisplay
 
 
 
-    private ListBox? _output { get; set; }
+    private ListBox _output { get; set; }
     public ItemCollection AvaloniaItems => _output?.Items ?? throw new NullReferenceException();
 
     public List<string> Items
@@ -32,14 +32,12 @@ public class ADisplay : IDisplay
 
     public void Write(string message)
     {
-        if (_output != null)
-        {
-            _output.Items.Add(message);
-        }
-        else
-        {
-            Console.WriteLine(message);
-        }
+        _output.Items.Add(message);
+    }
+
+    public void WriteTitle(string message)
+    {
+        _output.Items.Add("TODO: BUILD A TITLE DISPLAY FOR THIS...\n" + message);
     }
 
     public void Clear()
@@ -70,6 +68,8 @@ public class ADisplay : IDisplay
             }
         }
     }
+
+
 }
 
 
