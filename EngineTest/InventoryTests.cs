@@ -123,11 +123,19 @@ namespace DestinyTrail.Engine.Tests
             };
             _inventory.InventoryItems = mockItems;
 
+            var mockCustomItems = new List<InventoryItem>
+            {
+                new InventoryItem { Name = "Custom Item 1" },
+                new InventoryItem { Name = "Custom Item 2" }
+            };
+            _inventory.CustomItems = mockCustomItems;
+
+
             // Act
             var inventoryItemsList = _inventory.ListInventoryItems();
 
             // Assert
-            Assert.Equal("Item 1, Item 2, Item 3", inventoryItemsList);
+            Assert.Equal("Item 1, Item 2, Item 3, Custom Item 1, Custom Item 2", inventoryItemsList);
         }
         
     }
