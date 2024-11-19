@@ -14,9 +14,10 @@ namespace DestinyTrail.Engine
         public string SingularOrPluralName(int Quantity) {
             return (Quantity == 1) ? NameSingular : NamePlural;
         }
-        public string NameSingular { get; set; } = "";
 
-        public string NamePlural => Name;
+        public override required string Name { get=> NamePlural; set => NamePlural=value; }
+        public string NameSingular { get; set; } = "";
+        public string NamePlural { get; set; } = "";
 
         private int _quantity;
 

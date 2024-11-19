@@ -30,7 +30,7 @@ namespace DestinyTrail.Engine.Tests
         public void OxenProperty_ReturnsCorrectItem()
         {
             // Setup
-            var mockItems = new List<InventoryItem>
+            var mockItems = new List<IInventoryItem>
             {
                 new InventoryItem { Name = "Oxen" },
                 new InventoryItem { Name = "Food" }
@@ -48,7 +48,7 @@ namespace DestinyTrail.Engine.Tests
         public void FoodProperty_ReturnsCorrectItem()
         {
             // Setup
-            var mockItems = new List<InventoryItem>
+            var mockItems = new List<IInventoryItem>
             {
                 new InventoryItem { Name = "Oxen" },
                 new InventoryItem { Name = "Food" }
@@ -81,7 +81,7 @@ namespace DestinyTrail.Engine.Tests
         public void GetByName_ReturnsCorrectItem()
         {
             // Setup
-            var mockItems = new List<InventoryItem>
+            var mockItems = new List<IInventoryItem>
             {
                 new InventoryItem { Name = "Oxen" },
                 new InventoryItem { Name = "Food" }
@@ -99,7 +99,7 @@ namespace DestinyTrail.Engine.Tests
         public void GetByName_ReturnsNull_WhenItemDoesNotExist()
         {
             // Setup
-            var mockItems = new List<InventoryItem>
+            var mockItems = new List<IInventoryItem>
             {
                 new InventoryItem { Name = "Oxen" }
             };
@@ -115,7 +115,7 @@ namespace DestinyTrail.Engine.Tests
         [Fact]
         public void ListInventoryItems_ShouldReturnCommaSeparatedList() {
             // Arrange
-            var mockItems = new List<InventoryItem>
+            var mockItems = new List<IInventoryItem>
             {
                 new InventoryItem { Name = "Item 1" },
                 new InventoryItem { Name = "Item 2" },
@@ -123,7 +123,7 @@ namespace DestinyTrail.Engine.Tests
             };
             _inventory.InventoryItems = mockItems;
 
-            var mockCustomItems = new List<InventoryItem>
+            var mockCustomItems = new List<IInventoryItem>
             {
                 new InventoryItem { Name = "Custom Item 1" },
                 new InventoryItem { Name = "Custom Item 2" }

@@ -5,36 +5,36 @@ namespace DestinyTrail.Engine
         /// <summary>
         /// Empty inventory item, used when no specific item is selected.
         /// </summary>
-        InventoryItem Default { get; }
+        IInventoryItem Default { get; }
 
         /// <summary>
         /// List of inventory items.
         /// </summary>
-        List<InventoryItem> InventoryItems { get; set; }
+        List<IInventoryItem> InventoryItems { get; set; }
 
         /// <summary>
         /// Specific inventory items for various goods.
         /// </summary>
-        InventoryItem Oxen { get; }
-        InventoryItem Food { get; }
-        InventoryItem Bullets { get; }
-        InventoryItem Clothes { get; }
-        InventoryItem Dollars { get; }
-        InventoryItem WagonTongues { get; }
-        InventoryItem WagonAxles { get; }
-        InventoryItem WagonWheels { get; }
+        IInventoryItem Oxen { get; }
+        IInventoryItem Food { get; }
+        IInventoryItem Bullets { get; }
+        IInventoryItem Clothes { get; }
+        IInventoryItem Dollars { get; }
+        IInventoryItem WagonTongues { get; }
+        IInventoryItem WagonAxles { get; }
+        IInventoryItem WagonWheels { get; }
 
         /// <summary>
         /// List of custom inventory items defined by the user.
         /// </summary>
-        List<InventoryItem> CustomItems { get; set; }
+        List<IInventoryItem> CustomItems { get; set; }
 
         /// <summary>
         /// Retrieves an inventory item by its name.
         /// </summary>
         /// <param name="name">The name of the inventory item.</param>
         /// <returns>The inventory item if found, otherwise Default.</returns>
-        InventoryItem GetByName(string name);
+        IInventoryItem GetByName(string name);
 
 
         /// <summary>

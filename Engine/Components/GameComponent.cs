@@ -1,8 +1,8 @@
 namespace DestinyTrail.Engine
 {
-    public class GameComponent
+    public abstract class GameComponent
     {
-        public required string Name { get; set; } // The name of the status
+        public virtual required string Name { get; set; } // The name of the status
 
         public override string ToString() => Name;
 
