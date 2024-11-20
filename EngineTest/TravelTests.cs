@@ -42,9 +42,9 @@ namespace DestinyTrail.Engine.Tests
             _mockUtility.Verify(u => u.LoadYaml<RationData>("data/Rations.yaml"), Times.Once);
 
             Assert.NotNull(_travel.Statuses);
-            Assert.NotNull(_travel._pace);
-            Assert.NotNull(_travel._rations);
-            Assert.NotNull(_travel._occurrenceEngine);
+            Assert.NotNull(_travel.Pace);
+            Assert.NotNull(_travel.Rations);
+            Assert.NotNull(_travel.OccurrenceEngine);
         }
 
         [Fact]
@@ -59,8 +59,8 @@ namespace DestinyTrail.Engine.Tests
             _travel.TravelLoop();
 
             // Assert
-            _mockGame.VerifySet(g => g.MilesToNextLandmark = 50 - _travel._pace.Factor);
-            _mockGame.VerifySet(g => g.MilesTraveled = _travel._pace.Factor);
+            _mockGame.VerifySet(g => g.MilesToNextLandmark = 50 - _travel.Pace.Factor);
+            _mockGame.VerifySet(g => g.MilesTraveled = _travel.Pace.Factor);
 
         }
 
@@ -70,7 +70,7 @@ namespace DestinyTrail.Engine.Tests
             // Arrange
             var mockDisplay = new Mock<IDisplay>();
             _mockGame.Setup(g => g._display).Returns(mockDisplay.Object);
-            _mockGame.Setup(g => g.MilesToNextLandmark).Returns(_travel._pace.Factor); // Set exact distance to reach landmark
+            _mockGame.Setup(g => g.MilesToNextLandmark).Returns(_travel.Pace.Factor); // Set exact distance to reach landmark
             _mockGame.Setup(g => g.NextLandmark.Name).Returns("Fort Kearney");
 
             // Act
@@ -92,7 +92,7 @@ namespace DestinyTrail.Engine.Tests
             var mockOccurrenceEngine = new Mock<OccurrenceEngine>();
             mockOccurrenceEngine.Setup(o => o.PickRandomOccurrence()).Returns(new Occurrence { Name="WILDANIMAL", DisplayText = "Wild Animal Encounter", Effect="dead" });
 
-            _travel._occurrenceEngine = mockOccurrenceEngine.Object;
+            _travel.OccurrenceEngine = mockOccurrenceEngine.Object;
 
             // Act
             _travel.TravelLoop();

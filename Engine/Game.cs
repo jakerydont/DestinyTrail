@@ -11,7 +11,7 @@ namespace DestinyTrail.Engine
         private CancellationTokenSource _cancellationTokenSource { get; set; }
 
         public DateTime CurrentDate { get; set; }
-        public Travel Travel {get;set;}
+        public ITravel Travel {get;set;}
 
 
         public LandmarksData _landmarksData { get; set; }
@@ -36,7 +36,7 @@ namespace DestinyTrail.Engine
 
 
         public Modes GameMode { get; private set; }
-        public ShoppingEngine ShoppingEngine { get; set; }
+        public IShoppingEngine ShoppingEngine { get; set; }
         private bool _shouldInitializeAtLandmark { get; set; }
 
 

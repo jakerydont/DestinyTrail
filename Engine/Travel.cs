@@ -2,7 +2,7 @@ using System;
 
 namespace DestinyTrail.Engine;
 
-public class Travel
+public class Travel : ITravel
 {
     IGame _game { get; set; }
 
@@ -10,12 +10,12 @@ public class Travel
 
     public string[] Statuses { get; private set; }
 
-    public OccurrenceEngine _occurrenceEngine { get; set; }
+    public OccurrenceEngine OccurrenceEngine { get; set; }
 
     private PaceData _paceData;
-    public Pace _pace;
+    public Pace Pace { get; set; }
 
-    public Rations _rations {get;set;}
+    public Rations Rations {get;set;}
     private RationData _rationData {get;set;}
     
     private bool _advanceDay = true;
@@ -31,15 +31,15 @@ public class Travel
         Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];        
         
         string occurrencesFilePath = "data/Occurrences.yaml";
-        _occurrenceEngine = new OccurrenceEngine(occurrencesFilePath, _game.Party, Statuses);
+        OccurrenceEngine = new OccurrenceEngine(occurrencesFilePath, _game.Party, Statuses);
 
         string pacesFilePath = "data/Paces.yaml"; 
         _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
-        _pace = _paceData.MinBy(pace => pace.Factor);
+        Pace = _paceData.MinBy(pace => pace.Factor);
 
         string rationsFilePath = "data/Rations.yaml";
         _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
-        _rations = _rationData.MaxBy(rations => rations.Factor);
+        Rations = _rationData.MaxBy(rations => rations.Factor);
 
     }
         public void TravelLoop()
@@ -61,12 +61,12 @@ public class Travel
             }
             else
             {
-                Occurrence randomOccurrence = _occurrenceEngine.PickRandomOccurrence();
-                var occurrence = _occurrenceEngine.ProcessOccurrence(randomOccurrence);
+                Occurrence randomOccurrence = OccurrenceEngine.PickRandomOccurrence();
+                var occurrence = OccurrenceEngine.ProcessOccurrence(randomOccurrence);
                 occurrenceMessage = occurrence.DisplayText;
             }
 
-            _game.Party.SpendDailyHealth(_pace, _rations);
+            _game.Party.SpendDailyHealth(Pace, Rations);
 
             _game.DrawStatusPanel();
 
@@ -81,7 +81,7 @@ public class Travel
         private double CalculateMilesTraveled()
         {
             // TODO: factor in oxen like ( _pace.Factor / (Inventory.currentOxen / Inventory.maximumOxen ))
-            return _pace.Factor;
+            return Pace.Factor;
         }
 
         public void ContinueTravelling()

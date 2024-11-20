@@ -10,9 +10,9 @@ namespace DestinyTrail.Engine
         public IDisplay _display { get; set; }
         public Modes GameMode { get; }
 
-        public Travel Travel {get;set;}
+        public ITravel Travel {get;set;}
         public LandmarksData _landmarksData { get; set; }
-        public ShoppingEngine ShoppingEngine { get; set; }
+        public IShoppingEngine ShoppingEngine { get; set; }
         public void ChangeMode(Modes mode);
         public void DrawStatusPanel();
     }
