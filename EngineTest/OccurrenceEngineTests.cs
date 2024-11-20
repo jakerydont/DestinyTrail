@@ -9,6 +9,9 @@ namespace DestinyTrail.Engine.Tests
     {
         private readonly Mock<IUtility> _mockUtility;
         private readonly Mock<IWagonParty> _mockParty;
+
+        private List<Occurrence> TestOccurrences { get; set; }
+
         private readonly string[] _statuses = { "Healthy", "Sick", "Injured" };
         private OccurrenceEngine _occurrenceEngine;
 
@@ -16,24 +19,24 @@ namespace DestinyTrail.Engine.Tests
         {
             _mockUtility = new Mock<IUtility>();
             _mockParty = new Mock<IWagonParty>();
-        }
-
-        [Fact]
-        public void Constructor_LoadsOccurrencesFromYaml()
-        {
-            // Arrange
-            var occurrences = new List<Occurrence>
+                        
+                        
+             TestOccurrences = new List<Occurrence>
             {
                 new Occurrence { Name = "Occurence1", DisplayText = "Occurrence 1", Probability = 0.5, Effect = "no effect" },
                 new Occurrence { Name = "Occurence1", DisplayText = "Occurrence 2", Probability = 0.5, Effect = "no effect" }
             };
 
             _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"))
-                        .Returns(new OccurrenceData { Occurrences = occurrences });
+                        .Returns(new OccurrenceData { Occurrences = TestOccurrences });
 
             // Act
             _occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", _mockParty.Object, _statuses, _mockUtility.Object);
+        }
 
+        [Fact]
+        public void Constructor_LoadsOccurrencesFromYaml()
+        {
             // Assert
             _mockUtility.Verify(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"), Times.Once);
         }
@@ -42,18 +45,7 @@ namespace DestinyTrail.Engine.Tests
         public void PickRandomOccurrence_ReturnsOccurrenceBasedOnProbability()
         {
             // Arrange
-            var occurrences = new List<Occurrence>
-            {
-                new Occurrence { Name = "Occurence1", DisplayText = "Occurrence 1", Probability = 0.7, Effect = "no effect" },
-                new Occurrence { Name = "Occurence1", DisplayText = "Occurrence 2", Probability = 0.3, Effect = "no effect" }
-            };
-
-            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"))
-                        .Returns(new OccurrenceData { Occurrences = occurrences });
-
-            _occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", _mockParty.Object, _statuses, _mockUtility.Object);
-
-            var totalProbability = occurrences.Sum(o => o.Probability);
+            var totalProbability = TestOccurrences.Sum(o => o.Probability);
             var random = new Random(0);
 
             // Act
@@ -61,7 +53,7 @@ namespace DestinyTrail.Engine.Tests
 
             // Assert
             Assert.NotNull(selectedOccurrence);
-            Assert.Contains(selectedOccurrence, occurrences);
+            Assert.Contains(selectedOccurrence, TestOccurrences);
         }
 
         [Fact]
@@ -111,7 +103,7 @@ namespace DestinyTrail.Engine.Tests
 
             // Assert
             Assert.NotNull(selectedOccurrence);
-            Assert.Equal("Occurrence 3", selectedOccurrence.DisplayText);
+            Assert.Equal("Occurrence 3", selectedOccurrence.Name);
         }
     }
 }
