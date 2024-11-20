@@ -2,7 +2,7 @@ namespace DestinyTrail.Engine
 {
     public interface IGame
     {
-        public WagonParty Party { get; set; }
+        public IWagonParty Party { get; set; }
         public DateTime CurrentDate { get; set; }
         public double MilesToNextLandmark { get; set; }
         public Landmark NextLandmark { get; set; }

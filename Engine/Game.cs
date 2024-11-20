@@ -32,7 +32,7 @@ namespace DestinyTrail.Engine
         public double MilesToNextLandmark { get; set; }
         public string[] RandomNames { get; private set; }
 
-        public WagonParty Party { get; set; }
+        public IWagonParty Party { get; set; }
 
 
         public Modes GameMode { get; private set; }
@@ -52,18 +52,15 @@ namespace DestinyTrail.Engine
             _status = Status;
             _utility = Utility;
             _cancellationTokenSource = new CancellationTokenSource();
+            RandomNames = [""];
 
-            string randomNamesPath = "data/RandomNames.yaml";
             string landmarksFilePath = "data/Landmarks.yaml";
             string inventoryFilePath = "data/Inventory.yaml";
             string inventoryCustomItemsFilePath = "data/InventoryCustomItems.yaml";
 
-            RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath)];
 
-            Random.Shared.Shuffle(RandomNames);
-            var partyNames = RandomNames.Take(26).ToArray();
-            //RandomNames = ["alice","bob"];
-            Party = new WagonParty(RandomNames);
+
+            Party = new WagonParty();
             _display.Write(Party.GetDisplayNames());
 
             _landmarksData = Utility.LoadYaml<LandmarksData>(landmarksFilePath);
