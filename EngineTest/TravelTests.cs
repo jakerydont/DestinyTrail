@@ -15,7 +15,12 @@ namespace DestinyTrail.Engine.Tests
             _mockGame.Setup(g => g.MilesToNextLandmark).Returns(100);
             _mockGame.Setup(g => g.MilesTraveled).Returns(0);
             _mockGame.Setup(g => g.CurrentDate).Returns(DateTime.Now);
-            _mockGame.Setup(g => g.Party).Returns(new Mock<IWagonParty>().Object);
+
+
+            var wagonParty = new Mock<IWagonParty>();
+            wagonParty.Setup(w => w.GetRandomMember()).Returns(new Person { ID = 0, Name = "Greg", Status = new Status { Name = "Healthy" } });
+
+            _mockGame.Setup(g => g.Party).Returns(wagonParty.Object);
 
             // Mocking YAML loading
             _mockUtility.Setup(u => u.LoadYaml<StatusData>("data/Statuses.yaml"))
@@ -70,16 +75,22 @@ namespace DestinyTrail.Engine.Tests
             // Arrange
             var mockDisplay = new Mock<IDisplay>();
             _mockGame.Setup(g => g._display).Returns(mockDisplay.Object);
-            _mockGame.Setup(g => g.MilesToNextLandmark).Returns(_travel.Pace.Factor); // Set exact distance to reach landmark
+            
+            // Set up the game state
+            _mockGame.Setup(g => g.MilesToNextLandmark).Returns(0); // Simulate reaching the landmark
             _mockGame.Setup(g => g.NextLandmark.Name).Returns("Fort Kearney");
 
             // Act
             _travel.TravelLoop();
 
             // Assert
+            // Verify that the game mode changes to AtLandmark
             _mockGame.Verify(g => g.ChangeMode(Modes.AtLandmark), Times.Once);
-            mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("Fort Kearney"))));
+
+            // Verify that the display includes the correct landmark message
+            mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("Fort Kearney"))), Times.Once);
         }
+
 
         [Fact]
         public void TravelLoop_ProcessesOccurrence_WhenStillTraveling()
@@ -87,10 +98,20 @@ namespace DestinyTrail.Engine.Tests
             // Arrange
             var mockDisplay = new Mock<IDisplay>();
             _mockGame.Setup(g => g._display).Returns(mockDisplay.Object);
-            _mockGame.Setup(g => g.MilesToNextLandmark).Returns(50);
+            _mockGame.Setup(g => g.MilesToNextLandmark).Returns(50); // Still traveling
 
-            var mockOccurrenceEngine = new Mock<OccurrenceEngine>();
-            mockOccurrenceEngine.Setup(o => o.PickRandomOccurrence()).Returns(new Occurrence { Name="WILDANIMAL", DisplayText = "Wild Animal Encounter", Effect="dead" });
+            // Mocking a simplified OccurrenceEngine interaction
+            var mockOccurrenceEngine = new Mock<IOccurrenceEngine>();
+            var mockOccurrence = new Occurrence 
+            { 
+                Name = "WILDANIMAL", 
+                DisplayText = "Wild Animal Encounter", 
+                Effect = "dead" 
+            };
+
+            mockOccurrenceEngine
+                .Setup(o => o.PickRandomOccurrence())
+                .Returns(mockOccurrence);
 
             _travel.OccurrenceEngine = mockOccurrenceEngine.Object;
 
@@ -99,8 +120,9 @@ namespace DestinyTrail.Engine.Tests
 
             // Assert
             mockOccurrenceEngine.Verify(o => o.PickRandomOccurrence(), Times.Once);
-            mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("Wild Animal Encounter"))));
+            mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("Wild Animal Encounter"))), Times.Once);
         }
+
 
         [Fact]
         public void ContinueTravelling_ResetsMilesAndChangesMode()

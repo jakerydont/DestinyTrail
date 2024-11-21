@@ -8,9 +8,7 @@ public class Travel : ITravel
 
     private IUtility Utility;
 
-    public string[] Statuses { get; private set; }
-
-    public OccurrenceEngine OccurrenceEngine { get; set; }
+    public IOccurrenceEngine OccurrenceEngine { get; set; }
 
     private PaceData _paceData;
     public Pace Pace { get; set; }
@@ -27,11 +25,9 @@ public class Travel : ITravel
         _game = game;
         Utility = utility;
 
-        string statusesFilePath = "data/Statuses.yaml"; 
-        Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];        
-        
+
         string occurrencesFilePath = "data/Occurrences.yaml";
-        OccurrenceEngine = new OccurrenceEngine(occurrencesFilePath, _game.Party, Statuses);
+        OccurrenceEngine = new OccurrenceEngine(occurrencesFilePath, _game.Party, Utility);
 
         string pacesFilePath = "data/Paces.yaml"; 
         _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);

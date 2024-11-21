@@ -6,19 +6,26 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace DestinyTrail.Engine
 {
-    public class OccurrenceEngine
+    public class OccurrenceEngine : IOccurrenceEngine
     {
         private readonly Occurrence[] _occurrences;
         private readonly string[] _statuses;
+        public string[] Statuses { get; private set; }
         private readonly IWagonParty _party ;
         private readonly IUtility Utility;
 
-        public OccurrenceEngine(string yamlFilePath,  IWagonParty party, string[] statuses) : this(yamlFilePath,party,statuses, new Utility()) {}
-        public OccurrenceEngine(string yamlFilePath,  IWagonParty party, string[] statuses, IUtility utility) 
+        public OccurrenceEngine(string yamlFilePath,  IWagonParty party) : this(yamlFilePath,party, new Utility()) {}
+        public OccurrenceEngine(string yamlFilePath,  IWagonParty party, IUtility utility) 
         { 
-            Utility = new Utility();
+
+
+            string statusesFilePath = "data/Statuses.yaml"; 
+            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];        
+        
+
+            Utility = utility;
             _occurrences = LoadOccurrences(yamlFilePath);
-            _statuses = statuses;
+            _statuses = Statuses;
             _party = party;
            
 
