@@ -10,7 +10,7 @@ namespace DestinyTrail.Engine
         /// <summary>
         /// List of inventory items.
         /// </summary>
-        List<IInventoryItem> InventoryItems { get; set; }
+        List<InventoryItem> InventoryItems { get; set; }
 
         /// <summary>
         /// Specific inventory items for various goods.
@@ -27,7 +27,7 @@ namespace DestinyTrail.Engine
         /// <summary>
         /// List of custom inventory items defined by the user.
         /// </summary>
-        List<IInventoryItem> CustomItems { get; set; }
+        List<InventoryItem> CustomItems { get; set; }
 
         /// <summary>
         /// Retrieves an inventory item by its name.

@@ -1,3 +1,5 @@
+using Xunit.Sdk;
+
 namespace DestinyTrail.Engine.Tests
 {
     public class TravelTests
@@ -42,11 +44,10 @@ namespace DestinyTrail.Engine.Tests
         public void Constructor_InitializesDependencies()
         {
             // Assert
-            _mockUtility.Verify(u => u.LoadYaml<StatusData>("data/Statuses.yaml"), Times.Once);
             _mockUtility.Verify(u => u.LoadYaml<PaceData>("data/Paces.yaml"), Times.Once);
             _mockUtility.Verify(u => u.LoadYaml<RationData>("data/Rations.yaml"), Times.Once);
 
-            Assert.NotNull(_travel.Statuses);
+
             Assert.NotNull(_travel.Pace);
             Assert.NotNull(_travel.Rations);
             Assert.NotNull(_travel.OccurrenceEngine);

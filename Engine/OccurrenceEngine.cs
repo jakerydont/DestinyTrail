@@ -17,18 +17,15 @@ namespace DestinyTrail.Engine
         public OccurrenceEngine(string yamlFilePath,  IWagonParty party) : this(yamlFilePath,party, new Utility()) {}
         public OccurrenceEngine(string yamlFilePath,  IWagonParty party, IUtility utility) 
         { 
-
+            Utility = utility;
 
             string statusesFilePath = "data/Statuses.yaml"; 
-            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];        
-        
-
-            Utility = utility;
-            _occurrences = LoadOccurrences(yamlFilePath);
+            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];     
             _statuses = Statuses;
-            _party = party;
-           
 
+            _occurrences = LoadOccurrences(yamlFilePath);
+
+            _party = party;
         }
 
         private Occurrence[] LoadOccurrences(string yamlFilePath)

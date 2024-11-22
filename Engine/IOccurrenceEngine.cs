@@ -4,6 +4,9 @@ namespace DestinyTrail.Engine
 {
     public interface IOccurrenceEngine
     {
+        
+        string[] Statuses { get; }
+        
         /// <summary>
         /// Picks a random occurrence based on the probabilities of each occurrence.
         /// </summary>

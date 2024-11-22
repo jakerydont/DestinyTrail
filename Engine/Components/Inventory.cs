@@ -1,10 +1,10 @@
 namespace DestinyTrail.Engine
 {
-    public class Inventory : GameData<IInventoryItem>, IInventory
+    public class Inventory : GameData<InventoryItem>, IInventory
     {
         public static IInventoryItem Default = new InventoryItem{ Name = "none" };
         IInventoryItem IInventory.Default => Default;
-        public List<IInventoryItem> InventoryItems { get => _items; set => _items = value; }
+        public List<InventoryItem> InventoryItems { get => _items; set => _items = value; }
         public IInventoryItem Oxen => GetByName("Oxen");
         public IInventoryItem Food => GetByName("Food");
         public IInventoryItem Bullets => GetByName("Bullets");
@@ -14,12 +14,12 @@ namespace DestinyTrail.Engine
         public IInventoryItem WagonAxles => GetByName("Wagon Axles");
         public IInventoryItem WagonWheels => GetByName("Wagon Wheels");
         
-        private List<IInventoryItem> _customItems = new List<IInventoryItem>();
-        public List<IInventoryItem> CustomItems { get => _customItems; set => _customItems = value; }
+        private List<InventoryItem> _customItems = new List<InventoryItem>();
+        public List<InventoryItem> CustomItems { get => _customItems; set => _customItems = value; }
 
         public Inventory()
         {
-            _items = new List<IInventoryItem>
+            _items = new List<InventoryItem>
             {
                 new InventoryItem { Name = "Oxen" },
                 new InventoryItem { Name = "Food" },

@@ -70,7 +70,7 @@ namespace DestinyTrail.Engine
             MilesToNextLandmark = (double)NextLandmark.Distance;
 
             Inventory = Utility.LoadYaml<Inventory>(inventoryFilePath);
-            Inventory.CustomItems = Utility.LoadYaml<List<IInventoryItem>>(inventoryCustomItemsFilePath);
+            Inventory.CustomItems = Utility.LoadYaml<Inventory>(inventoryCustomItemsFilePath);
             CurrentDate = new DateTime(1860, 10, 1);
 
             Travel = new Travel(this);
