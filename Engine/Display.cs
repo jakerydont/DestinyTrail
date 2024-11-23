@@ -24,7 +24,7 @@ namespace DestinyTrail.Engine
         static char TitleHorizontalChar = '-';
         static char TitleVerticalChar = '|';
         static char TitleCorner = '+';
-        protected virtual string BuildConsoleTitle(string message) 
+        public virtual string BuildConsoleTitle(string message) 
         {   
             string padding = new(' ', TitlePaddingSize);
             string topBottomBorder = new(TitleHorizontalChar, Math.Max(0, message.Length + (TitlePaddingSize * 2)));
