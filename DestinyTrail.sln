@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.002.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DestinyTrail", "DestinyTrail\DestinyTrail.csproj", "{C7526797-1CF3-45B6-ACF2-EACA77FFED80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DestinyTrail.Avalonia", "DestinyTrail\DestinyTrail.Avalonia.csproj", "{C7526797-1CF3-45B6-ACF2-EACA77FFED80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csproj", "{F49B2B90-A49E-43E9-80C5-50E370CF0012}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DestinyTrail.Engine", "Engine\DestinyTrail.Engine.csproj", "{F49B2B90-A49E-43E9-80C5-50E370CF0012}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Tests", "EngineTest\Engine.Tests.csproj", "{87AAD21B-0273-4963-878C-A20B053FDC51}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DestinyTrail.Engine.Tests", "EngineTest\DestinyTrail.Engine.Tests.csproj", "{87AAD21B-0273-4963-878C-A20B053FDC51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugConsole", "DebugConsole\DebugConsole.csproj", "{E9A5F187-BF04-482C-AD46-0898CE4BB94C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DestinyTrail.DebugConsole", "DebugConsole\DestinyTrail.DebugConsole.csproj", "{E9A5F187-BF04-482C-AD46-0898CE4BB94C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
