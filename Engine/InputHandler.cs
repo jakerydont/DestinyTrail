@@ -1,5 +1,3 @@
-using System;
-
 namespace DestinyTrail.Engine;
 
 public class InputHandler
@@ -10,24 +8,24 @@ public class InputHandler
     {
         Game = game;
     }
-public void ProcessCommand(string input)
-{
-    if (Game.GameMode == Modes.AtLandmark)
+    public void ProcessCommand(string input)
     {
-        if (input == "")
+        if (Game.GameMode == Modes.AtLandmark)
         {
-            Game.Travel.ContinueTravelling();
+            if (input == "")
+            {
+                Game.Travel.ContinueTravelling();
+            }
+
+            if (input == "buy")
+            {
+                Game.ChangeMode(Modes.Shopping);
+            }
         }
 
-        if (input == "buy")
+        if (Game.GameMode == Modes.Shopping)
         {
-            Game.ChangeMode(Modes.Shopping);
+            Game.ShoppingEngine.ProcessInput(input);
         }
     }
-
-    if (Game.GameMode == Modes.Shopping)
-    {
-        Game.ShoppingEngine.ProcessInput(input);
-    }
-}
 }

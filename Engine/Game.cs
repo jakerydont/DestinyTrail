@@ -11,7 +11,7 @@ namespace DestinyTrail.Engine
         private CancellationTokenSource _cancellationTokenSource { get; set; }
 
         public DateTime CurrentDate { get; set; }
-        public Travel Travel {get;set;}
+        public ITravel Travel {get;set;}
 
 
         public LandmarksData _landmarksData { get; set; }
@@ -32,11 +32,11 @@ namespace DestinyTrail.Engine
         public double MilesToNextLandmark { get; set; }
         public string[] RandomNames { get; private set; }
 
-        public WagonParty Party { get; set; }
+        public IWagonParty Party { get; set; }
 
 
         public Modes GameMode { get; private set; }
-        public ShoppingEngine ShoppingEngine { get; set; }
+        public IShoppingEngine ShoppingEngine { get; set; }
         private bool _shouldInitializeAtLandmark { get; set; }
 
 
@@ -52,18 +52,15 @@ namespace DestinyTrail.Engine
             _status = Status;
             _utility = Utility;
             _cancellationTokenSource = new CancellationTokenSource();
+            RandomNames = [""];
 
-            string randomNamesPath = "data/RandomNames.yaml";
             string landmarksFilePath = "data/Landmarks.yaml";
             string inventoryFilePath = "data/Inventory.yaml";
             string inventoryCustomItemsFilePath = "data/InventoryCustomItems.yaml";
 
-            RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath)];
 
-            Random.Shared.Shuffle(RandomNames);
-            var partyNames = RandomNames.Take(26).ToArray();
-            //RandomNames = ["alice","bob"];
-            Party = new WagonParty(RandomNames);
+
+            Party = new WagonParty();
             _display.Write(Party.GetDisplayNames());
 
             _landmarksData = Utility.LoadYaml<LandmarksData>(landmarksFilePath);
@@ -73,7 +70,7 @@ namespace DestinyTrail.Engine
             MilesToNextLandmark = (double)NextLandmark.Distance;
 
             Inventory = Utility.LoadYaml<Inventory>(inventoryFilePath);
-            Inventory.CustomItems = Utility.LoadYaml<List<InventoryItem>>(inventoryCustomItemsFilePath);
+            Inventory.CustomItems = Utility.LoadYaml<Inventory>(inventoryCustomItemsFilePath);
             CurrentDate = new DateTime(1860, 10, 1);
 
             Travel = new Travel(this);

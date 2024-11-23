@@ -2,25 +2,29 @@ namespace DestinyTrail.Engine
 {
     public class ShoppingEngine : IShoppingEngine
     {
+        private static int DefaultPrice = 10;
         public ShoppingState ShoppingState { get; set; }
         public InventoryItem SelectedItem { get; set; }
         public int Quantity { get; private set; }
         private IDisplay _display { get; }
         private IInventory Inventory { get; }
-        private int _price;
-
+        public int Price;
         private bool BoughtAnything { get; set; }
         public ShoppingEngine(IDisplay display, IInventory inventory)
         {
             _display = display;
             Inventory = inventory;
+            ShoppingState = ShoppingState.Init;
+            SelectedItem = (InventoryItem)Inventory.Default;
+            Quantity = 0;
+            BoughtAnything = false;
             InitializeState();
         }
 
         public void InitializeState()
         {
             ShoppingState = ShoppingState.Init;
-            SelectedItem = Inventory.Default;
+            SelectedItem = (InventoryItem)Inventory.Default;
             Quantity = 0;
             BoughtAnything = false;
         }
@@ -103,10 +107,9 @@ namespace DestinyTrail.Engine
         /// TODO: Put in a price table for goods
         /// </summary>
         /// <returns></returns>
-        public string CalculatePrice()
+        public int CalculatePrice()
         {
-            _price = 0;
-            return "free because I haven't coded this yet.";
+            return DefaultPrice;
         }
 
         protected void SelectShoppingItem(string input)
@@ -116,7 +119,7 @@ namespace DestinyTrail.Engine
                 var selectedItem = Inventory.GetByName(input);
                 if (selectedItem != null)
                 {
-                    SelectedItem = selectedItem;
+                    SelectedItem = (InventoryItem)selectedItem;
                     ShoppingState = ShoppingState.AskQuantity;
                 }
             }
@@ -173,7 +176,7 @@ namespace DestinyTrail.Engine
                 }
                 else if (input.ToLower().StartsWith("y"))
                 {
-                    var wasAbleToPay = Inventory.Dollars.Subtract(_price);
+                    var wasAbleToPay = Inventory.Dollars.Subtract(Price);
                     if (wasAbleToPay)
                     {
                         Inventory.GetByName(SelectedItem).Add(Quantity);
@@ -183,7 +186,7 @@ namespace DestinyTrail.Engine
                     else
                     {
                         _display.Write("You ain't got the money and this ain't no commune.");
-                        if (Inventory.Dollars == 0)
+                        if (Inventory.Dollars.Quantity == 0)
                         {
                             _display.Write("In fact, you're flat broke. Get outta here, you hobo.");
                             ShoppingState = ShoppingState.Leave;
