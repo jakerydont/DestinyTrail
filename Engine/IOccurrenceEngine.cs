@@ -19,5 +19,12 @@ namespace DestinyTrail.Engine
         /// <param name="occurrence">The occurrence to process.</param>
         /// <returns>The processed <see cref="Occurrence"/> with updated display text.</returns>
         Occurrence ProcessOccurrence(Occurrence occurrence);
+
+        void TryProcessEffect(string effectText);
+
+        void SetStatus(string status);
+    
+        void ClearStatus();
+
     }
 }

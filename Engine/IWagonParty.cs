@@ -6,6 +6,8 @@ namespace DestinyTrail.Engine
         public List<IPerson> Members {get;set;}
         public IPerson Leader {get;set;}
         public double Health { get; }
+        Inventory Inventory { get; set; }
+
         public IPerson GetRandomMember();
 
         
