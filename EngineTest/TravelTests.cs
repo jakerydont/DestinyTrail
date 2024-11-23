@@ -113,6 +113,9 @@ namespace DestinyTrail.Engine.Tests
             mockOccurrenceEngine
                 .Setup(o => o.PickRandomOccurrence())
                 .Returns(mockOccurrence);
+            mockOccurrenceEngine
+                .Setup(o => o.ProcessOccurrence(mockOccurrence))
+                .Returns(mockOccurrence);
 
             _travel.OccurrenceEngine = mockOccurrenceEngine.Object;
 
@@ -134,6 +137,8 @@ namespace DestinyTrail.Engine.Tests
 
             var nextLandmark = new Landmark { ID = "FORT_LARAMIE" , Name = "Fort Laramie", Distance = 150, Lore="Fun place" };
             _mockGame.Setup(g => g.NextLandmark).Returns(nextLandmark);
+
+            _mockGame.Setup(g => g._landmarksData).Returns(new LandmarksData{Landmarks = new List<Landmark> { nextLandmark }});
 
             _mockUtility.Setup(u => u.NextOrFirst(It.IsAny<IEnumerable<Landmark>>(), It.IsAny<Func<Landmark, bool>>()))
                         .Returns(nextLandmark);

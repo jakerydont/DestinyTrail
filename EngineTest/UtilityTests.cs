@@ -65,6 +65,53 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
+        public void LoadYaml_ShouldRetrunStringsFromStatus() {
+            // Arrange
+            var yamlFilePath = "data/Statuses.yaml";
+            var yamlContent = @"
+                Statuses:
+                - Name: 'Healthy'
+                - Name: 'Injured'
+                - Name: 'Dead'
+            ";
+
+            var _mockFileReader = new Mock<IFileReader>();
+
+            // Mock the file read operation
+            _mockFileReader
+                .Setup(fr => fr.ReadAllText(It.IsAny<string>()))
+                .Returns(yamlContent);
+
+            var mockYamlDotNetDeserializer = new Mock<IYamlDeserializer>();
+
+            // Mock the deserialization process using the YAML content, not the file path
+            mockYamlDotNetDeserializer
+                .Setup(d => d.Deserialize<StatusData>(yamlContent))
+                .Returns(new StatusData
+                {
+                    Statuses = new List<string>
+                    {
+                       "Healthy" ,
+                        "Injured",
+                       "Dead"
+                    }
+                });
+
+            var _utility = new Utility(mockYamlDotNetDeserializer.Object, _mockFileReader.Object);
+
+            // Act
+            var result = _utility.LoadYaml<StatusData>(yamlFilePath);
+
+            // Assert
+            Assert.NotNull(result); // Ensure the result is not null
+            Assert.Collection(result.Statuses,
+                item => Assert.Equal("Healthy", item),
+                item => Assert.Equal("Injured", item),
+                item => Assert.Equal("Dead", item)
+            );
+        }
+
+        [Fact]
         public void NextOrFirst_ShouldReturnNextElement_WhenPredicateMatches() {
             // Arrange
             var collection = new List<int> { 1, 2, 3, 4 };

@@ -10,10 +10,9 @@ namespace DestinyTrail.Engine.Tests
         private readonly Mock<IUtility> _mockUtility;
         private readonly Mock<IWagonParty> _mockParty;
 
-        private List<Occurrence> TestOccurrences { get; set; }
 
         private readonly List<string> _statuses = ["Healthy", "Sick", "Injured"];
-        private OccurrenceEngine _occurrenceEngine;
+        private OccurrenceEngine? _occurrenceEngine;
 
         public OccurrenceEngineTests()
         {
@@ -21,17 +20,7 @@ namespace DestinyTrail.Engine.Tests
             _mockParty = new Mock<IWagonParty>();
 
 
-            TestOccurrences = new List<Occurrence>
-            {
-                new() { Name = "Occurence1", DisplayText = "Occurrence 1", Probability = 0.5, Effect = "no effect" },
-                new() { Name = "Occurence1", DisplayText = "Occurrence 2", Probability = 0.5, Effect = "no effect" }
-            };
 
-            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"))
-                        .Returns(new OccurrenceData { Occurrences = TestOccurrences });
-
-            // Act
-            _occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", _mockParty.Object, _mockUtility.Object);
         }
 
 
@@ -44,9 +33,7 @@ namespace DestinyTrail.Engine.Tests
             var mockParty = new Mock<IWagonParty>();
             var mockUtility = new Mock<IUtility>();
 
-            // Mock the status loading method if needed
-            mockUtility.Setup(u => u.LoadYaml<StatusData>(It.IsAny<string>()))
-                .Returns(new StatusData { Statuses = _statuses });
+
 
             // Define mock occurrences with different probabilities
             var occurrences = new List<Occurrence>
@@ -57,7 +44,13 @@ namespace DestinyTrail.Engine.Tests
             };
 
             // Mock the occurrence loading method
-            mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml")).Returns(new OccurrenceData { Occurrences = occurrences });
+            mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"))
+                .Returns(new OccurrenceData { Occurrences = occurrences });
+
+            // Mock the status loading method if needed
+            mockUtility.Setup(u => u.LoadYaml<List<string>>("data/Statuses.yaml"))
+                .Returns(new StatusData { Statuses = _statuses });
+
 
             // Create the OccurrenceEngine
             var occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", mockParty.Object, mockUtility.Object);
@@ -112,6 +105,12 @@ namespace DestinyTrail.Engine.Tests
             _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"))
                         .Returns(new OccurrenceData { Occurrences = occurrences });
 
+                                   
+            _mockUtility.Setup(u => u.LoadYaml<List<string>>("data/Statuses.yaml"))
+                .Returns(new StatusData { Statuses = _statuses });
+
+
+            // Act
             _occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", _mockParty.Object, _mockUtility.Object);
 
             // Act

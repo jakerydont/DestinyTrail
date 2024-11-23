@@ -83,7 +83,10 @@ public class Travel : ITravel
         public void ContinueTravelling()
         {
             _game._display.Write($"You decided to continue.");
-            _game.NextLandmark = Utility.NextOrFirst(_game._landmarksData.Landmarks, landmark => landmark.ID == _game.NextLandmark.ID);
+            _game.NextLandmark = Utility.NextOrFirst(
+                _game._landmarksData.Landmarks, 
+                landmark => landmark.ID == _game.NextLandmark.ID
+                );
             _game.MilesToNextLandmark = _game.NextLandmark.Distance;
             _game.ChangeMode(Modes.Travelling);
         }
