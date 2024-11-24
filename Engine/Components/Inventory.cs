@@ -40,7 +40,19 @@ namespace DestinyTrail.Engine
 
         IInventoryItem IInventory.GetByName(string name)
         {
+            return GetByName(name);
+        }
+
+
+
+        public InventoryItem First()
+        {
             throw new NotImplementedException();
+        }
+
+        void IGameData<InventoryItem>.Remove(InventoryItem item)
+        {
+            Remove(item);
         }
     }
 }

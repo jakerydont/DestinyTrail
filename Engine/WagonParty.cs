@@ -13,6 +13,12 @@ namespace DestinyTrail.Engine
 
         private int _maxRationFactor {get;set;}
         public IInventory Inventory {get; set; }
+        public IDictionary<string, object> Flags { 
+            get => new Dictionary<string, object>{
+                { "CanHunt", true }
+            };
+        }
+
 
         public WagonParty() : this(new Utility()) {}
         public WagonParty(IUtility utility)
@@ -32,6 +38,8 @@ namespace DestinyTrail.Engine
             }
             Leader = Members.First();
             Health = 100;
+
+            Inventory = new Inventory();
         }
         public WagonParty(string[] names) : this(names, new Utility()) {}
         public WagonParty(string[] names, IUtility utility) {
@@ -44,15 +52,23 @@ namespace DestinyTrail.Engine
             }
             Leader = Members.First();
             Health = 100;
+            
+            Inventory = new Inventory();
         }
 
-        public IPerson GetRandomMember() {
+        public IPerson GetRandomMember()
+        {
             Random random = new Random();
-            var person = Members[random.Next(Members.Count)];
+            var livingMembers = GetLivingMembers();
+            var person = livingMembers.ToArray()[random.Next(Members.Count)];
             return person;
         }
 
-        
+        public IEnumerable<IPerson> GetLivingMembers()
+        {
+            return Members.Where(p => p.Status.Name.ToLower() != "dead");
+        }
+
         public IPerson GeneratePerson(string name)
         {
             var id = memberCounter;
@@ -98,7 +114,7 @@ namespace DestinyTrail.Engine
 
         public void KillMember(IPerson person)
         {
-            person.Status.Name = "Dead";
+            person.Status.Name = "dead";
             
         }
     }

@@ -20,18 +20,16 @@ namespace DestinyTrail.Engine
         /// <returns>The processed <see cref="Occurrence"/> with updated display text.</returns>
         Occurrence ProcessOccurrence(Occurrence occurrence);
 
-        void TryProcessEffect(string effectText);
-
         void SetStatus(string status);
 
         void ClearStatus();
 
-        public void TrySetBoolean(IOccurrence occurrence);
-        public void TryZeroInventoryItem(IOccurrence occurrence);
+        void TrySetFlag(IOccurrence occurrence);
+        void TryZeroInventoryItem(IOccurrence occurrence);
 
         void TryIncreaseInventoryItem(IOccurrence occurrence);
 
-        public void TryDecreaseInventoryItem(IOccurrence occurrence);
+        void TryDecreaseInventoryItem(IOccurrence occurrence);
 
     }
 }
