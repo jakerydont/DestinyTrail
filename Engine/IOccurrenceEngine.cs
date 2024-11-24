@@ -4,9 +4,9 @@ namespace DestinyTrail.Engine
 {
     public interface IOccurrenceEngine
     {
-        
+
         string[] Statuses { get; }
-        
+
         /// <summary>
         /// Picks a random occurrence based on the probabilities of each occurrence.
         /// </summary>
@@ -23,8 +23,15 @@ namespace DestinyTrail.Engine
         void TryProcessEffect(string effectText);
 
         void SetStatus(string status);
-    
+
         void ClearStatus();
+
+        public void TrySetBoolean(IOccurrence occurrence);
+        public void TryZeroInventoryItem(IOccurrence occurrence);
+
+        void TryIncreaseInventoryItem(IOccurrence occurrence);
+
+        public void TryDecreaseInventoryItem(IOccurrence occurrence);
 
     }
 }

@@ -11,16 +11,16 @@ namespace DestinyTrail.Engine
         private readonly Occurrence[] _occurrences;
         private readonly string[] _statuses;
         public string[] Statuses { get; private set; }
-        private readonly IWagonParty _party ;
+        private readonly IWagonParty _party;
         private readonly IUtility Utility;
 
-        public OccurrenceEngine(string yamlFilePath,  IWagonParty party) : this(yamlFilePath,party, new Utility()) {}
-        public OccurrenceEngine(string yamlFilePath,  IWagonParty party, IUtility utility) 
-        { 
+        public OccurrenceEngine(string yamlFilePath, IWagonParty party) : this(yamlFilePath, party, new Utility()) { }
+        public OccurrenceEngine(string yamlFilePath, IWagonParty party, IUtility utility)
+        {
             Utility = utility;
 
-            string statusesFilePath = "data/Statuses.yaml"; 
-            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];     
+            string statusesFilePath = "data/Statuses.yaml";
+            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];
             _statuses = Statuses;
 
             _occurrences = LoadOccurrences(yamlFilePath);
@@ -66,54 +66,54 @@ namespace DestinyTrail.Engine
             return occurrence;
         }
 
-// Effects
-// ""
-// "Broken Leg"
-// "Delay"
-// "Dysentery"
-// "Snakebite"
-// "Dead"
-// "Cholera"
-// "Snakebite"
-// "Type 2 Diabetes"
-// "Dysentery"
-// "Yellow Fever"
-// "Pregnant"
-// "???"
-// "[oxen] = 0"
-// "Consumption"
-// "constipation"
-// "Dead,[Food] += 20"
-// "measles"
-// "John Denver"
-// "[BajaBlast] = 0"
-// "???"
-// "[canHunt] = false"
-// "???"
-// "missing presumed dead"
-// "missing presumed getting to 3rd base"
-// "???"
-// "???"
-// "Broken Foot"
-// "???"
-// "Hand Foot and Mouth Disease"
-// "[clothes] -= 1"
-// "[horse] -= 1,[glue] += 1"
-// "???"
-// "homesick"
-// "COVID-19"
-// "Dead"
-// "Oxygen Allergy"
-// "Blind"
-// "Fridged"
-// "Ears Boxed"
+        // Effects
+        // ""
+        // "Broken Leg"
+        // "Delay"
+        // "Dysentery"
+        // "Snakebite"
+        // "Dead"
+        // "Cholera"
+        // "Snakebite"
+        // "Type 2 Diabetes"
+        // "Dysentery"
+        // "Yellow Fever"
+        // "Pregnant"
+        // "???"
+        // "[oxen] = 0"
+        // "Consumption"
+        // "constipation"
+        // "Dead,[Food] += 20"
+        // "measles"
+        // "John Denver"
+        // "[BajaBlast] = 0"
+        // "???"
+        // "[canHunt] = false"
+        // "???"
+        // "missing presumed dead"
+        // "missing presumed getting to 3rd base"
+        // "???"
+        // "???"
+        // "Broken Foot"
+        // "???"
+        // "Hand Foot and Mouth Disease"
+        // "[clothes] -= 1"
+        // "[horse] -= 1,[glue] += 1"
+        // "???"
+        // "homesick"
+        // "COVID-19"
+        // "Dead"
+        // "Oxygen Allergy"
+        // "Blind"
+        // "Fridged"
+        // "Ears Boxed"
         public void TryProcessEffect(IPerson person, IOccurrence occurrence)
         {
             person.Status = new Status { Name = occurrence.Effect };
-            if (occurrence.Effect == "Dead")
+            if (occurrence.Effect.ToLower() == "dead")
             {
                 _party.KillMember(person);
-            } 
+            }
             else if (occurrence.Effect.Contains("+="))
             {
                 TryIncreaseInventoryItem(occurrence);
@@ -126,15 +126,26 @@ namespace DestinyTrail.Engine
             {
                 TryZeroInventoryItem(occurrence);
             }
-            else if (occurrence.Effect.Contains("= false"))
+            else if (occurrence.Effect.Contains("= false") || occurrence.Effect.Contains("= true"))
             {
                 TrySetBoolean(occurrence);
             }
 
 
+
         }
 
-        private void TryDecreaseInventoryItem(IOccurrence occurrence)
+        public void TrySetBoolean(IOccurrence occurrence)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void TryZeroInventoryItem(IOccurrence occurrence)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void TryDecreaseInventoryItem(IOccurrence occurrence)
         {
             var validate = new System.Text.RegularExpressions.Regex(@"\[(.*?)\] -= (\d+)");
             var itemDecrementMatch = validate.Match(occurrence.Effect);
