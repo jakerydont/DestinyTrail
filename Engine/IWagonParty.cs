@@ -19,6 +19,6 @@ namespace DestinyTrail.Engine
         
 
         public void SpendDailyHealth(Pace pace, Rations rations);
-    
+        void KillMember(IPerson person);
     }
 }

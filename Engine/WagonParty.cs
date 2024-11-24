@@ -12,7 +12,7 @@ namespace DestinyTrail.Engine
         public double Health { get; private set; }
 
         private int _maxRationFactor {get;set;}
-
+        public IInventory Inventory {get; set; }
 
         public WagonParty() : this(new Utility()) {}
         public WagonParty(IUtility utility)
@@ -22,7 +22,7 @@ namespace DestinyTrail.Engine
             string[] RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath)];
 
             Random.Shared.Shuffle(RandomNames);
-            var partyNames = RandomNames.Take(26).ToArray();
+            var partyNames = RandomNames.Take(5).ToArray();
 
             Members = new List<IPerson>();
 
@@ -94,6 +94,12 @@ namespace DestinyTrail.Engine
         {
             double healthChange = -((100 / rations.Factor) * (pace.Factor / 8) - 0.5);
             Health += healthChange;
+        }
+
+        public void KillMember(IPerson person)
+        {
+            person.Status.Name = "Dead";
+            
         }
     }
 }
