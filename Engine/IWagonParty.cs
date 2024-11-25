@@ -8,6 +8,7 @@ namespace DestinyTrail.Engine
         public double Health { get; }
         public IInventory Inventory { get; set; }
 
+        public IDictionary<string, object> Flags { get; }
         public IPerson GetRandomMember();
 
         

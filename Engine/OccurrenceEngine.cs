@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -11,16 +12,24 @@ namespace DestinyTrail.Engine
         private readonly Occurrence[] _occurrences;
         private readonly string[] _statuses;
         public string[] Statuses { get; private set; }
-        private readonly IWagonParty _party ;
+
+
+        private readonly IWagonParty _party;
         private readonly IUtility Utility;
 
-        public OccurrenceEngine(string yamlFilePath,  IWagonParty party) : this(yamlFilePath,party, new Utility()) {}
-        public OccurrenceEngine(string yamlFilePath,  IWagonParty party, IUtility utility) 
-        { 
+
+        private static Regex DecrementEventPattern = new Regex(@"\[(.*?)\] -= (\d+)");
+        private static Regex IncrementEventPattern = new Regex(@"\[(.*?)\] \+= (\d+)");
+        public static Regex SetItemQuantityPattern = new Regex(@"\[(.*?)\] = (\d+)");
+        private static Regex BooleanEventPattern = new Regex(@"\[Flags\.(.*?)\] = (true|false)");
+
+        public OccurrenceEngine(string yamlFilePath, IWagonParty party) : this(yamlFilePath, party, new Utility()) { }
+        public OccurrenceEngine(string yamlFilePath, IWagonParty party, IUtility utility)
+        {
             Utility = utility;
 
-            string statusesFilePath = "data/Statuses.yaml"; 
-            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];     
+            string statusesFilePath = "data/Statuses.yaml";
+            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];
             _statuses = Statuses;
 
             _occurrences = LoadOccurrences(yamlFilePath);
@@ -59,79 +68,73 @@ namespace DestinyTrail.Engine
             if (occurrence.DisplayText.Contains("{name}"))
             {
                 occurrence.DisplayText = occurrence.DisplayText.Replace("{name}", person.Name);
-                TryProcessEffect(person, occurrence);
-                //Display.Write($"\n{person.Name}: {person.Status.Name}");
+                TryProcessEffect(occurrence, person);
+
+            }
+            else
+            {
+                TryProcessEffect(occurrence);
+
             }
 
             return occurrence;
         }
 
-// Effects
-// ""
-// "Broken Leg"
-// "Delay"
-// "Dysentery"
-// "Snakebite"
-// "Dead"
-// "Cholera"
-// "Snakebite"
-// "Type 2 Diabetes"
-// "Dysentery"
-// "Yellow Fever"
-// "Pregnant"
-// "???"
-// "[oxen] = 0"
-// "Consumption"
-// "constipation"
-// "Dead,[Food] += 20"
-// "measles"
-// "John Denver"
-// "[BajaBlast] = 0"
-// "???"
-// "[canHunt] = false"
-// "???"
-// "missing presumed dead"
-// "missing presumed getting to 3rd base"
-// "???"
-// "???"
-// "Broken Foot"
-// "???"
-// "Hand Foot and Mouth Disease"
-// "[clothes] -= 1"
-// "[horse] -= 1,[glue] += 1"
-// "???"
-// "homesick"
-// "COVID-19"
-// "Dead"
-// "Oxygen Allergy"
-// "Blind"
-// "Fridged"
-// "Ears Boxed"
-        public void TryProcessEffect(IPerson person, IOccurrence occurrence)
+        private void TryProcessEffect(IOccurrence occurrence)
         {
-            person.Status = new Status { Name = occurrence.Effect };
-            if (occurrence.Effect == "Dead")
+            TryProcessEffect(occurrence, Person.Nobody);
+        }
+        private void TryProcessEffect(IOccurrence occurrence, IPerson person)
+        {
+            if (person.ID != Person.Nobody.ID)
             {
-                _party.KillMember(person);
-            } 
-            else if (occurrence.Effect.Contains("+="))
+                person.Status = new Status { Name = occurrence.Effect };
+                if (occurrence.Effect.ToLower() == "dead")
+                {
+                    _party.KillMember(person);
+                }
+            }
+
+            else if (IncrementEventPattern.Match(occurrence.Effect).Success)
             {
                 TryIncreaseInventoryItem(occurrence);
             }
-            else if (occurrence.Effect.Contains("-="))
+            else if (DecrementEventPattern.Match(occurrence.Effect).Success)
             {
                 TryDecreaseInventoryItem(occurrence);
             }
-            else if (occurrence.Effect.Contains("= 0"))
+            else if (SetItemQuantityPattern.Match(occurrence.Effect).Success)
             {
                 TryZeroInventoryItem(occurrence);
             }
-            else if (occurrence.Effect.Contains("= false"))
+            else if (BooleanEventPattern.Match(occurrence.Effect).Success)
             {
-                TrySetBoolean(occurrence);
+                TrySetFlag(occurrence);
+            }
+        }
+
+        public void TrySetFlag(IOccurrence occurrence)
+        {
+            var booleanMatch = BooleanEventPattern.Match(occurrence.Effect);
+            if (!booleanMatch.Success)
+            {
+                throw new Exception($"Bad boolean setting on occurrence {occurrence.DisplayText}. Must be in the form '[Flags.flag] = true' or '[Flags.flag] = false'. Actual: {occurrence.Effect}");
             }
 
-
+            var flag = booleanMatch.Groups[1].Value;
+            var value = booleanMatch.Groups[2].Value;
+            if (value.ToLower() == "true")
+            {
+                _party.Flags[flag] = true;
+            }
+            else if (value.ToLower() == "false")
+            {
+                _party.Flags[flag] = false;
+            }
+            else
+            {
+                throw new Exception($"Bad boolean setting on occurrence {occurrence.DisplayText}. Must be in the form '[Flags.flag] = true' or '[Flags.flag] = false'. Actual: {occurrence.Effect}");
+            }
         }
 
         private void TrySetBoolean(IOccurrence occurrence)
@@ -151,7 +154,7 @@ namespace DestinyTrail.Engine
             item.SetBoolean(false);
         }
 
-        private void TrySet InventoryItem(IOccurrence occurrence)
+        private void TrySetQuantityInventoryItem(IOccurrence occurrence)
         {
             var validate = new System.Text.RegularExpressions.Regex(@"\[(.*?)\] = 0");
             var itemZeroMatch = validate.Match(occurrence.Effect);
@@ -168,10 +171,26 @@ namespace DestinyTrail.Engine
             item.SetQuantity(0);
         }
 
-        private void TryDecreaseInventoryItem(IOccurrence occurrence)
+        public void TryZeroInventoryItem(IOccurrence occurrence)
         {
-            var validate = new System.Text.RegularExpressions.Regex(@"\[(.*?)\] -= (\d+)");
-            var itemDecrementMatch = validate.Match(occurrence.Effect);
+            var itemZeroMatch = SetItemQuantityPattern.Match(occurrence.Effect);
+            if (!itemZeroMatch.Success)
+            {
+                throw new Exception($"Bad zero on occurrence {occurrence.DisplayText}. Must be in the form '[item] = 0'. Actual: {occurrence.Effect}");
+            }
+
+            var item = _party.Inventory.GetByName(itemZeroMatch.Groups[1].Value);
+            if (item == null)
+            {
+                throw new Exception($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
+            }
+            item.Quantity = 0;
+        }
+
+        public void TryDecreaseInventoryItem(IOccurrence occurrence)
+        {
+
+            var itemDecrementMatch = DecrementEventPattern.Match(occurrence.Effect);
             if (!itemDecrementMatch.Success)
             {
                 throw new Exception($"Bad decrement on occurrence {occurrence.DisplayText}. Must be in the form '[item] -= 1'. Actual: {occurrence.Effect}");
@@ -190,10 +209,9 @@ namespace DestinyTrail.Engine
             }
         }
 
-        void TryIncreaseInventoryItem(IOccurrence occurrence)
+        public void TryIncreaseInventoryItem(IOccurrence occurrence)
         {
-            var validate = new System.Text.RegularExpressions.Regex(@"\[(.*?)\] \+= (\d+)");
-            var itemIncrementMatch = validate.Match(occurrence.Effect);
+            var itemIncrementMatch = IncrementEventPattern.Match(occurrence.Effect);
             if (!itemIncrementMatch.Success)
             {
                 throw new Exception($"Bad increment on occurrence {occurrence.DisplayText}. Must be in the form '[item] += 1'. Actual: {occurrence.Effect}");
@@ -218,9 +236,8 @@ namespace DestinyTrail.Engine
             throw new NotImplementedException();
         }
 
-        public void TryProcessEffect(string effectText)
-        {
-            throw new NotImplementedException();
-        }
+
+
+        void IOccurrenceEngine.TryIncreaseInventoryItem(IOccurrence occurrence) => TryIncreaseInventoryItem(occurrence);
     }
 }
