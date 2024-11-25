@@ -11,6 +11,7 @@ namespace DestinyTrail.Engine
         public IPerson Leader {get;set;}
         public double Health { get; private set; }
 
+        public IInventory Inventory { get; set; }
         private int _maxRationFactor {get;set;}
 
 

@@ -6,7 +6,7 @@ namespace DestinyTrail.Engine
         public List<IPerson> Members {get;set;}
         public IPerson Leader {get;set;}
         public double Health { get; }
-        Inventory Inventory { get; set; }
+        public IInventory Inventory { get; set; }
 
         public IPerson GetRandomMember();
 
@@ -19,6 +19,6 @@ namespace DestinyTrail.Engine
         
 
         public void SpendDailyHealth(Pace pace, Rations rations);
-    
+        void KillMember(IPerson person);
     }
 }
