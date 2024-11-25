@@ -79,6 +79,14 @@ namespace DestinyTrail.Engine
             return true;
         }
 
+        public void SetQuantity(int v)
+        {
+            Quantity = v;
+        }
 
+        public void SetBoolean(bool v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
