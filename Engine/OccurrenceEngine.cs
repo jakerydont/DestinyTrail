@@ -134,6 +134,40 @@ namespace DestinyTrail.Engine
 
         }
 
+        private void TrySetBoolean(IOccurrence occurrence)
+        {
+            var validate = new System.Text.RegularExpressions.Regex(@"\[(.*?)\] = false");
+            var itemBooleanMatch = validate.Match(occurrence.Effect);
+            if (!itemBooleanMatch.Success)
+            {
+                throw new Exception($"Bad boolean set on occurrence {occurrence.DisplayText}. Must be in the form '[item] = false'. Actual: {occurrence.Effect}");
+            }
+
+            var item = _party.Inventory.GetByName(itemBooleanMatch.Groups[1].Value);
+            if (item == null)
+            {
+                throw new Exception($"Inventory item {itemBooleanMatch.Groups[1].Value} not found.");
+            }
+            item.SetBoolean(false);
+        }
+
+        private void TrySet InventoryItem(IOccurrence occurrence)
+        {
+            var validate = new System.Text.RegularExpressions.Regex(@"\[(.*?)\] = 0");
+            var itemZeroMatch = validate.Match(occurrence.Effect);
+            if (!itemZeroMatch.Success)
+            {
+                throw new Exception($"Bad zeroing on occurrence {occurrence.DisplayText}. Must be in the form '[item] = 0'. Actual: {occurrence.Effect}");
+            }
+
+            var item = _party.Inventory.GetByName(itemZeroMatch.Groups[1].Value);
+            if (item == null)
+            {
+                throw new Exception($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
+            }
+            item.SetQuantity(0);
+        }
+
         private void TryDecreaseInventoryItem(IOccurrence occurrence)
         {
             var validate = new System.Text.RegularExpressions.Regex(@"\[(.*?)\] -= (\d+)");
