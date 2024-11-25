@@ -13,6 +13,7 @@ namespace DestinyTrail.Engine
         public string GetLore();
         public bool Add(int Quantity);
         public bool Subtract(int Quantity);
-
+        void SetQuantity(int v);
+        void SetBoolean(bool v);
     }
 }
