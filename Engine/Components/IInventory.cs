@@ -1,6 +1,6 @@
 namespace DestinyTrail.Engine
 {
-    public interface IInventory
+    public interface IInventory : IGameData<InventoryItem>
     {
         /// <summary>
         /// Empty inventory item, used when no specific item is selected.

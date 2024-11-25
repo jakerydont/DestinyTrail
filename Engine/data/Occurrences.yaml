@@ -64,7 +64,7 @@
     Effect: "???"
   - DisplayText: "Buffalo are extinct now. Good job."
     Probability: 0.0003
-    Effect: "[canHunt] = false"
+    Effect: "[Flags.CanHunt] = false"
   - DisplayText: "{name}'s destiny was manifested"
     Probability: 0.3
     Effect: "???"

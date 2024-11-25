@@ -6,7 +6,8 @@ namespace DestinyTrail.Engine
 {
     public abstract class GameData<T> : List<T>
     {
-        public static implicit operator T[](GameData<T> data) => data?.ToArray() ?? throw new NullReferenceException();
+        public static implicit operator T[](GameData<T> data) => data?.ToArray() 
+            ?? throw new NullReferenceException($"{typeof(T).Name} data is null");
 
         protected List<T> _items
         {
