@@ -137,23 +137,6 @@ namespace DestinyTrail.Engine
             }
         }
 
-        private void TrySetBoolean(IOccurrence occurrence)
-        {
-            var validate = new System.Text.RegularExpressions.Regex(@"\[(.*?)\] = false");
-            var itemBooleanMatch = validate.Match(occurrence.Effect);
-            if (!itemBooleanMatch.Success)
-            {
-                throw new Exception($"Bad boolean set on occurrence {occurrence.DisplayText}. Must be in the form '[item] = false'. Actual: {occurrence.Effect}");
-            }
-
-            var item = _party.Inventory.GetByName(itemBooleanMatch.Groups[1].Value);
-            if (item == null)
-            {
-                throw new Exception($"Inventory item {itemBooleanMatch.Groups[1].Value} not found.");
-            }
-            item.SetBoolean(false);
-        }
-
         private void TrySetQuantityInventoryItem(IOccurrence occurrence)
         {
             var validate = new System.Text.RegularExpressions.Regex(@"\[(.*?)\] = 0");
