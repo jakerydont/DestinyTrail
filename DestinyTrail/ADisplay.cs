@@ -69,7 +69,10 @@ public class ADisplay : IDisplay
         }
     }
 
-
+    public void WriteError(string message)
+    {
+        _output.Items.Add(message);
+    }
 }
 
 
