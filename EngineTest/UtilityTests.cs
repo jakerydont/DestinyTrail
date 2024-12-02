@@ -7,15 +7,16 @@ using Xunit;
 
 namespace DestinyTrail.Engine.Tests
 {
-    public class UtilityTests {
+    public class UtilityTests
+    {
         private Utility _utility;
 
         public UtilityTests()
         {
-            _utility =  new Utility();
+            _utility = new Utility();
         }
 
-        
+
         [Fact]
         public void LoadYaml_ShouldReturnDeserializedObject_WhenYamlFileExists()
         {
@@ -65,7 +66,8 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
-        public void LoadYaml_ShouldRetrunStringsFromStatus() {
+        public void LoadYaml_ShouldRetrunStringsFromStatus()
+        {
             // Arrange
             var yamlFilePath = "data/Statuses.yaml";
             var yamlContent = @"
@@ -89,11 +91,11 @@ namespace DestinyTrail.Engine.Tests
                 .Setup(d => d.Deserialize<StatusData>(yamlContent))
                 .Returns(new StatusData
                 {
-                    Statuses = new List<string>
+                    Statuses = new()
                     {
-                       "Healthy" ,
-                        "Injured",
-                       "Dead"
+                        new(){Name="Healthy"} ,
+                        new(){Name="Injured"},
+                        new(){Name="Dead"}
                     }
                 });
 
@@ -112,7 +114,8 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
-        public void NextOrFirst_ShouldReturnNextElement_WhenPredicateMatches() {
+        public void NextOrFirst_ShouldReturnNextElement_WhenPredicateMatches()
+        {
             // Arrange
             var collection = new List<int> { 1, 2, 3, 4 };
             Func<int, bool> predicate = x => x == 2;
@@ -125,7 +128,8 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
-        public void NextOrFirst_ShouldReturnZero_WhenPredicateDoesNotMatch() {
+        public void NextOrFirst_ShouldReturnZero_WhenPredicateDoesNotMatch()
+        {
             // Arrange
             var collection = new List<int> { 1, 2, 3, 4 };
             Func<int, bool> predicate = x => x == 5;
@@ -138,7 +142,8 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
-        public void Abbreviate_ShouldReturnIntegerString_WhenNumberIsDouble() {
+        public void Abbreviate_ShouldReturnIntegerString_WhenNumberIsDouble()
+        {
             // Arrange
             double number = 1234.56;
 
@@ -150,7 +155,8 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
-        public void GetFormatted_ShouldReturnFormattedDate_WhenDateIsProvided() {
+        public void GetFormatted_ShouldReturnFormattedDate_WhenDateIsProvided()
+        {
             // Arrange
             DateTime date = new DateTime(2024, 11, 1);
 

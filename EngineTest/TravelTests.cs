@@ -26,7 +26,7 @@ namespace DestinyTrail.Engine.Tests
 
             // Mocking YAML loading
             _mockUtility.Setup(u => u.LoadYaml<StatusData>("data/Statuses.yaml"))
-                .Returns(new StatusData { Statuses = new() { "Healthy", "Sick" } });
+                .Returns(new StatusData { Statuses = new() {new() { Name ="Healthy"},new(){  Name ="Sick"} } });
             _mockUtility.Setup(u => u.LoadYaml<PaceData>("data/Paces.yaml"))
                 .Returns(new PaceData { Paces = [new Pace { Name = "Slow", Factor = 10 }, new Pace { Name = "Fast", Factor = 20 } ]});
             _mockUtility.Setup(u => u.LoadYaml<RationData>("data/Rations.yaml"))

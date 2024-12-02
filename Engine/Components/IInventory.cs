@@ -1,6 +1,6 @@
 namespace DestinyTrail.Engine
 {
-    public interface IInventory : IGameData<InventoryItem>
+    public interface IInventory : IGameData<IInventoryItem>
     {
         /// <summary>
         /// Empty inventory item, used when no specific item is selected.
@@ -28,6 +28,8 @@ namespace DestinyTrail.Engine
         /// List of custom inventory items defined by the user.
         /// </summary>
         List<InventoryItem> CustomItems { get; set; }
+
+        bool TryGetByName(string name, out IInventoryItem item);
 
         /// <summary>
         /// Retrieves an inventory item by its name.

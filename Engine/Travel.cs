@@ -18,8 +18,6 @@ public class Travel : ITravel
     
     private bool _advanceDay = true;
 
-    public Travel(IGame game) : this(game, new Utility()){}
-
     public Travel(IGame game, IUtility utility)
     {
         _game = game;

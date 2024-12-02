@@ -1,6 +1,12 @@
+
 namespace DestinyTrail.Engine {
-    public class RandomNamesData : GameData<string>
+    public class RandomNamesData : GameData<PersonName>
     {
-         public required List<string> RandomNames { get => _items; set => _items = value; }
+         public required List<PersonName> RandomNames { get => _items; set => _items = value; }
+
+         public RandomNamesData()
+         {
+            
+         }
     }
 }

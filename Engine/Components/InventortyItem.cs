@@ -4,6 +4,15 @@ namespace DestinyTrail.Engine
 {
     public class InventoryItem : GameComponent, IInventoryItem
     {
+        public InventoryItem() : base()
+        {
+            NameSingular = "Default Item";
+            NamePlural = "Default Items";
+            Quantity = 0;
+            Unit = "";
+            UnitSingular = "";
+            Lore = "";
+        }
 
         public static implicit operator int(InventoryItem item)
         {
@@ -15,7 +24,7 @@ namespace DestinyTrail.Engine
             return (Quantity == 1) ? NameSingular : NamePlural;
         }
 
-        public override required string Name { get=> NamePlural; set => NamePlural=value; }
+        public override string Name { get=> NamePlural; set => NamePlural  = value; }
         public string NameSingular { get; set; } = "";
         public string NamePlural { get; set; } = "";
 

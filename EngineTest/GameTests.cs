@@ -8,11 +8,18 @@ namespace DestinyTrail.Engine.Tests
 {
     public class GameTests
     {
+
         private readonly Mock<IDisplay> _mockDisplay;
         private readonly Mock<IDisplay> _mockStatus;
         private readonly Mock<IUtility> _mockUtility;
         private readonly Game _game;
 
+        private readonly List<Occurrence> occurrences = new List<Occurrence>
+        {
+            new() { Name = "Occurrence 1", DisplayText = "Occurrence 1", Probability = 0.0, Effect = "no effect" },
+            new() { Name = "Occurrence 2", DisplayText = "Occurrence 2", Probability = 0.0, Effect = "no effect" },
+            new() { Name = "Occurrence 3", DisplayText = "Occurrence 3", Probability = 1.0, Effect = "no effect" }
+        };
         public GameTests()
         {
             _mockDisplay = new Mock<IDisplay>();
@@ -20,10 +27,16 @@ namespace DestinyTrail.Engine.Tests
             _mockUtility = new Mock<IUtility>();
 
             // Mocking Utility.LoadYaml method to return mock data
-            _mockUtility.Setup(u => u.LoadYaml<RandomNamesData>("data/RandomNames.yaml")).Returns(new RandomNamesData{RandomNames=new List<string>{"Name One", "Name Two", "Name Three"}});
-            _mockUtility.Setup(u => u.LoadYaml<LandmarksData>("data/Landmarks.yaml")).Returns(new LandmarksData{Landmarks=new List<Landmark>{new Landmark{Name="Landmark 1", ID="FIRST", Lore="The first landmark"}}});
+            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml")).Returns(new OccurrenceData { Occurrences = occurrences });
+            _mockUtility.Setup(u => u.LoadYaml<RandomNamesData>("data/RandomNames.yaml")).Returns(new RandomNamesData { RandomNames = new List<PersonName> { new() { Name = "Name One" }, new() { Name = "Name Two" }, new() { Name = "Name Three" } } });
+            _mockUtility.Setup(u => u.LoadYaml<LandmarksData>("data/Landmarks.yaml")).Returns(new LandmarksData { Landmarks = new List<Landmark> { new Landmark { Name = "Landmark 1", ID = "FIRST", Lore = "The first landmark" } } });
             _mockUtility.Setup(u => u.LoadYaml<Inventory>("data/Inventory.yaml")).Returns(new Inventory());
-
+            _mockUtility.Setup(u => u.LoadYaml<StatusData>("data/Statuses.yaml")).Returns(new StatusData {
+                Statuses=[
+                    new() { Name = "Healthy" }, 
+                    new() { Name = "Sick" }, 
+                    new() { Name = "Injured" }
+                ]});
             // Initialize the Game with the mocked dependencies
             _game = new Game(_mockDisplay.Object, _mockStatus.Object, _mockUtility.Object);
         }
@@ -72,7 +85,7 @@ namespace DestinyTrail.Engine.Tests
             _mockStatus.Verify(s => s.Write(It.Is<string>(str => str.Contains("Distance traveled:"))), Times.Once);
         }
 
-       
-       
+
+
     }
 }

@@ -25,7 +25,7 @@ namespace DestinyTrail.Engine
         void ClearStatus();
 
         void TrySetFlag(IOccurrence occurrence);
-        void TryZeroInventoryItem(IOccurrence occurrence);
+        void TrySetQuantityInventoryItem(IOccurrence occurrence);
 
         void TryIncreaseInventoryItem(IOccurrence occurrence);
 

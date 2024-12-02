@@ -1,9 +1,5 @@
-using System;
-using System.IO;
-using System.Linq;
+
 using System.Text.RegularExpressions;
-using YamlDotNet.Serialization;
-using YamlDotNet.Serialization.NamingConventions;
 
 namespace DestinyTrail.Engine
 {
@@ -105,7 +101,7 @@ namespace DestinyTrail.Engine
             }
             else if (SetItemQuantityPattern.Match(occurrence.Effect).Success)
             {
-                TryZeroInventoryItem(occurrence);
+                TrySetQuantityInventoryItem(occurrence);
             }
             else if (BooleanEventPattern.Match(occurrence.Effect).Success)
             {
@@ -137,38 +133,27 @@ namespace DestinyTrail.Engine
             }
         }
 
-        private void TrySetQuantityInventoryItem(IOccurrence occurrence)
+        public void TrySetQuantityInventoryItem(IOccurrence occurrence)
         {
-            var validate = new System.Text.RegularExpressions.Regex(@"\[(.*?)\] = 0");
+            var validate = new System.Text.RegularExpressions.Regex(@"\[(.*?)\] = (\d+)");
             var itemZeroMatch = validate.Match(occurrence.Effect);
             if (!itemZeroMatch.Success)
             {
-                throw new Exception($"Bad zeroing on occurrence {occurrence.DisplayText}. Must be in the form '[item] = 0'. Actual: {occurrence.Effect}");
+                throw new Exception($"Bad zeroing on occurrence {occurrence.DisplayText}. Must be in the form '[item] = amount'. Actual: {occurrence.Effect}");
             }
 
-            var item = _party.Inventory.GetByName(itemZeroMatch.Groups[1].Value);
-            if (item == null)
-            {
-                throw new Exception($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
-            }
-            item.SetQuantity(0);
+            var item = _party.Inventory.TryGetByName(itemZeroMatch.Groups[1].Value, out var itemResult) ? itemResult
+                : throw new Exception($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
+
+            
+            var amount = int.TryParse(itemZeroMatch.Groups[2].Value, out var amountResult) ? amountResult 
+                : throw new Exception($"Invalid amount {itemZeroMatch.Groups[2].Value}.");
+
+
+            item.SetQuantity(amount);
         }
 
-        public void TryZeroInventoryItem(IOccurrence occurrence)
-        {
-            var itemZeroMatch = SetItemQuantityPattern.Match(occurrence.Effect);
-            if (!itemZeroMatch.Success)
-            {
-                throw new Exception($"Bad zero on occurrence {occurrence.DisplayText}. Must be in the form '[item] = 0'. Actual: {occurrence.Effect}");
-            }
 
-            var item = _party.Inventory.GetByName(itemZeroMatch.Groups[1].Value);
-            if (item == null)
-            {
-                throw new Exception($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
-            }
-            item.Quantity = 0;
-        }
 
         public void TryDecreaseInventoryItem(IOccurrence occurrence)
         {
