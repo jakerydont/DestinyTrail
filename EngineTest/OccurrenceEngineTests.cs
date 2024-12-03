@@ -2,34 +2,49 @@ using Xunit;
 using Moq;
 using System;
 using System.Linq;
+using DestinyTrail.Engine; 
 
 namespace DestinyTrail.Engine.Tests
 {
     public class OccurrenceEngineTests
     {
         private readonly Mock<IUtility> _mockUtility;
-        private readonly Mock<IWagonParty> _mockParty;
+        private readonly Mock<IWagonParty> mockWagonParty;
+
+        private readonly  Mock<IPerson> mockPerson;
 
 
-        private readonly List<string> _statuses = ["Healthy", "Sick", "Injured"];
-        private OccurrenceEngine? _occurrenceEngine;
+        private readonly List<Status> _statuses = [new(){Name="Healthy"},new(){Name="Sick"}, new(){Name="Injured"}];
+
+        private readonly List<Occurrence> occurrences = new List<Occurrence>
+        {
+            new() { Name = "Occurrence 1", DisplayText = "Occurrence 1", Probability = 0.0, Effect = "no effect" },
+            new() { Name = "Occurrence 2", DisplayText = "Occurrence 2", Probability = 0.0, Effect = "no effect" },
+            new() { Name = "Occurrence 3", DisplayText = "Occurrence 3", Probability = 1.0, Effect = "no effect" }
+        };
+
 
         public OccurrenceEngineTests()
         {
             _mockUtility = new Mock<IUtility>();
-            _mockParty = new Mock<IWagonParty>();
 
+            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>(It.IsAny<string>()))
+                        .Returns(new OccurrenceData { Occurrences = occurrences });
 
+            _mockUtility.Setup(u => u.LoadYaml<List<Status>>(It.IsAny<string>()))
+                .Returns(new StatusData { Statuses = _statuses });
+
+            mockWagonParty = new Mock<IWagonParty>();
+
+            mockPerson = new Mock<IPerson>();
+            mockPerson.Setup(p => p.Name).Returns("John");
 
         }
-
-
-
 
         [Fact]
         public void PickRandomOccurrence_ReturnsCorrectOccurrence_BasedOnProbability()
         {
-            // Arrange
+
             var mockParty = new Mock<IWagonParty>();
             var mockUtility = new Mock<IUtility>();
 
@@ -44,16 +59,18 @@ namespace DestinyTrail.Engine.Tests
             };
 
             // Mock the occurrence loading method
-            mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"))
+
+
+            mockUtility.Setup(u => u.LoadYaml<OccurrenceData>(It.IsAny<string>()))
                 .Returns(new OccurrenceData { Occurrences = occurrences });
 
             // Mock the status loading method if needed
-            mockUtility.Setup(u => u.LoadYaml<List<string>>("data/Statuses.yaml"))
+            mockUtility.Setup(u => u.LoadYaml<List<Status>>(It.IsAny<string>()))
                 .Returns(new StatusData { Statuses = _statuses });
 
 
             // Create the OccurrenceEngine
-            var occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", mockParty.Object, mockUtility.Object);
+            var occurrenceEngine = new OccurrenceEngine(mockParty.Object, mockUtility.Object);
 
             // Act
             var pickedOccurrence = occurrenceEngine.PickRandomOccurrence();
@@ -79,12 +96,15 @@ namespace DestinyTrail.Engine.Tests
 
             var mockPerson = new Mock<IPerson>();
             mockPerson.Setup(p => p.Name).Returns("John");
-            _mockParty.Setup(p => p.GetRandomMember()).Returns(mockPerson.Object);
 
-            _occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", _mockParty.Object);
+            mockWagonParty.Setup(wp => wp.Inventory).Returns(new Inventory());
+            mockWagonParty.Setup(wp => wp.GetRandomMember()).Returns(mockPerson.Object);
+
+
+            var occurrenceEngine = new OccurrenceEngine( mockWagonParty.Object, _mockUtility.Object);
 
             // Act
-            var processedOccurrence = _occurrenceEngine.ProcessOccurrence(occurrence);
+            var processedOccurrence = occurrenceEngine.ProcessOccurrence(occurrence);
 
             // Assert
             Assert.Equal("John encountered a wild animal.", processedOccurrence.DisplayText);
@@ -92,33 +112,122 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
-        public void PickRandomOccurrence_ReturnsLastOccurrence_IfProbabilitiesMismatch()
-        {
+        public void TryProcessEffect_ShouldIncreaseInventoryItem_IfEffectContainsIncrement() {
             // Arrange
-            var occurrences = new List<Occurrence>
+
+
+            var mockInventory = new Mock<Inventory>();
+            mockWagonParty.Setup(wp => wp.Inventory).Returns(mockInventory.Object);
+
+            var occurrence = new Occurrence
             {
-                new() { Name = "Occurrence 1", DisplayText = "Occurrence 1", Probability = 0.0, Effect = "no effect" },
-                new() { Name = "Occurrence 2", DisplayText = "Occurrence 2", Probability = 0.0, Effect = "no effect" },
-                new() { Name = "Occurrence 3", DisplayText = "Occurrence 3", Probability = 1.0, Effect = "no effect" }
+                Name = "FOOD",
+                DisplayText = "You found food",
+                Probability = 1.0,
+                Effect = "[Food] += 67"
             };
 
-            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"))
-                        .Returns(new OccurrenceData { Occurrences = occurrences });
+            mockWagonParty.Setup(p => p.GetRandomMember()).Returns(mockPerson.Object);
 
-                                   
-            _mockUtility.Setup(u => u.LoadYaml<List<string>>("data/Statuses.yaml"))
-                .Returns(new StatusData { Statuses = _statuses });
-
+            var _occurrenceEngine = new OccurrenceEngine(mockWagonParty.Object, _mockUtility.Object);
 
             // Act
-            _occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", _mockParty.Object, _mockUtility.Object);
-
-            // Act
-            var selectedOccurrence = _occurrenceEngine.PickRandomOccurrence();
+            _occurrenceEngine.ProcessOccurrence(occurrence);
 
             // Assert
-            Assert.NotNull(selectedOccurrence);
-            Assert.Equal("Occurrence 3", selectedOccurrence.Name);
+            Assert.Equal(67, mockInventory.Object.Food.Quantity);
+        }
+
+
+        [Fact]
+        public void TrySetFlag_ShouldSetBooleanSetting()
+        {
+            // Arrange
+            var mockParty = new Mock<IWagonParty>();
+
+            mockParty.Setup(p => p.Flags).Returns(new Dictionary<string, object>
+            {
+                { "CanHunt", true }
+            });
+            
+
+            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>(It.IsAny<string>()))
+                        .Returns(new OccurrenceData { Occurrences = occurrences });
+
+            _mockUtility.Setup(u => u.LoadYaml<List<Status>>(It.IsAny<string>()))
+                .Returns(new StatusData { Statuses = _statuses });
+
+            var occurrenceEngine = new OccurrenceEngine( mockParty.Object, _mockUtility.Object);
+            var mockOccurrence = new Mock<IOccurrence>();
+
+
+            mockOccurrence.Setup(o => o.Effect).Returns("[Flags.CanHunt] = false");
+
+            // Act
+            occurrenceEngine.TrySetFlag(mockOccurrence.Object);
+
+            // Assert
+            Assert.Equal(false, mockParty.Object.Flags["CanHunt"]);
+        }
+
+        [Fact]
+        public void TrySetQuantityInventoryItem_ShouldErrorOnNotFoundItem()
+        {
+            // Arrange
+            var mockInventory = new Mock<Inventory>();
+            mockInventory.Object.Food.Add(100);
+            mockWagonParty.Setup(wp => wp.Inventory).Returns(mockInventory.Object);
+
+            var occurrence = new Occurrence
+            {
+                Name = "NotExist",
+                DisplayText = "This item doesn't exist and should throw an error",
+                Probability = 1.0,
+                Effect = "[NotExistItem] = 0"
+            };
+
+            mockWagonParty.Setup(p => p.GetRandomMember()).Returns(mockPerson.Object);
+
+
+            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>(It.IsAny<string>()))
+                        .Returns(new OccurrenceData { Occurrences = occurrences });
+
+            _mockUtility.Setup(u => u.LoadYaml<List<Status>>(It.IsAny<string>()))
+                .Returns(new StatusData { Statuses = _statuses });
+
+            var _occurrenceEngine = new OccurrenceEngine(mockWagonParty.Object, _mockUtility.Object);
+
+
+            // Assert
+            Assert.Throws<Exception>(() => _occurrenceEngine.TrySetQuantityInventoryItem(occurrence));
+
+        }
+
+        [Fact]
+        public void TrySetQuantityInventoryItem_ShouldZeroInventoryItem()
+        {
+            // Arrange
+            var mockInventory = new Mock<Inventory>();
+            mockInventory.Object.Food.Add(100);
+            mockWagonParty.Setup(wp => wp.Inventory).Returns(mockInventory.Object);
+
+            var occurrence = new Occurrence
+            {
+                Name = "FOOD",
+                DisplayText = "A thief stole all your food",
+                Probability = 1.0,
+                Effect = "[Food] = 0"
+            };
+
+            mockWagonParty.Setup(p => p.GetRandomMember()).Returns(mockPerson.Object);
+
+            var _occurrenceEngine = new OccurrenceEngine(mockWagonParty.Object, _mockUtility.Object);
+
+            // Act
+            _occurrenceEngine.TrySetQuantityInventoryItem(occurrence);
+
+            // Assert
+            Assert.Equal(0, mockInventory.Object.Food.Quantity);
         }
     }
 }

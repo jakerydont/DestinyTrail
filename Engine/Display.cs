@@ -7,6 +7,9 @@ namespace DestinyTrail.Engine
     public class Display : IDisplay
     {
         public List<string> Items { get; set; } = new List<string>();
+
+        private readonly ConsoleColor ErrorColor = ConsoleColor.Red;
+
         public void Write(string message) 
         {
             Console.WriteLine(message);
@@ -24,7 +27,7 @@ namespace DestinyTrail.Engine
         static char TitleHorizontalChar = '-';
         static char TitleVerticalChar = '|';
         static char TitleCorner = '+';
-        protected virtual string BuildConsoleTitle(string message) 
+        public virtual string BuildConsoleTitle(string message) 
         {   
             string padding = new(' ', TitlePaddingSize);
             string topBottomBorder = new(TitleHorizontalChar, Math.Max(0, message.Length + (TitlePaddingSize * 2)));
@@ -43,6 +46,14 @@ namespace DestinyTrail.Engine
         public void ScrollToBottom()
         {
             // noop
-        } 
+        }
+
+        public void WriteError(string message)
+        {
+            var previousColor = Console.ForegroundColor;
+            Console.ForegroundColor = ErrorColor;
+            Console.WriteLine(message);
+            Console.ForegroundColor = previousColor;
+        }
     }
 }

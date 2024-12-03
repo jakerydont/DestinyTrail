@@ -5,6 +5,8 @@ namespace DestinyTrail.Engine
         public List<string> Items { get; }
         void Write(string message);
 
+        void WriteError(string message);
+
         void WriteTitle(string message);
         void Clear();
         void ScrollToBottom();

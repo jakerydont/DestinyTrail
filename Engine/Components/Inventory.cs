@@ -2,9 +2,15 @@ namespace DestinyTrail.Engine
 {
     public class Inventory : GameData<InventoryItem>, IInventory
     {
-        public static IInventoryItem Default = new InventoryItem{ Name = "none" };
+        public static new IInventoryItem Default = new InventoryItem{ Name = "none" };
         IInventoryItem IInventory.Default => Default;
         public List<InventoryItem> InventoryItems { get => _items; set => _items = value; }
+
+        IInventoryItem IGameData<IInventoryItem>.this[int index] {
+            get => _items[index];
+            set => _items[index] = (InventoryItem)value;
+        }
+
         public IInventoryItem Oxen => GetByName("Oxen");
         public IInventoryItem Food => GetByName("Food");
         public IInventoryItem Bullets => GetByName("Bullets");
@@ -17,7 +23,8 @@ namespace DestinyTrail.Engine
         private List<InventoryItem> _customItems = new List<InventoryItem>();
         public List<InventoryItem> CustomItems { get => _customItems; set => _customItems = value; }
 
-        public Inventory()
+
+        public Inventory() : base()
         {
             _items = new List<InventoryItem>
             {
@@ -31,6 +38,7 @@ namespace DestinyTrail.Engine
                 new InventoryItem { Name = "Wagon Wheels" }
             };
         }
+
         public string ListInventoryItems()
         {
             var itemNames = new List<string>(InventoryItems.Select(item=>item.Name));
@@ -40,8 +48,26 @@ namespace DestinyTrail.Engine
 
         IInventoryItem IInventory.GetByName(string name)
         {
-            throw new NotImplementedException();
+            return GetByName(name);
         }
+
+        public bool TryGetByName(string name, out IInventoryItem item)
+        {
+            item = GetByName(name);
+            return item != null;
+        }
+
+
+
+        void IGameData<IInventoryItem>.Remove(IInventoryItem item) => Remove((InventoryItem)item);
+
+        public void Add(IInventoryItem item) => Add((InventoryItem)item);
+
+        IInventoryItem[] IGameData<IInventoryItem>.ToArray() => _items.ToArray();
+
+        IInventoryItem IGameData<IInventoryItem>.First() => First();
+
+        public IInventoryItem? MinBy<TKey>(Func<IInventoryItem, TKey> keySelector) => _items.MinBy(keySelector);
     }
 }
 

@@ -2,16 +2,15 @@ namespace DestinyTrail.Engine
 {
     public interface IGame
     {
-        public IWagonParty Party { get; set; }
-        public DateTime CurrentDate { get; set; }
-        public double MilesToNextLandmark { get; set; }
-        public Landmark NextLandmark { get; set; }
-        public double MilesTraveled { get; set; }
-        public IDisplay _display { get; set; }
+        public IWagonParty _party { get; set; }
+
+
+
+        public IDisplay MainDisplay { get; set; }
         public Modes GameMode { get; }
 
-        public ITravel Travel {get;set;}
-        public LandmarksData _landmarksData { get; set; }
+        public ITravel travel {get;set;}
+
         public IShoppingEngine ShoppingEngine { get; set; }
         public void ChangeMode(Modes mode);
         public void DrawStatusPanel();

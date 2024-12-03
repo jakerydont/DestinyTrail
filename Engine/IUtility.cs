@@ -6,5 +6,6 @@ namespace DestinyTrail.Engine
         T NextOrFirst<T>(IEnumerable<T> collection, Func<T, bool> predicate);
         string Abbreviate(double number);
         string GetFormatted(DateTime date);
+        string GetAppSetting(string settingName);
     }
 }

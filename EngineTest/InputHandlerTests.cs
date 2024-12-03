@@ -16,7 +16,7 @@ namespace DestinyTrail.Engine.Tests
             _mockTravel = new Mock<ITravel>();
             _mockShoppingEngine = new Mock<IShoppingEngine>();
 
-            _mockGame.SetupGet(g => g.Travel).Returns(_mockTravel.Object);
+            _mockGame.SetupGet(g => g.travel).Returns(_mockTravel.Object);
             _mockGame.SetupGet(g => g.ShoppingEngine).Returns(_mockShoppingEngine.Object);
 
             _inputHandler = new InputHandler(_mockGame.Object);

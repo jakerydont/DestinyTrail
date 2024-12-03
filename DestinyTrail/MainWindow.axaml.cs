@@ -13,7 +13,11 @@ namespace DestinyTrail
             InitializeComponent();
             var OutputDisplay = new ADisplay(OutputListBox);
             var StatusDisplay = new ADisplay(Status);
-            game = new Game(OutputDisplay, StatusDisplay);
+            var WorldStatus = new WorldStatus();
+            var Utility = new Utility();
+            var WagonParty = new WagonParty(Utility);
+            var Travel = new Travel(WagonParty, Utility, StatusDisplay, WorldStatus);
+            game = new Game(OutputDisplay, StatusDisplay, Utility, WagonParty, Travel, WorldStatus);
             game.StartGameLoop();
         }
 
@@ -34,7 +38,7 @@ namespace DestinyTrail
             // Process the input as needed
             // Example: Add a response to the output
             //OutputListBox.Items.Add($"Response: {input.ToUpper()}");
-            game.Travel.ContinueTravelling();
+            game.travel.ContinueTravelling();
         }
     }
 }

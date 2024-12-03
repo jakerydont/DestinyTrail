@@ -11,18 +11,24 @@ namespace DestinyTrail.Engine
         public IPerson Leader {get;set;}
         public double Health { get; private set; }
 
+        public IInventory Inventory { get; set; }
         private int _maxRationFactor {get;set;}
+        public IDictionary<string, object> Flags { 
+            get => new Dictionary<string, object>{
+                { "CanHunt", true }
+            };
+        }
 
 
         public WagonParty() : this(new Utility()) {}
         public WagonParty(IUtility utility)
         {
             Utility = utility; 
-            string randomNamesPath = "data/RandomNames.yaml";
+            string randomNamesPath = Utility.GetAppSetting("RandomNamesFilePath");
             string[] RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath)];
 
             Random.Shared.Shuffle(RandomNames);
-            var partyNames = RandomNames.Take(26).ToArray();
+            var partyNames = RandomNames.Take(5).ToArray();
 
             Members = new List<IPerson>();
 
@@ -32,6 +38,8 @@ namespace DestinyTrail.Engine
             }
             Leader = Members.First();
             Health = 100;
+
+            Inventory = new Inventory();
         }
         public WagonParty(string[] names) : this(names, new Utility()) {}
         public WagonParty(string[] names, IUtility utility) {
@@ -44,15 +52,23 @@ namespace DestinyTrail.Engine
             }
             Leader = Members.First();
             Health = 100;
+            
+            Inventory = new Inventory();
         }
 
-        public IPerson GetRandomMember() {
+        public IPerson GetRandomMember()
+        {
             Random random = new Random();
-            var person = Members[random.Next(Members.Count)];
+            var livingMembers = GetLivingMembers();
+            var person = livingMembers.ToArray()[random.Next(Members.Count)];
             return person;
         }
 
-        
+        public IEnumerable<IPerson> GetLivingMembers()
+        {
+            return Members.Where(p => p.Status.Name.ToLower() != "dead");
+        }
+
         public IPerson GeneratePerson(string name)
         {
             var id = memberCounter;
@@ -94,6 +110,12 @@ namespace DestinyTrail.Engine
         {
             double healthChange = -((100 / rations.Factor) * (pace.Factor / 8) - 0.5);
             Health += healthChange;
+        }
+
+        public void KillMember(IPerson person)
+        {
+            person.Status.Name = "dead";
+            
         }
     }
 }

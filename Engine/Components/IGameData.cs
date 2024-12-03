@@ -12,6 +12,6 @@ namespace DestinyTrail.Engine
 
         T First();
 
-        T MinBy<TKey>(Func<T, TKey> keySelector);
+        T? MinBy<TKey>(Func<T, TKey> keySelector);
     }
 }
