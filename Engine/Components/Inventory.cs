@@ -5,6 +5,12 @@ namespace DestinyTrail.Engine
         public static new IInventoryItem Default = new InventoryItem{ Name = "none" };
         IInventoryItem IInventory.Default => Default;
         public List<InventoryItem> InventoryItems { get => _items; set => _items = value; }
+
+        IInventoryItem IGameData<IInventoryItem>.this[int index] {
+            get => _items[index];
+            set => _items[index] = (InventoryItem)value;
+        }
+
         public IInventoryItem Oxen => GetByName("Oxen");
         public IInventoryItem Food => GetByName("Food");
         public IInventoryItem Bullets => GetByName("Bullets");
@@ -17,7 +23,6 @@ namespace DestinyTrail.Engine
         private List<InventoryItem> _customItems = new List<InventoryItem>();
         public List<InventoryItem> CustomItems { get => _customItems; set => _customItems = value; }
 
-        IInventoryItem IGameData<IInventoryItem>.this[int index] { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public Inventory() : base()
         {
@@ -54,35 +59,15 @@ namespace DestinyTrail.Engine
 
 
 
-        public InventoryItem First()
-        {
-            return _items.First();
-        }
+        void IGameData<IInventoryItem>.Remove(IInventoryItem item) => Remove((InventoryItem)item);
 
-        void IGameData<IInventoryItem>.Remove(IInventoryItem item)
-        {
-            Remove((InventoryItem)item);
-        }
+        public void Add(IInventoryItem item) => Add((InventoryItem)item);
 
-        public void Add(IInventoryItem item)
-        {
-            Add((InventoryItem)item);
-        }
+        IInventoryItem[] IGameData<IInventoryItem>.ToArray() => _items.ToArray();
 
-        IInventoryItem[] IGameData<IInventoryItem>.ToArray()
-        {
-            return _items.ToArray();
-        }
+        IInventoryItem IGameData<IInventoryItem>.First() => First();
 
-        IInventoryItem IGameData<IInventoryItem>.First()
-        {
-            return First();
-        }
-
-        public IInventoryItem? MinBy<TKey>(Func<IInventoryItem, TKey> keySelector)
-        {
-            return _items.MinBy(keySelector);
-        }
+        public IInventoryItem? MinBy<TKey>(Func<IInventoryItem, TKey> keySelector) => _items.MinBy(keySelector);
     }
 }
 

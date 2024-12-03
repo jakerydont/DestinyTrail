@@ -31,6 +31,8 @@ public class Travel : ITravel
 
     public Travel(IWagonParty party, IUtility utility, IDisplay display, IWorldStatus worldStatus)
     {
+        ModeChanged += (mode) => { };
+
         Party = party;
         Utility = utility;
         Display = display;
@@ -76,9 +78,9 @@ public class Travel : ITravel
 
         else
         {
-            Occurrence randomOccurrence = OccurrenceEngine.PickRandomOccurrence();
-            var occurrence = OccurrenceEngine.ProcessOccurrence(randomOccurrence);
-            occurrenceMessage = occurrence.DisplayText;
+            var rawOccurrence = OccurrenceEngine.PickRandomOccurrence();
+            var processedOccurrence = OccurrenceEngine.ProcessOccurrence(rawOccurrence);
+            occurrenceMessage = processedOccurrence.DisplayText;
         }
 
         Party.SpendDailyHealth(Pace, Rations);

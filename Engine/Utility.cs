@@ -28,10 +28,12 @@ namespace DestinyTrail.Engine
 
         public T NextOrFirst<T>(IEnumerable<T> collection, Func<T, bool> predicate)
         {
-            return collection
-                .SkipWhile(item => !predicate(item))  
-                .Skip(1)                               
-                .FirstOrDefault() ?? collection.First();
+            var next = collection
+                .SkipWhile(item => !predicate(item))
+                .Skip(1)
+                .FirstOrDefault();
+
+            return next == null || next.Equals(default(T)) ? collection.First() : next;
         }
 
         public string Abbreviate(double number)
