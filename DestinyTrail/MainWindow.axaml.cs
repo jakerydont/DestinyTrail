@@ -13,7 +13,10 @@ namespace DestinyTrail
             InitializeComponent();
             var OutputDisplay = new ADisplay(OutputListBox);
             var StatusDisplay = new ADisplay(Status);
-            game = new Game(OutputDisplay, StatusDisplay);
+            var Utility = new Utility();
+            var WagonParty = new WagonParty(Utility);
+            var OccurrenceEngine = new OccurrenceEngine(WagonParty, Utility);
+            game = new Game(OutputDisplay, StatusDisplay, Utility, WagonParty, OccurrenceEngine);
             game.StartGameLoop();
         }
 

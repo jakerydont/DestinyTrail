@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using DestinyTrail.Engine;
 using DestinyTrail.Engine.Abstractions;
@@ -13,13 +14,19 @@ namespace DestinyTrail.Engine.Tests
 
         public UtilityTests()
         {
-            _utility = new Utility();
+            _utility = new Utility(
+                new Mock<IYamlDeserializer>().Object,
+                new Mock<IFileReader>().Object,
+                new Mock<IConfigurationProvider>().Object
+            );
         }
 
 
         [Fact]
         public void LoadYaml_ShouldReturnDeserializedObject_WhenYamlFileExists()
         {
+
+
             // Arrange
             var yamlFilePath = "data/Test.yaml";
             var yamlContent = """
@@ -51,7 +58,7 @@ namespace DestinyTrail.Engine.Tests
                     }
                 });
 
-            var _utility = new Utility(mockYamlDotNetDeserializer.Object, _mockFileReader.Object);
+            var _utility = new Utility(mockYamlDotNetDeserializer.Object, _mockFileReader.Object, new Mock<IConfigurationProvider>().Object);
 
             // Act
             var result = _utility.LoadYaml<TestTypeData>(yamlFilePath);
@@ -69,7 +76,6 @@ namespace DestinyTrail.Engine.Tests
         public void LoadYaml_ShouldRetrunStringsFromStatus()
         {
             // Arrange
-            var yamlFilePath = "data/Statuses.yaml";
             var yamlContent = @"
                 Statuses:
                 - Name: 'Healthy'
@@ -99,10 +105,10 @@ namespace DestinyTrail.Engine.Tests
                     }
                 });
 
-            var _utility = new Utility(mockYamlDotNetDeserializer.Object, _mockFileReader.Object);
+            var _utility = new Utility(mockYamlDotNetDeserializer.Object, _mockFileReader.Object, new Mock<IConfigurationProvider>().Object);
 
             // Act
-            var result = _utility.LoadYaml<StatusData>(yamlFilePath);
+            var result = _utility.LoadYaml<StatusData>(It.IsAny<string>());
 
             // Assert
             Assert.NotNull(result); // Ensure the result is not null
@@ -165,6 +171,53 @@ namespace DestinyTrail.Engine.Tests
 
             // Assert
             Assert.Equal("November 1, 2024", result);
+        }
+
+        [Fact]
+        public void GetAppSetting_ShouldReturnSettingValue_WhenSettingExists()
+        {
+            // Arrange
+            var settingName = "TestSetting";
+            var expectedValue = "TestValue";
+            var mockConfigurationProvider = new Mock<IConfigurationProvider>();
+            mockConfigurationProvider.Setup(cp => cp.GetAppSetting(settingName)).Returns(expectedValue);
+            
+            var utility = new Utility( 
+                new Mock<IYamlDeserializer>().Object, 
+                new Mock<IFileReader>().Object, 
+                mockConfigurationProvider.Object
+            );
+
+
+
+            // Act
+            var result = utility.GetAppSetting(settingName);
+
+            // Assert
+            Assert.Equal(expectedValue, result);
+        }
+
+        [Fact]
+        public void GetAppSetting_ShouldThrowException_WhenSettingDoesNotExist()
+        {
+            // Arrange
+            var nonexistentSettingName = "NonExistentSetting";
+            var existingSettingName = "ExistingSetting";
+            var expectedValue = "TestValue";
+
+            var mockConfigurationProvider = new Mock<IConfigurationProvider>();
+            mockConfigurationProvider.Setup(cp => cp.GetAppSetting(existingSettingName)).Returns(expectedValue);
+            
+            var utility = new Utility(
+                new Mock<IYamlDeserializer>().Object, 
+                new Mock<IFileReader>().Object,
+                mockConfigurationProvider.Object
+            );
+
+
+            // Act & Assert
+            var exception = Assert.Throws<ConfigurationErrorsException>(() => utility.GetAppSetting(nonexistentSettingName));
+            Assert.Equal($"{nonexistentSettingName} is not configured.", exception.Message);
         }
     }
 }

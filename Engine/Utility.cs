@@ -1,3 +1,4 @@
+using System.Configuration;
 using DestinyTrail.Engine.Abstractions;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
@@ -9,11 +10,14 @@ namespace DestinyTrail.Engine
     {
         IYamlDeserializer Deserializer { get; set; }
         IFileReader FileReader { get; set; }
-        public Utility() : this (new YamlDeserializer(), new FileReader()) {} 
-        public Utility(IYamlDeserializer yamlDeserializer, IFileReader fileReader)
+        IConfigurationProvider ConfigurationProvider { get; }
+
+        public Utility() : this ( new YamlDeserializer(), new FileReader(), new ConfigurationProvider() ) {} 
+        public Utility(IYamlDeserializer yamlDeserializer, IFileReader fileReader, IConfigurationProvider configurationProvider)
         {
             Deserializer = yamlDeserializer;
             FileReader = fileReader;
+            ConfigurationProvider = configurationProvider;
         }
 
         public T LoadYaml<T>(string yamlFilePath)
@@ -38,6 +42,11 @@ namespace DestinyTrail.Engine
         public string GetFormatted(DateTime date)
         {
             return $"{date:MMMM d, yyyy}";
+        }
+
+        public string GetAppSetting(string settingName)
+        {
+            return ConfigurationProvider.GetAppSetting(settingName) ?? throw new ConfigurationErrorsException($"{settingName} is not configured.");
         }
     }
 }

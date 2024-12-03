@@ -10,5 +10,10 @@ namespace DestinyTrail.Engine
 
         void TravelLoop();
         void ContinueTravelling();
+
+        double MilesToNextLandmark { get; set; }
+        double MilesTraveled { get; set; }
+        public Landmark NextLandmark { get; set; }
+
     }
 }

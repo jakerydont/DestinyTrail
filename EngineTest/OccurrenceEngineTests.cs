@@ -28,10 +28,10 @@ namespace DestinyTrail.Engine.Tests
         {
             _mockUtility = new Mock<IUtility>();
 
-            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"))
+            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>(It.IsAny<string>()))
                         .Returns(new OccurrenceData { Occurrences = occurrences });
 
-            _mockUtility.Setup(u => u.LoadYaml<List<Status>>("data/Statuses.yaml"))
+            _mockUtility.Setup(u => u.LoadYaml<List<Status>>(It.IsAny<string>()))
                 .Returns(new StatusData { Statuses = _statuses });
 
             mockWagonParty = new Mock<IWagonParty>();
@@ -59,16 +59,18 @@ namespace DestinyTrail.Engine.Tests
             };
 
             // Mock the occurrence loading method
-            mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"))
+
+
+            mockUtility.Setup(u => u.LoadYaml<OccurrenceData>(It.IsAny<string>()))
                 .Returns(new OccurrenceData { Occurrences = occurrences });
 
             // Mock the status loading method if needed
-            mockUtility.Setup(u => u.LoadYaml<List<Status>>("data/Statuses.yaml"))
+            mockUtility.Setup(u => u.LoadYaml<List<Status>>(It.IsAny<string>()))
                 .Returns(new StatusData { Statuses = _statuses });
 
 
             // Create the OccurrenceEngine
-            var occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", mockParty.Object, mockUtility.Object);
+            var occurrenceEngine = new OccurrenceEngine(mockParty.Object, mockUtility.Object);
 
             // Act
             var pickedOccurrence = occurrenceEngine.PickRandomOccurrence();
@@ -99,7 +101,7 @@ namespace DestinyTrail.Engine.Tests
             mockWagonParty.Setup(wp => wp.GetRandomMember()).Returns(mockPerson.Object);
 
 
-            var occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", mockWagonParty.Object, _mockUtility.Object);
+            var occurrenceEngine = new OccurrenceEngine( mockWagonParty.Object, _mockUtility.Object);
 
             // Act
             var processedOccurrence = occurrenceEngine.ProcessOccurrence(occurrence);
@@ -127,7 +129,7 @@ namespace DestinyTrail.Engine.Tests
 
             mockWagonParty.Setup(p => p.GetRandomMember()).Returns(mockPerson.Object);
 
-            var _occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", mockWagonParty.Object, _mockUtility.Object);
+            var _occurrenceEngine = new OccurrenceEngine(mockWagonParty.Object, _mockUtility.Object);
 
             // Act
             _occurrenceEngine.ProcessOccurrence(occurrence);
@@ -149,13 +151,13 @@ namespace DestinyTrail.Engine.Tests
             });
             
 
-            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"))
+            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>(It.IsAny<string>()))
                         .Returns(new OccurrenceData { Occurrences = occurrences });
 
-            _mockUtility.Setup(u => u.LoadYaml<List<Status>>("data/Statuses.yaml"))
+            _mockUtility.Setup(u => u.LoadYaml<List<Status>>(It.IsAny<string>()))
                 .Returns(new StatusData { Statuses = _statuses });
 
-            var occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", mockParty.Object, _mockUtility.Object);
+            var occurrenceEngine = new OccurrenceEngine( mockParty.Object, _mockUtility.Object);
             var mockOccurrence = new Mock<IOccurrence>();
 
 
@@ -187,13 +189,13 @@ namespace DestinyTrail.Engine.Tests
             mockWagonParty.Setup(p => p.GetRandomMember()).Returns(mockPerson.Object);
 
 
-            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml"))
+            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>(It.IsAny<string>()))
                         .Returns(new OccurrenceData { Occurrences = occurrences });
 
-            _mockUtility.Setup(u => u.LoadYaml<List<Status>>("data/Statuses.yaml"))
+            _mockUtility.Setup(u => u.LoadYaml<List<Status>>(It.IsAny<string>()))
                 .Returns(new StatusData { Statuses = _statuses });
 
-            var _occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", mockWagonParty.Object, _mockUtility.Object);
+            var _occurrenceEngine = new OccurrenceEngine(mockWagonParty.Object, _mockUtility.Object);
 
 
             // Assert
@@ -219,7 +221,7 @@ namespace DestinyTrail.Engine.Tests
 
             mockWagonParty.Setup(p => p.GetRandomMember()).Returns(mockPerson.Object);
 
-            var _occurrenceEngine = new OccurrenceEngine("data/Occurrences.yaml", mockWagonParty.Object, _mockUtility.Object);
+            var _occurrenceEngine = new OccurrenceEngine(mockWagonParty.Object, _mockUtility.Object);
 
             // Act
             _occurrenceEngine.TrySetQuantityInventoryItem(occurrence);

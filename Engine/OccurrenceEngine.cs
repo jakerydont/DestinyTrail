@@ -1,5 +1,6 @@
 
 using System.Text.RegularExpressions;
+using System.Configuration;
 
 namespace DestinyTrail.Engine
 {
@@ -19,15 +20,16 @@ namespace DestinyTrail.Engine
         public static Regex SetItemQuantityPattern = new Regex(@"\[(.*?)\] = (\d+)");
         private static Regex BooleanEventPattern = new Regex(@"\[Flags\.(.*?)\] = (true|false)");
 
-        public OccurrenceEngine(string yamlFilePath, IWagonParty party) : this(yamlFilePath, party, new Utility()) { }
-        public OccurrenceEngine(string yamlFilePath, IWagonParty party, IUtility utility)
+        public OccurrenceEngine(IWagonParty party) : this(party, new Utility()) { }
+        public OccurrenceEngine(IWagonParty party, IUtility utility)
         {
             Utility = utility;
 
-            string statusesFilePath = "data/Statuses.yaml";
+            string statusesFilePath = Utility.GetAppSetting("StatusesFilePath");
             Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];
             _statuses = Statuses;
-
+            
+            var yamlFilePath = Utility.GetAppSetting("OccurrencesFilePath");
             _occurrences = LoadOccurrences(yamlFilePath);
 
             _party = party;

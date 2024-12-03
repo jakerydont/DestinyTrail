@@ -2,7 +2,12 @@
 using DestinyTrail.Engine;
 using System.Threading;
 
-var game = new Game();
+var display = new Display();
+var utility = new Utility();
+var wagonParty = new WagonParty(utility);
+var occurrenceEngine = new OccurrenceEngine(wagonParty, utility);
+var travelEngine = new Travel(utility);
+var game = new Game(display, display, utility, wagonParty, travelEngine);
 var gameLoopTask = game.StartGameLoop();
 var inputTask = Task.Run(() => ProcessUserInput(game));
 

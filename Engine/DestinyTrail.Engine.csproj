@@ -7,13 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
     <PackageReference Include="YamlDotNet" Version="16.1.3" />
+    
+    <Using Include="System.Configuration" />
+    
     <None Update="data\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="assets\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    
   </ItemGroup>
+  <ItemGroup>
 
+  </ItemGroup>
 </Project>

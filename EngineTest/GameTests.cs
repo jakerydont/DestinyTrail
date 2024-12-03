@@ -3,6 +3,7 @@ using Xunit;
 using Moq;
 using DestinyTrail.Engine;
 using System.Threading.Tasks;
+using DestinyTrail.Engine.Abstractions;
 
 namespace DestinyTrail.Engine.Tests
 {
@@ -12,6 +13,8 @@ namespace DestinyTrail.Engine.Tests
         private readonly Mock<IDisplay> _mockDisplay;
         private readonly Mock<IDisplay> _mockStatus;
         private readonly Mock<IUtility> _mockUtility;
+        private Mock<ITravel> _mockTravel;
+        private Mock<IWagonParty> _mockWagonParty;
         private readonly Game _game;
 
         private readonly List<Occurrence> occurrences = new List<Occurrence>
@@ -25,29 +28,43 @@ namespace DestinyTrail.Engine.Tests
             _mockDisplay = new Mock<IDisplay>();
             _mockStatus = new Mock<IDisplay>();
             _mockUtility = new Mock<IUtility>();
+            _mockTravel = new Mock<ITravel>();
+            _mockWagonParty = new Mock<IWagonParty>();
+            _mockWagonParty.Setup(p => p.GetRandomMember()).Returns(new Person { ID = 0, Name = "Greg", Status = new Status { Name = "Healthy" } });
+            _mockWagonParty.Setup(p => p.Members).Returns(new List<IPerson> { new Person { ID = 0, Name = "Greg", Status = new Status { Name = "Healthy" } } });
 
             // Mocking Utility.LoadYaml method to return mock data
-            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>("data/Occurrences.yaml")).Returns(new OccurrenceData { Occurrences = occurrences });
-            _mockUtility.Setup(u => u.LoadYaml<RandomNamesData>("data/RandomNames.yaml")).Returns(new RandomNamesData { RandomNames = new List<PersonName> { new() { Name = "Name One" }, new() { Name = "Name Two" }, new() { Name = "Name Three" } } });
-            _mockUtility.Setup(u => u.LoadYaml<LandmarksData>("data/Landmarks.yaml")).Returns(new LandmarksData { Landmarks = new List<Landmark> { new Landmark { Name = "Landmark 1", ID = "FIRST", Lore = "The first landmark" } } });
-            _mockUtility.Setup(u => u.LoadYaml<Inventory>("data/Inventory.yaml")).Returns(new Inventory());
-            _mockUtility.Setup(u => u.LoadYaml<StatusData>("data/Statuses.yaml")).Returns(new StatusData {
+            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>(It.IsAny<string>())).Returns(new OccurrenceData { Occurrences = occurrences });
+            _mockUtility.Setup(u => u.LoadYaml<RandomNamesData>(It.IsAny<string>())).Returns(new RandomNamesData { RandomNames = new List<PersonName> { new() { Name = "Name One" }, new() { Name = "Name Two" }, new() { Name = "Name Three" } } });
+            _mockUtility.Setup(u => u.LoadYaml<LandmarksData>(It.IsAny<string>())).Returns(new LandmarksData { Landmarks = new List<Landmark> { new Landmark { Name = "Landmark 1", ID = "FIRST", Lore = "The first landmark" } } });
+            _mockUtility.Setup(u => u.LoadYaml<Inventory>(It.IsAny<string>())).Returns(new Inventory());
+            _mockUtility.Setup(u => u.LoadYaml<StatusData>(It.IsAny<string>())).Returns(new StatusData {
                 Statuses=[
                     new() { Name = "Healthy" }, 
                     new() { Name = "Sick" }, 
                     new() { Name = "Injured" }
                 ]});
+
+
+
+
+            var mockOccurrenceEngine = new Mock<IOccurrenceEngine>();
             // Initialize the Game with the mocked dependencies
-            _game = new Game(_mockDisplay.Object, _mockStatus.Object, _mockUtility.Object);
+            _game = new Game(
+                _mockDisplay.Object,
+                _mockStatus.Object,
+                _mockUtility.Object, 
+                _mockWagonParty.Object,
+                _mockTravel.Object
+            );
+
         }
 
         [Fact]
         public void Game_InitializesCorrectly()
         {
-            // Verify that key properties are initialized correctly
-            Assert.NotNull(_game.RandomNames);
-            Assert.Equal(0, _game.MilesTraveled);
-            Assert.Equal(0, _game.MilesToNextLandmark);
+
+
             Assert.Equal(Modes.Travelling, _game.GameMode);
         }
 

@@ -14,7 +14,7 @@ public class InputHandler
         {
             if (input == "")
             {
-                Game.Travel.ContinueTravelling();
+                Game._travel.ContinueTravelling();
             }
 
             if (input == "buy")

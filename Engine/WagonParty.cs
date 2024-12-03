@@ -24,7 +24,7 @@ namespace DestinyTrail.Engine
         public WagonParty(IUtility utility)
         {
             Utility = utility; 
-            string randomNamesPath = "data/RandomNames.yaml";
+            string randomNamesPath = Utility.GetAppSetting("RandomNamesFilePath");
             string[] RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath)];
 
             Random.Shared.Shuffle(RandomNames);
