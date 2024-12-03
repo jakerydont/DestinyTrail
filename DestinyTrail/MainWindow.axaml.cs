@@ -15,8 +15,8 @@ namespace DestinyTrail
             var StatusDisplay = new ADisplay(Status);
             var Utility = new Utility();
             var WagonParty = new WagonParty(Utility);
-            var OccurrenceEngine = new OccurrenceEngine(WagonParty, Utility);
-            game = new Game(OutputDisplay, StatusDisplay, Utility, WagonParty, OccurrenceEngine);
+            var Travel = new Travel(Utility);
+            game = new Game(OutputDisplay, StatusDisplay, Utility, WagonParty, Travel);
             game.StartGameLoop();
         }
 
@@ -37,7 +37,7 @@ namespace DestinyTrail
             // Process the input as needed
             // Example: Add a response to the output
             //OutputListBox.Items.Add($"Response: {input.ToUpper()}");
-            game.Travel.ContinueTravelling();
+            game.travel.ContinueTravelling();
         }
     }
 }

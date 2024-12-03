@@ -12,7 +12,7 @@ namespace DestinyTrail.Engine
         private CancellationTokenSource _cancellationTokenSource { get; set; }
 
         public DateTime CurrentDate { get; set; }
-        public ITravel _travel {get;set;}
+        public ITravel travel {get;set;}
 
 
         private string _weather = "not implemented";
@@ -42,7 +42,7 @@ namespace DestinyTrail.Engine
             _display = Output;
             _status = Status;
             _utility = Utility;
-            _travel = Travel;
+            travel = Travel;
             _party = Party;
 
             _cancellationTokenSource = new CancellationTokenSource();
@@ -73,7 +73,7 @@ namespace DestinyTrail.Engine
                     switch (GameMode)
                     {
                         case Modes.Travelling:
-                            _travel.TravelLoop();
+                            travel.TravelLoop();
                             break;
                         case Modes.AtLandmark:
                             AtLandmarkLoop();
@@ -97,7 +97,7 @@ namespace DestinyTrail.Engine
         {
             if (!_shouldInitializeAtLandmark) return;
             _shouldInitializeAtLandmark = false;
-            _display.WriteTitle(_travel.NextLandmark.Name);
+            _display.WriteTitle(travel.NextLandmark.Name);
             _display.Write("Press enter to continue.");
 
         }
@@ -109,8 +109,8 @@ namespace DestinyTrail.Engine
             _status.Write($"Date: {_utility.GetFormatted(CurrentDate)}");
             _status.Write($"Weather: {_weather}");
             _status.Write($"Health: {_party.GetDisplayHealth()}");
-            _status.Write($"Distance to next landmark: {_utility.Abbreviate(_travel.MilesToNextLandmark)} miles ({_utility.Abbreviate(_travel.MilesToNextLandmark)} km)");
-            _status.Write($"Distance traveled: {_utility.Abbreviate(_travel.MilesTraveled)} miles ({_utility.Abbreviate(_travel.MilesTraveled)} km)");
+            _status.Write($"Distance to next landmark: {_utility.Abbreviate(travel.MilesToNextLandmark)} miles ({_utility.Abbreviate(travel.MilesToNextLandmark)} km)");
+            _status.Write($"Distance traveled: {_utility.Abbreviate(travel.MilesTraveled)} miles ({_utility.Abbreviate(travel.MilesTraveled)} km)");
 
             _status.Write($"-----------");
             foreach (var person in _party.Members)

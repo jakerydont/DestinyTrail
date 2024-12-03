@@ -9,7 +9,7 @@ namespace DestinyTrail.Engine
         public IDisplay _display { get; set; }
         public Modes GameMode { get; }
 
-        public ITravel _travel {get;set;}
+        public ITravel travel {get;set;}
 
         public IShoppingEngine ShoppingEngine { get; set; }
         public void ChangeMode(Modes mode);
