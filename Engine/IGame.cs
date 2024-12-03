@@ -3,10 +3,10 @@ namespace DestinyTrail.Engine
     public interface IGame
     {
         public IWagonParty _party { get; set; }
-        public DateTime CurrentDate { get; set; }
 
 
-        public IDisplay _display { get; set; }
+
+        public IDisplay MainDisplay { get; set; }
         public Modes GameMode { get; }
 
         public ITravel travel {get;set;}
