@@ -134,17 +134,17 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
-        public void NextOrFirst_ShouldReturnZero_WhenPredicateDoesNotMatch()
+        public void NextOrFirst_ShouldReturnFirstElementIfNoNext()
         {
             // Arrange
             var collection = new List<int> { 1, 2, 3, 4 };
-            Func<int, bool> predicate = x => x == 5;
+            Func<int, bool> predicate = x => x == 4;
 
             // Act
             var result = _utility.NextOrFirst(collection, predicate);
 
             // Assert
-            Assert.Equal(0, result);
+            Assert.Equal(1, result);
         }
 
         [Fact]
