@@ -15,7 +15,7 @@ namespace DestinyTrail
             var StatusDisplay = new ADisplay(Status);
             var Utility = new Utility();
             var WagonParty = new WagonParty(Utility);
-            var Travel = new Travel(Utility);
+            var Travel = new Travel(WagonParty, Utility);
             game = new Game(OutputDisplay, StatusDisplay, Utility, WagonParty, Travel);
             game.StartGameLoop();
         }

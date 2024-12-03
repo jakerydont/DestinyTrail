@@ -4,9 +4,11 @@ namespace DestinyTrail.Engine;
 
 public class Travel : ITravel
 {
-    IGame _game { get; set; }
+    public event Action<Modes> ModeChanged;
 
-    private IUtility Utility;
+    public IWagonParty Party { get;  set; }
+
+    public IUtility Utility {get;set;}
 
     public IOccurrenceEngine OccurrenceEngine { get; set; }
 
@@ -22,13 +24,13 @@ public class Travel : ITravel
     public Landmark NextLandmark { get; set; }
     public double MilesToNextLandmark { get; set; }
     public double MilesTraveled { get; set; }
-    public Travel(IUtility utility)
+    public Travel(IWagonParty party, IUtility utility)
     {
-
+        Party = party;
         Utility = utility;
 
 
-        OccurrenceEngine = new OccurrenceEngine(_game._party, Utility);
+        OccurrenceEngine = new OccurrenceEngine(Party, Utility);
 
         string pacesFilePath = Utility.GetAppSetting("PacesFilePath");
         _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
@@ -71,7 +73,7 @@ public class Travel : ITravel
             occurrenceMessage = occurrence.DisplayText;
         }
 
-        _game._party.SpendDailyHealth(Pace, Rations);
+        Party.SpendDailyHealth(Pace, Rations);
 
         _game.DrawStatusPanel();
 

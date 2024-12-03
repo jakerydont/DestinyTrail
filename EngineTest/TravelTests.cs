@@ -44,7 +44,7 @@ namespace DestinyTrail.Engine.Tests
                 .Returns(new LandmarksData { Landmarks = [new Landmark { ID = "FORT_LARAMIE", Name = "Fort Laramie", Distance = 150, Lore = "Fun place" } ]});
 
             // Creating the Travel object with mocked dependencies
-            _travel = new Travel(_mockUtility.Object);
+            _travel = new Travel(wagonParty.Object,_mockUtility.Object);
 
 
             _travel.MilesTraveled =0;
