@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace DestinyTrail.Engine
 {
-    public abstract class GameData<T> : List<T> where T : GameComponent, new()
+    public abstract class GameData<T> : List<T>, IGameData<T> where T : GameComponent, new()
     {
 
         private IDisplay Display { get; }
@@ -101,6 +101,15 @@ namespace DestinyTrail.Engine
         {
             return base.ToArray();
         }
-    
+
+        void IGameData<T>.Remove(T item)
+        {
+            Remove(item);
+        }
+
+        public T First()
+        {
+            return First();
+        }
     }
 }
