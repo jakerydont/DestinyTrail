@@ -8,7 +8,7 @@ public interface IWorldStatus
 
     DateTime CurrentDate { get; set; }
 
-    string Weather { get; set; }
+    IWeather Weather { get; set; }
 
 }
 
