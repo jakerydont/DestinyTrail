@@ -5,10 +5,12 @@ namespace DestinyTrail.Engine;
 public class Travel : ITravel
 {
     public event Action<Modes> ModeChanged;
-
+    
     public IWagonParty Party { get;  set; }
 
     public IUtility Utility {get;set;}
+
+    public IDisplay Display { get; set; }
 
     public IOccurrenceEngine OccurrenceEngine { get; set; }
 
@@ -24,10 +26,15 @@ public class Travel : ITravel
     public Landmark NextLandmark { get; set; }
     public double MilesToNextLandmark { get; set; }
     public double MilesTraveled { get; set; }
-    public Travel(IWagonParty party, IUtility utility)
+
+    public IWorldStatus WorldStatus { get; set; }
+
+    public Travel(IWagonParty party, IUtility utility, IDisplay display, IWorldStatus worldStatus)
     {
         Party = party;
         Utility = utility;
+        Display = display;
+        WorldStatus = worldStatus;
 
 
         OccurrenceEngine = new OccurrenceEngine(Party, Utility);
@@ -63,9 +70,10 @@ public class Travel : ITravel
         if (MilesToNextLandmark <= 0)
         {
             occurrenceMessage = $"You have reached {NextLandmark.Name}.";
-            _game.ChangeMode(Modes.AtLandmark);
+            ModeChanged.Invoke(Modes.AtLandmark);
 
         }
+
         else
         {
             Occurrence randomOccurrence = OccurrenceEngine.PickRandomOccurrence();
@@ -75,14 +83,14 @@ public class Travel : ITravel
 
         Party.SpendDailyHealth(Pace, Rations);
 
-        _game.DrawStatusPanel();
 
-        _game._display.Write($"{Utility.GetFormatted(_game.CurrentDate)}: {occurrenceMessage}");
-        _game._display.ScrollToBottom();
+
+        Display.Write($"{Utility.GetFormatted(WorldStatus.CurrentDate)}: {occurrenceMessage}");
+        Display.ScrollToBottom();
 
         if (_advanceDay)
         {
-            _game.CurrentDate = _game.CurrentDate.AddDays(1);
+            WorldStatus.CurrentDate = WorldStatus.CurrentDate.AddDays(1);
         }
     }
     private double CalculateMilesTraveled()
@@ -93,12 +101,13 @@ public class Travel : ITravel
 
     public void ContinueTravelling()
     {
-        _game._display.Write($"You decided to continue.");
+        Display.Write($"You decided to continue.");
         NextLandmark = Utility.NextOrFirst(
             _landmarksData.Landmarks,
             landmark => landmark.ID == NextLandmark.ID
             );
         MilesToNextLandmark = NextLandmark.Distance;
-        _game.ChangeMode(Modes.Travelling);
+        ModeChanged.Invoke(Modes.Travelling);
+
     }
 }

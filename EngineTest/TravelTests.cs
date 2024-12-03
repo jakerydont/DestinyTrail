@@ -4,25 +4,28 @@ namespace DestinyTrail.Engine.Tests
 {
     public class TravelTests
     {
+        private readonly Mock<IWagonParty> _mockWagonParty;
         private readonly Mock<IUtility> _mockUtility;
-        private readonly Mock<IGame> _mockGame;
+        private readonly Mock<IDisplay> _mockDisplay;
+        private readonly Mock<IWorldStatus> _mockWorldStatus;
+
         private readonly Travel _travel;
 
         public TravelTests()
         {
             _mockUtility = new Mock<IUtility>();
-            _mockGame = new Mock<IGame>();
+
+            _mockWorldStatus = new Mock<IWorldStatus>();
+            _mockWorldStatus.Setup(ws => ws.CurrentDate).Returns(DateTime.Now);
+
+            _mockDisplay = new Mock<IDisplay>();
 
             // Mocking game properties
+            _mockWagonParty = new Mock<IWagonParty>();
 
+            _mockWagonParty.Setup(w => w.GetRandomMember()).Returns(new Person { ID = 0, Name = "Greg", Status = new Status { Name = "Healthy" } });
 
-            _mockGame.Setup(g => g.CurrentDate).Returns(DateTime.Now);
-
-
-            var wagonParty = new Mock<IWagonParty>();
-            wagonParty.Setup(w => w.GetRandomMember()).Returns(new Person { ID = 0, Name = "Greg", Status = new Status { Name = "Healthy" } });
-
-            _mockGame.Setup(g => g._party).Returns(wagonParty.Object);
+        
 
             // Mocking YAML loading
             _mockUtility.Setup(u => u.GetAppSetting(It.IsAny<string>())).Returns(string.Empty);
@@ -44,7 +47,7 @@ namespace DestinyTrail.Engine.Tests
                 .Returns(new LandmarksData { Landmarks = [new Landmark { ID = "FORT_LARAMIE", Name = "Fort Laramie", Distance = 150, Lore = "Fun place" } ]});
 
             // Creating the Travel object with mocked dependencies
-            _travel = new Travel(wagonParty.Object,_mockUtility.Object);
+            _travel = new Travel(_mockWagonParty.Object,_mockUtility.Object, _mockDisplay.Object, _mockWorldStatus.Object);
 
 
             _travel.MilesTraveled =0;
@@ -70,17 +73,13 @@ namespace DestinyTrail.Engine.Tests
         public void TravelLoop_UpdatesMilesTraveledAndStatus_WhenTraveling()
          {
             // Arrange
-            var mockDisplay = new Mock<IDisplay>();
-            _mockGame.Setup(g => g._display).Returns(mockDisplay.Object);
-            _travel.MilesToNextLandmark = 50;
+             _travel.MilesToNextLandmark = 50;
 
             // Act
             _travel.TravelLoop();
 
-            // Assert
-            
+            // Assert           
             Assert.Equal(50 - _travel.Pace.Factor, _travel.MilesToNextLandmark);
-
             Assert.Equal(_travel.MilesTraveled, _travel.Pace.Factor);
 
         }
@@ -89,22 +88,19 @@ namespace DestinyTrail.Engine.Tests
         public void TravelLoop_ChangesModeToAtLandmark_WhenMilesToNextLandmarkIsZero()
         {
             // Arrange
-            var mockDisplay = new Mock<IDisplay>();
-            _mockGame.Setup(g => g._display).Returns(mockDisplay.Object);
-            
-            // Set up the game state
-                        _travel.MilesToNextLandmark = 0;
+            _travel.MilesToNextLandmark = 0;
             _travel.NextLandmark.Name = "Fort Kearney";
+            bool eventTriggered = false;
+            _travel.ModeChanged += (mode) => { if (mode == Modes.AtLandmark) eventTriggered = true; };
 
             // Act
             _travel.TravelLoop();
 
             // Assert
-            // Verify that the game mode changes to AtLandmark
-            _mockGame.Verify(g => g.ChangeMode(Modes.AtLandmark), Times.Once);
+            Assert.True(eventTriggered);
 
             // Verify that the display includes the correct landmark message
-            mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("Fort Kearney"))), Times.Once);
+            _mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("Fort Kearney"))), Times.Once);
         }
 
 
@@ -112,8 +108,8 @@ namespace DestinyTrail.Engine.Tests
         public void TravelLoop_ProcessesOccurrence_WhenStillTraveling()
         {
             // Arrange
-            var mockDisplay = new Mock<IDisplay>();
-            _mockGame.Setup(g => g._display).Returns(mockDisplay.Object);
+
+
            _travel.MilesToNextLandmark = 50; // Still traveling
 
             // Mocking a simplified OccurrenceEngine interaction
@@ -139,7 +135,7 @@ namespace DestinyTrail.Engine.Tests
 
             // Assert
             mockOccurrenceEngine.Verify(o => o.PickRandomOccurrence(), Times.Once);
-            mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("Wild Animal Encounter"))), Times.Once);
+            _mockDisplay.Verify(d => d.Write(It.Is<string>(s => s.Contains("Wild Animal Encounter"))), Times.Once);
         }
 
 
@@ -147,13 +143,12 @@ namespace DestinyTrail.Engine.Tests
         public void ContinueTravelling_ResetsMilesAndChangesMode()
         {
             // Arrange
-            var mockDisplay = new Mock<IDisplay>();
-            _mockGame.Setup(g => g._display).Returns(mockDisplay.Object);
-
             var nextLandmark = new Landmark { ID = "FORT_LARAMIE" , Name = "Fort Laramie", Distance = 150, Lore="Fun place" };
-           _travel.NextLandmark = nextLandmark;
-
+            _travel.NextLandmark = nextLandmark;
             _travel._landmarksData = new LandmarksData{Landmarks = new List<Landmark> { nextLandmark }};
+
+            bool eventTriggered = false;
+            _travel.ModeChanged += (mode) => { if (mode == Modes.Travelling) eventTriggered = true; };
 
             _mockUtility.Setup(u => u.NextOrFirst(It.IsAny<IEnumerable<Landmark>>(), It.IsAny<Func<Landmark, bool>>()))
                         .Returns(nextLandmark);
@@ -163,8 +158,10 @@ namespace DestinyTrail.Engine.Tests
 
             // Assert
             Assert.Equal(_travel.MilesToNextLandmark, nextLandmark.Distance);
-            _mockGame.Verify(g => g.ChangeMode(Modes.Travelling), Times.Once);
-            mockDisplay.Verify(d => d.Write("You decided to continue."));
+            Assert.True(eventTriggered);
+            _mockDisplay.Verify(d => d.Write("You decided to continue."));
         }
     }
+
+
 }

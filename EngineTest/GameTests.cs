@@ -13,6 +13,7 @@ namespace DestinyTrail.Engine.Tests
         private readonly Mock<IDisplay> _mockDisplay;
         private readonly Mock<IDisplay> _mockStatus;
         private readonly Mock<IUtility> _mockUtility;
+        private readonly Mock<IWorldStatus> _mockWorldStatus;
         private Mock<ITravel> _mockTravel;
         private Mock<IWagonParty> _mockWagonParty;
         private readonly Game _game;
@@ -29,6 +30,8 @@ namespace DestinyTrail.Engine.Tests
             _mockStatus = new Mock<IDisplay>();
             _mockUtility = new Mock<IUtility>();
             _mockTravel = new Mock<ITravel>();
+            _mockWorldStatus = new Mock<IWorldStatus>();
+
             _mockWagonParty = new Mock<IWagonParty>();
             _mockWagonParty.Setup(p => p.GetRandomMember()).Returns(new Person { ID = 0, Name = "Greg", Status = new Status { Name = "Healthy" } });
             _mockWagonParty.Setup(p => p.Members).Returns(new List<IPerson> { new Person { ID = 0, Name = "Greg", Status = new Status { Name = "Healthy" } } });
@@ -55,7 +58,8 @@ namespace DestinyTrail.Engine.Tests
                 _mockStatus.Object,
                 _mockUtility.Object, 
                 _mockWagonParty.Object,
-                _mockTravel.Object
+                _mockTravel.Object,
+                _mockWorldStatus.Object
             );
 
         }
