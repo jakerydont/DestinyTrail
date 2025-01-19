@@ -66,7 +66,7 @@ namespace DestinyTrail.Engine
 
         public IEnumerable<IPerson> GetLivingMembers()
         {
-            return Members.Where(p => p.Status.Name.ToLower() != "dead");
+            return Members.Where(p => p.isAlive);
         }
 
         public IPerson GeneratePerson(string name)

@@ -6,14 +6,13 @@ namespace DestinyTrail.Engine
 {
     public class OccurrenceEngine : IOccurrenceEngine
     {
-        private readonly Occurrence[] _occurrences;
-        private readonly string[] _statuses;
+
         public string[] Statuses { get; private set; }
 
-
         private readonly IWagonParty _party;
-        private readonly IUtility Utility;
-
+        private readonly IUtility _utility;
+        private readonly Occurrence[] _occurrences;
+        private readonly string[] _statuses;
 
         private static Regex DecrementEventPattern = new Regex(@"\[(.*?)\] -= (\d+)");
         private static Regex IncrementEventPattern = new Regex(@"\[(.*?)\] \+= (\d+)");
@@ -23,13 +22,13 @@ namespace DestinyTrail.Engine
         public OccurrenceEngine(IWagonParty party) : this(party, new Utility()) { }
         public OccurrenceEngine(IWagonParty party, IUtility utility)
         {
-            Utility = utility;
+            _utility = utility;
 
-            string statusesFilePath = Utility.GetAppSetting("StatusesFilePath");
-            Statuses = [.. Utility.LoadYaml<StatusData>(statusesFilePath)];
+            string statusesFilePath = _utility.GetAppSetting("StatusesFilePath");
+            Statuses = [.. _utility.LoadYaml<StatusData>(statusesFilePath)];
             _statuses = Statuses;
             
-            var yamlFilePath = Utility.GetAppSetting("OccurrencesFilePath");
+            var yamlFilePath = _utility.GetAppSetting("OccurrencesFilePath");
             _occurrences = LoadOccurrences(yamlFilePath);
 
             _party = party;
@@ -37,7 +36,7 @@ namespace DestinyTrail.Engine
 
         private Occurrence[] LoadOccurrences(string yamlFilePath)
         {
-            return Utility.LoadYaml<OccurrenceData>(yamlFilePath);
+            return _utility.LoadYaml<OccurrenceData>(yamlFilePath);
         }
 
 
@@ -78,10 +77,7 @@ namespace DestinyTrail.Engine
             return occurrence;
         }
 
-        private void TryProcessEffect(IOccurrence occurrence)
-        {
-            TryProcessEffect(occurrence, Person.Nobody);
-        }
+        private void TryProcessEffect(IOccurrence occurrence) => TryProcessEffect(occurrence, Person.Nobody);
         private void TryProcessEffect(IOccurrence occurrence, IPerson person)
         {
             if (person.ID != Person.Nobody.ID)

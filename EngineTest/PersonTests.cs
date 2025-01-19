@@ -23,6 +23,36 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
+        public void IsAlive_ShouldReturnTrueIfStatusIsNotDead()
+        {
+            // Arrange
+            var person = new Person
+            {
+                ID = 1,
+                Name = "Test Person",
+                Status = new Status { Name = "Healthy" }
+            };
+
+            // Act & Assert
+            Assert.True(person.isAlive);
+        }
+
+        [Fact]
+        public void IsAlive_ShouldReturnFalseIfStatusIsDead()
+        {
+            // Arrange
+            var person = new Person
+            {
+                ID = 1,
+                Name = "Test Person",
+                Status = new Status { Name = "Dead" }
+            };
+
+            // Act & Assert
+            Assert.False(person.isAlive);
+        }
+
+        [Fact]
         public void ToString_ReturnsCorrectFormat()
         {
             // Arrange

@@ -1,4 +1,5 @@
-using Xunit.Sdk;
+using Xunit;
+using Moq;
 
 namespace DestinyTrail.Engine.Tests
 {
@@ -10,6 +11,7 @@ namespace DestinyTrail.Engine.Tests
         private readonly Mock<IWorldStatus> _mockWorldStatus;
 
         private readonly Travel _travel;
+
 
         public TravelTests()
         {
@@ -44,13 +46,20 @@ namespace DestinyTrail.Engine.Tests
                     new Occurrence { Name = "Occurrence 2", DisplayText = "{name} is an occurrence", Effect = "dead" } ]});
 
             _mockUtility.Setup(u => u.LoadYaml<LandmarksData>(It.IsAny<string>()))
-                .Returns(new LandmarksData { Landmarks = [new Landmark { ID = "FORT_LARAMIE", Name = "Fort Laramie", Distance = 150, Lore = "Fun place" } ]});
+                .Returns(new LandmarksData { Landmarks = [
+                    new Landmark { ID = "FORT_LARAMIE", Name = "Fort Laramie", Distance = 150, Lore = "Fun place" },
+                    new Landmark { ID = "second_landmark", Name = "Second Landmark", Distance = 100, Lore = "other place" } 
+                    ]});
 
             // Creating the Travel object with mocked dependencies
-            _travel = new Travel(_mockWagonParty.Object,_mockUtility.Object, _mockDisplay.Object, _mockWorldStatus.Object);
+            _travel = new Travel(_mockWagonParty.Object,
+            _mockUtility.Object,
+             _mockDisplay.Object, 
+             _mockWorldStatus.Object);
 
+            Assert.NotNull(_travel);
 
-            _travel.MilesTraveled =0;
+             _travel.MilesTraveled =0;
         }
 
         [Fact]
