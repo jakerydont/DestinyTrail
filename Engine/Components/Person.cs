@@ -6,6 +6,8 @@ namespace DestinyTrail.Engine
         public required int ID { get; set; }
         public required Status Status { get; set; } 
 
+        public bool isAlive => Status.Name.ToLower() != "dead";
+
         public override string ToString()
         {
             return $"{Name} ({ID})";

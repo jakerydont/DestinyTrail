@@ -107,9 +107,9 @@ namespace DestinyTrail.Engine
             Remove(item);
         }
 
-        public T First()
+        T IGameData<T>.First()
         {
-            return First();
+            return this.First();
         }
     }
 }

@@ -65,7 +65,7 @@ namespace DestinyTrail.Engine
 
         IInventoryItem[] IGameData<IInventoryItem>.ToArray() => _items.ToArray();
 
-        IInventoryItem IGameData<IInventoryItem>.First() => First();
+        IInventoryItem IGameData<IInventoryItem>.First() => _items[0];
 
         public IInventoryItem? MinBy<TKey>(Func<IInventoryItem, TKey> keySelector) => _items.MinBy(keySelector);
     }

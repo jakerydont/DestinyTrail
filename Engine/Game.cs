@@ -145,6 +145,6 @@ namespace DestinyTrail.Engine
     public class GameStatus
     {
         public DateTime CurrentDate { get; set; }
-        public string Weather { get; set; }
+        public string Weather { get; set; } = "Default";
     }
 }
