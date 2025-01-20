@@ -72,6 +72,55 @@ namespace DestinyTrail.Engine.Tests
             );
         }
 
+
+        [Fact]
+        public async Task LoadYamlAsync_ShouldReturnDeserializedObject_WhenYamlFileExists()
+        {
+            // Arrange
+            var yamlFilePath = "data/Test.yaml";
+            var yamlContent = """
+                Tests:
+                - Name: "First"
+                - Name: "Middle One"
+                - Name: "Last"
+                """;
+
+            var mockFileReader = new Mock<IFileReader>();
+
+            // Mock the async file read operation
+            mockFileReader
+                .Setup(fr => fr.ReadAllTextAsync(It.IsAny<string>()))
+                .ReturnsAsync(yamlContent);
+
+            var mockYamlDotNetDeserializer = new Mock<IYamlDeserializer>();
+
+            // Mock the deserialization process
+            mockYamlDotNetDeserializer
+                .Setup(d => d.Deserialize<TestTypeData>(yamlContent))
+                .Returns(new TestTypeData
+                {
+                    Tests = new List<TestType>
+                    {
+                        new() { Name = "First" },
+                        new() { Name = "Middle One" },
+                        new() { Name = "Last" }
+                    }
+                });
+
+            var utility = new Utility(mockYamlDotNetDeserializer.Object, mockFileReader.Object, new Mock<IConfigurationProvider>().Object);
+
+            // Act
+            var result = await utility.LoadYamlAsync<TestTypeData>(yamlFilePath);
+
+            // Assert
+            Assert.NotNull(result); // Ensure the result is not null
+            Assert.Collection(result.Tests,
+                item => Assert.Equal("First", item.Name),
+                item => Assert.Equal("Middle One", item.Name),
+                item => Assert.Equal("Last", item.Name)
+            );
+        }
+
         [Fact]
         public void LoadYaml_ShouldRetrunStringsFromStatus()
         {
