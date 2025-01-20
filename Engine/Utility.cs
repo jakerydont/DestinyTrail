@@ -25,7 +25,8 @@ namespace DestinyTrail.Engine
 
         public T LoadYaml<T>(string yamlFilePath)
         {
-            return Task.Run(() => LoadYamlAsync<T>(yamlFilePath)).GetAwaiter().GetResult();
+            var yaml = FileReader.ReadAllText(yamlFilePath);
+            return Deserializer.Deserialize<T>(yaml);
         }
 
         public async Task<T> LoadYamlAsync<T>(string yamlFilePath)
