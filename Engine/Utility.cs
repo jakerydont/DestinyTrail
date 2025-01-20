@@ -1,4 +1,5 @@
 using System.Configuration;
+using System.Threading.Tasks;
 using DestinyTrail.Engine.Abstractions;
 using YamlDotNet.Core;
 using YamlDotNet.Serialization;
@@ -13,6 +14,8 @@ namespace DestinyTrail.Engine
         IConfigurationProvider ConfigurationProvider { get; }
 
         public Utility() : this ( new YamlDeserializer(), new FileReader(), new ConfigurationProvider() ) {} 
+
+        public Utility(IConfigurationProvider configurationProvider) : this ( new YamlDeserializer(), new FileReader(), configurationProvider) {}
         public Utility(IYamlDeserializer yamlDeserializer, IFileReader fileReader, IConfigurationProvider configurationProvider)
         {
             Deserializer = yamlDeserializer;
@@ -22,9 +25,15 @@ namespace DestinyTrail.Engine
 
         public T LoadYaml<T>(string yamlFilePath)
         {
-            var yaml = FileReader.ReadAllText(yamlFilePath);
+            return Task.Run(() => LoadYamlAsync<T>(yamlFilePath)).GetAwaiter().GetResult();
+        }
+
+        public async Task<T> LoadYamlAsync<T>(string yamlFilePath)
+        {
+            var yaml = await FileReader.ReadAllTextAsync(yamlFilePath);
             return Deserializer.Deserialize<T>(yaml);
         }
+
 
         public T NextOrFirst<T>(IEnumerable<T> collection, Func<T, bool> predicate)
         {
