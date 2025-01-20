@@ -52,8 +52,8 @@ namespace DestinyTrail.Engine
 
             string inventoryFilePath = Utility.GetAppSetting("InventoryFilePath");
             string inventoryCustomItemsFilePath = Utility.GetAppSetting("InventoryCustomItemsFilePath");
-            Inventory = Utility.LoadYaml<Inventory>(inventoryFilePath);
-            Inventory.CustomItems = Utility.LoadYaml<Inventory>(inventoryCustomItemsFilePath);
+            Inventory = Utility.LoadYamlAsync<Inventory>(inventoryFilePath).GetAwaiter().GetResult();
+            Inventory.CustomItems = Utility.LoadYamlAsync<Inventory>(inventoryCustomItemsFilePath).GetAwaiter().GetResult();
 
     
 

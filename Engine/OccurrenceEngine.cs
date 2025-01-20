@@ -25,7 +25,7 @@ namespace DestinyTrail.Engine
             _utility = utility;
 
             string statusesFilePath = _utility.GetAppSetting("StatusesFilePath");
-            Statuses = [.. _utility.LoadYaml<StatusData>(statusesFilePath)];
+            Statuses = [.. _utility.LoadYamlAsync<StatusData>(statusesFilePath).GetAwaiter().GetResult()];
             _statuses = Statuses;
             
             var yamlFilePath = _utility.GetAppSetting("OccurrencesFilePath");
@@ -36,7 +36,7 @@ namespace DestinyTrail.Engine
 
         private Occurrence[] LoadOccurrences(string yamlFilePath)
         {
-            return _utility.LoadYaml<OccurrenceData>(yamlFilePath);
+            return _utility.LoadYamlAsync<OccurrenceData>(yamlFilePath).GetAwaiter().GetResult();
         }
 
 

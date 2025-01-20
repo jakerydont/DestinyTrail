@@ -25,7 +25,7 @@ namespace DestinyTrail.Engine
         {
             Utility = utility; 
             string randomNamesPath = Utility.GetAppSetting("RandomNamesFilePath");
-            string[] RandomNames = [.. Utility.LoadYaml<RandomNamesData>(randomNamesPath)];
+            string[] RandomNames = [.. Utility.LoadYamlAsync<RandomNamesData>(randomNamesPath).GetAwaiter().GetResult()];
 
             Random.Shared.Shuffle(RandomNames);
             var partyNames = RandomNames.Take(5).ToArray();

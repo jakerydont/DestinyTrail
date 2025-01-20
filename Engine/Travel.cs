@@ -42,15 +42,15 @@ public class Travel : ITravel
         OccurrenceEngine = new OccurrenceEngine(Party, Utility);
 
         string pacesFilePath = Utility.GetAppSetting("PacesFilePath");
-        _paceData = Utility.LoadYaml<PaceData>(pacesFilePath);
+        _paceData = Utility.LoadYamlAsync<PaceData>(pacesFilePath).GetAwaiter().GetResult();
         Pace = _paceData.MinBy(pace => pace.Factor);
 
         string rationsFilePath = Utility.GetAppSetting("RationsFilePath");
-        _rationData = Utility.LoadYaml<RationData>(rationsFilePath);
+        _rationData = Utility.LoadYamlAsync<RationData>(rationsFilePath).GetAwaiter().GetResult();
         Rations = _rationData.MaxBy(rations => rations.Factor);
 
         string landmarksFilePath = Utility.GetAppSetting("LandmarksFilePath");
-        _landmarksData = Utility.LoadYaml<LandmarksData>(landmarksFilePath);
+        _landmarksData = Utility.LoadYamlAsync<LandmarksData>(landmarksFilePath).GetAwaiter().GetResult();
         NextLandmark = _landmarksData.First();
 
         MilesTraveled = 0;
