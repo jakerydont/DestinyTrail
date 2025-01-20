@@ -20,7 +20,16 @@
     </None>
     
   </ItemGroup>
-  <ItemGroup>
 
-  </ItemGroup>
+  <Target Name="ConvertAppConfigToJson" AfterTargets="Build">
+    <!-- Define paths -->
+    <PropertyGroup>
+      <SourceConfigPath>$(MSBuildProjectDirectory)\app.config</SourceConfigPath>
+      <DestJsonPath>$(SolutionDir)DestinyTrail.Blazor\wwwroot\appsettings.json</DestJsonPath>
+    </PropertyGroup>
+
+    <!-- Run conversion task -->
+    <Exec Command="dotnet run --project $(MSBuildThisFileDirectory)\..\AppConfigToJsonConverter\AppConfigToJsonConverter.csproj $(SourceConfigPath) $(DestJsonPath)" />
+  </Target>
+
 </Project>
