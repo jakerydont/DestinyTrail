@@ -5,7 +5,7 @@ public interface ITravel
     event Action<Modes> ModeChanged;
     public IWagonParty Party { get; set; }
     public IUtility Utility { get; set; }
-    IOccurrenceEngine OccurrenceEngine { get; set; }
+    IOccurrenceEngine occurrenceEngine { get; set; }
     Pace Pace { get; }
     Rations Rations { get; set; }
 
