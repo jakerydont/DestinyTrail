@@ -15,4 +15,20 @@
     <ProjectReference Include="..\Engine\DestinyTrail.Engine.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="data\**\*.*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="CopyDataBeforeBuild" BeforeTargets="Build">
+    <ItemGroup>
+      <SourceData Include="..\Engine\data\**\*.*" />
+    </ItemGroup>
+    <Copy
+      SourceFiles="@(SourceData)"
+      DestinationFolder="$(ProjectDir)wwwroot\data\%(RecursiveDir)"
+      SkipUnchangedFiles="true" />
+  </Target>
+
 </Project>

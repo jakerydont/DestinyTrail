@@ -24,8 +24,8 @@ class Program
 
             foreach (var addElement in xml.Descendants("appSettings").Descendants("add"))
             {
-                string key = addElement.Attribute("key")?.Value;
-                string value = addElement.Attribute("value")?.Value;
+                string key = addElement.Attribute("key")?.Value ?? throw new Exception();
+                string value = addElement.Attribute("value")?.Value ?? throw new Exception();
 
                 if (key != null && value != null)
                 {
