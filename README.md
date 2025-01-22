@@ -16,6 +16,7 @@ There is no release build of this yet. This is still in the "Run it from within 
 * Items can be purchased when stopped at a location
 
 # Roadmap
+* Blazor implementation
 * Implement health system and death for party members
 * Weather system
 * River crossing system
