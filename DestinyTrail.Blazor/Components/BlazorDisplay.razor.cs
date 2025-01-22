@@ -1,7 +1,7 @@
 using System;
 using DestinyTrail.Engine;
 
-namespace DestinyTrail.Blazor;
+namespace DestinyTrail.Blazor.Components;
 
 public partial class BlazorDisplay : IDisplay
 {
