@@ -13,18 +13,27 @@
     private Game? game { get; set; }
     private BlazorDisplay? outputDisplay;
     private BlazorDisplay? statusDisplay;
+    private bool isGameInitialized = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (firstRender && !isGameInitialized)
+        {
+            if (outputDisplay == null || statusDisplay == null)
+            {
+                throw new InvalidOperationException("Blazor displays are not initialized.");
+            }
 
-  
-        var worldStatus = new WorldStatus();
-        var configurationProvider = new DestinyTrail.Blazor.ConfigurationProvider();
-        var fileReader = new DestinyTrail.Blazor.FileReader(HttpClient); // Use the injected HttpClient
-        var utility = new Utility(new YamlDeserializer(), fileReader, configurationProvider);
-        var wagonParty = await WagonParty.CreateAsync(utility);
-        var travel = await Travel.CreateAsync(wagonParty, utility, (IDisplay)statusDisplay, worldStatus);
-        game = await Game.CreateAsync((IDisplay)outputDisplay, (IDisplay)statusDisplay, utility, wagonParty, travel, worldStatus);
-        await game.StartGameLoop();
+            var worldStatus = new WorldStatus();
+            var configurationProvider = new DestinyTrail.Blazor.ConfigurationProvider();
+            var fileReader = new DestinyTrail.Blazor.FileReader(HttpClient); // Use the injected HttpClient
+            var utility = new Utility(new YamlDeserializer(), fileReader, configurationProvider);
+            var wagonParty = await WagonParty.CreateAsync(utility);
+            var travel = await Travel.CreateAsync(wagonParty, utility, statusDisplay, worldStatus);
+            game = await Game.CreateAsync(outputDisplay, statusDisplay, utility, wagonParty, travel, worldStatus);
+            await game.StartGameLoop();
+            isGameInitialized = true;
+            StateHasChanged();
+        }
     }
 }
