@@ -37,11 +37,11 @@ namespace DestinyTrail.Engine.Tests
             _mockWagonParty.Setup(p => p.Members).Returns(new List<IPerson> { new Person { ID = 0, Name = "Greg", Status = new Status { Name = "Healthy" } } });
 
             // Mocking Utility.LoadYaml method to return mock data
-            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>(It.IsAny<string>())).Returns(new OccurrenceData { Occurrences = occurrences });
-            _mockUtility.Setup(u => u.LoadYaml<RandomNamesData>(It.IsAny<string>())).Returns(new RandomNamesData { RandomNames = new List<PersonName> { new() { Name = "Name One" }, new() { Name = "Name Two" }, new() { Name = "Name Three" } } });
-            _mockUtility.Setup(u => u.LoadYaml<LandmarksData>(It.IsAny<string>())).Returns(new LandmarksData { Landmarks = new List<Landmark> { new Landmark { Name = "Landmark 1", ID = "FIRST", Lore = "The first landmark" } } });
-            _mockUtility.Setup(u => u.LoadYaml<Inventory>(It.IsAny<string>())).Returns(new Inventory());
-            _mockUtility.Setup(u => u.LoadYaml<StatusData>(It.IsAny<string>())).Returns(new StatusData {
+            _mockUtility.Setup(u => u.LoadYamlAsync<OccurrenceData>(It.IsAny<string>())).ReturnsAsync(new OccurrenceData { Occurrences = occurrences });
+            _mockUtility.Setup(u => u.LoadYamlAsync<RandomNamesData>(It.IsAny<string>())).ReturnsAsync(new RandomNamesData { RandomNames = new List<PersonName> { new() { Name = "Name One" }, new() { Name = "Name Two" }, new() { Name = "Name Three" } } });
+            _mockUtility.Setup(u => u.LoadYamlAsync<LandmarksData>(It.IsAny<string>())).ReturnsAsync(new LandmarksData { Landmarks = new List<Landmark> { new Landmark { Name = "Landmark 1", ID = "FIRST", Lore = "The first landmark" } } });
+            _mockUtility.Setup(u => u.LoadYamlAsync<Inventory>(It.IsAny<string>())).ReturnsAsync(new Inventory());
+            _mockUtility.Setup(u => u.LoadYamlAsync<StatusData>(It.IsAny<string>())).ReturnsAsync(new StatusData {
                 Statuses=[
                     new() { Name = "Healthy" }, 
                     new() { Name = "Sick" }, 
@@ -53,14 +53,14 @@ namespace DestinyTrail.Engine.Tests
 
             var mockOccurrenceEngine = new Mock<IOccurrenceEngine>();
             // Initialize the Game with the mocked dependencies
-            _game = new Game(
+            _game = Game.CreateAsync(
                 _mockDisplay.Object,
                 _mockStatus.Object,
                 _mockUtility.Object, 
                 _mockWagonParty.Object,
                 _mockTravel.Object,
                 _mockWorldStatus.Object
-            );
+            ).GetAwaiter().GetResult();
 
         }
 

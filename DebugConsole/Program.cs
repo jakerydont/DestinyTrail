@@ -4,11 +4,14 @@ using System.Threading;
 
 var display = new Display();
 var utility = new Utility();
-var wagonParty = new WagonParty(utility);
-var occurrenceEngine = new OccurrenceEngine(wagonParty, utility);
+
+var wagonParty = await WagonParty.CreateAsync(utility);
+var occurrenceEngine = OccurrenceEngine.CreateAsync(wagonParty, utility);
+
 var worldStatus = new WorldStatus();
-var travelEngine = new Travel(wagonParty, utility, display, worldStatus);
-var game = new Game(display, display, utility, wagonParty, travelEngine, worldStatus);
+
+var travelEngine = await Travel.CreateAsync(wagonParty, utility, display, worldStatus);
+var game = await Game.CreateAsync(display, display, utility, wagonParty, travelEngine, worldStatus);
 var gameLoopTask = game.StartGameLoop();
 var inputTask = Task.Run(() => ProcessUserInput(game));
 

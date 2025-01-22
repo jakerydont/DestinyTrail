@@ -4,6 +4,7 @@ namespace DestinyTrail.Engine
 {
     public class WagonParty : IWagonParty
     {
+        public static WagonParty Default = new ();
         private int memberCounter = 0;
         public IUtility Utility;
 
@@ -18,29 +19,27 @@ namespace DestinyTrail.Engine
                 { "CanHunt", true }
             };
         }
-
+        public static async Task<WagonParty> CreateAsync(IUtility utility)
+        {
+            var wagonParty = new WagonParty(utility);
+            await wagonParty.LoadMembersAsync();
+            return wagonParty;
+        }
 
         public WagonParty() : this(new Utility()) {}
-        public WagonParty(IUtility utility)
+        private WagonParty(IUtility utility)
         {
-            Utility = utility; 
-            string randomNamesPath = Utility.GetAppSetting("RandomNamesFilePath");
-            string[] RandomNames = [.. Utility.LoadYamlAsync<RandomNamesData>(randomNamesPath).GetAwaiter().GetResult()];
+            Members = [];
+            Leader = Person.Nobody;
+            Utility = utility;
 
-            Random.Shared.Shuffle(RandomNames);
-            var partyNames = RandomNames.Take(5).ToArray();
-
-            Members = new List<IPerson>();
-
-            foreach(var name in partyNames) {
-                var member = GeneratePerson(name);
-                Members.Add(member);
-            }
-            Leader = Members.First();
             Health = 100;
 
             Inventory = new Inventory();
         }
+
+
+
         public WagonParty(string[] names) : this(names, new Utility()) {}
         public WagonParty(string[] names, IUtility utility) {
             Utility = utility;
@@ -56,6 +55,23 @@ namespace DestinyTrail.Engine
             Inventory = new Inventory();
         }
 
+        
+        private async Task LoadMembersAsync()
+        {
+            string randomNamesPath = Utility.GetAppSetting("RandomNamesFilePath");
+            var randomNamesData = await Utility.LoadYamlAsync<RandomNamesData>(randomNamesPath);
+
+            var randomNames = randomNamesData.RandomNames;
+            var partyNames = randomNames.Take(5).ToArray();
+
+            foreach (var name in partyNames)
+            {
+                var member = GeneratePerson(name);
+                Members.Add(member);
+            }
+
+            Leader = Members.First();
+        }
         public IPerson GetRandomMember()
         {
             Random random = new Random();
@@ -118,4 +134,6 @@ namespace DestinyTrail.Engine
             
         }
     }
+
+
 }

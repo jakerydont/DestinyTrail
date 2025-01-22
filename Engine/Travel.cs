@@ -5,14 +5,14 @@ namespace DestinyTrail.Engine;
 public class Travel : ITravel
 {
     public event Action<Modes> ModeChanged;
-    
-    public IWagonParty Party { get;  set; }
 
-    public IUtility Utility {get;set;}
+    public IWagonParty Party { get; set; }
+
+    public IUtility Utility { get; set; }
 
     public IDisplay Display { get; set; }
 
-    public IOccurrenceEngine OccurrenceEngine { get; set; }
+    public IOccurrenceEngine occurrenceEngine { get; set; }
 
     private PaceData _paceData;
     public Pace Pace { get; set; }
@@ -29,7 +29,7 @@ public class Travel : ITravel
 
     public IWorldStatus WorldStatus { get; set; }
 
-    public Travel(IWagonParty party, IUtility utility, IDisplay display, IWorldStatus worldStatus)
+    private Travel(IWagonParty party, IUtility utility, IDisplay display, IWorldStatus worldStatus)
     {
         ModeChanged += (mode) => { };
 
@@ -38,26 +38,71 @@ public class Travel : ITravel
         Display = display;
         WorldStatus = worldStatus;
 
-
-        OccurrenceEngine = new OccurrenceEngine(Party, Utility);
-
-        string pacesFilePath = Utility.GetAppSetting("PacesFilePath");
-        _paceData = Utility.LoadYamlAsync<PaceData>(pacesFilePath).GetAwaiter().GetResult();
-        Pace = _paceData.MinBy(pace => pace.Factor);
-
-        string rationsFilePath = Utility.GetAppSetting("RationsFilePath");
-        _rationData = Utility.LoadYamlAsync<RationData>(rationsFilePath).GetAwaiter().GetResult();
-        Rations = _rationData.MaxBy(rations => rations.Factor);
-
-        string landmarksFilePath = Utility.GetAppSetting("LandmarksFilePath");
-        _landmarksData = Utility.LoadYamlAsync<LandmarksData>(landmarksFilePath).GetAwaiter().GetResult();
-        NextLandmark = _landmarksData.First();
-
         MilesTraveled = 0;
-        MilesToNextLandmark = (double)NextLandmark.Distance;
+
+        occurrenceEngine = OccurrenceEngine.Default;
+        _landmarksData = new LandmarksData{Landmarks = []};
+        NextLandmark = LandmarksData.Default;
+        _paceData = new PaceData{Paces = []};
+        Pace = PaceData.Default;
+
+        _rationData = new RationData{Rations = []};
+        Rations = RationData.Default;
+        
 
 
     }
+
+    public static async Task<Travel> CreateAsync(IWagonParty party, IUtility utility, IDisplay display, IWorldStatus worldStatus)
+    {
+        var travel = new Travel(party, utility, display, worldStatus);
+
+        var occurrenceEngineTask = OccurrenceEngine.CreateAsync(travel.Party, travel.Utility);
+
+        string pacesFilePath = travel.Utility.GetAppSetting("PacesFilePath");
+        var paceDataTask = travel.Utility.LoadYamlAsync<PaceData>(pacesFilePath);
+
+        string rationsFilePath = travel.Utility.GetAppSetting("RationsFilePath");
+        var rationDataTask = travel.Utility.LoadYamlAsync<RationData>(rationsFilePath);
+
+        string landmarksFilePath = travel.Utility.GetAppSetting("LandmarksFilePath");
+        var landmarksDataTask = travel.Utility.LoadYamlAsync<LandmarksData>(landmarksFilePath);
+
+        // Keep track of remaining tasks
+        var tasks = new List<Task> { occurrenceEngineTask, paceDataTask, rationDataTask, landmarksDataTask };
+
+        while (tasks.Any())
+        {
+            // Wait for any task to complete
+            var completedTask = await Task.WhenAny(tasks);
+            tasks.Remove(completedTask);
+
+
+            if (completedTask == occurrenceEngineTask)
+            {
+                travel.occurrenceEngine = await occurrenceEngineTask;
+            }
+            else if (completedTask == paceDataTask)
+            {
+                travel._paceData = await paceDataTask;
+                travel.Pace = travel._paceData.MinBy(pace => pace.Factor);
+            }
+            else if (completedTask == rationDataTask)
+            {
+                travel._rationData = await rationDataTask;
+                travel.Rations = travel._rationData.MaxBy(rations => rations.Factor);
+            }
+            else if (completedTask == landmarksDataTask)
+            {
+                travel._landmarksData = await landmarksDataTask;
+                travel.NextLandmark = travel._landmarksData.First();
+                travel.MilesToNextLandmark = (double)travel.NextLandmark.Distance;
+            }
+        }
+        return travel;
+    }
+
+
     public void TravelLoop()
     {
         var todaysMiles = CalculateMilesTraveled();
@@ -78,8 +123,8 @@ public class Travel : ITravel
 
         else
         {
-            var rawOccurrence = OccurrenceEngine.PickRandomOccurrence();
-            var processedOccurrence = OccurrenceEngine.ProcessOccurrence(rawOccurrence);
+            var rawOccurrence = occurrenceEngine.PickRandomOccurrence();
+            var processedOccurrence = occurrenceEngine.ProcessOccurrence(rawOccurrence);
             occurrenceMessage = processedOccurrence.DisplayText;
         }
 
@@ -94,6 +139,7 @@ public class Travel : ITravel
         {
             WorldStatus.CurrentDate = WorldStatus.CurrentDate.AddDays(1);
         }
+        
     }
     private double CalculateMilesTraveled()
     {

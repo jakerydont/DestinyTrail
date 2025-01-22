@@ -14,7 +14,7 @@ namespace DestinyTrail.Blazor;
 
     public string ReadAllText(string path)
     {
-        return Task.Run(() => ReadAllTextAsync(path)).GetAwaiter().GetResult();
+      throw new NotImplementedException();
     }
 
     public async Task<string> ReadAllTextAsync(string path)

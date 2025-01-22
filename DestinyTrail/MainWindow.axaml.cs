@@ -15,9 +15,9 @@ namespace DestinyTrail
             var StatusDisplay = new ADisplay(Status);
             var WorldStatus = new WorldStatus();
             var Utility = new Utility();
-            var WagonParty = new WagonParty(Utility);
-            var Travel = new Travel(WagonParty, Utility, StatusDisplay, WorldStatus);
-            game = new Game(OutputDisplay, StatusDisplay, Utility, WagonParty, Travel, WorldStatus);
+            var wagonParty = WagonParty.CreateAsync(Utility).GetAwaiter().GetResult();
+            var travel = Travel.CreateAsync(wagonParty, Utility, StatusDisplay, WorldStatus).GetAwaiter().GetResult();
+            game = Game.CreateAsync(OutputDisplay, StatusDisplay, Utility, wagonParty, travel, WorldStatus).GetAwaiter().GetResult();
             game.StartGameLoop();
         }
 

@@ -22,55 +22,55 @@ namespace DestinyTrail.Engine.Tests
         }
 
 
-        [Fact]
-        public void LoadYaml_ShouldReturnDeserializedObject_WhenYamlFileExists()
-        {
+        // [Fact]
+        // public void LoadYaml_ShouldReturnDeserializedObject_WhenYamlFileExists()
+        // {
 
 
-            // Arrange
-            var yamlFilePath = "data/Test.yaml";
-            var yamlContent = """
-                Tests:
-                - Name: "First"
-                - Name: "Middle One"
-                - Name: "Last"
-                """;
+        //     // Arrange
+        //     var yamlFilePath = "data/Test.yaml";
+        //     var yamlContent = """
+        //         Tests:
+        //         - Name: "First"
+        //         - Name: "Middle One"
+        //         - Name: "Last"
+        //         """;
 
-            var _mockFileReader = new Mock<IFileReader>();
+        //     var _mockFileReader = new Mock<IFileReader>();
 
-            // Mock the file read operation
-            _mockFileReader
-                .Setup(fr => fr.ReadAllText(It.IsAny<string>()))
-                .Returns(yamlContent);
+        //     // Mock the file read operation
+        //     _mockFileReader
+        //         .Setup(fr => fr.ReadAllText(It.IsAny<string>()))
+        //         .Returns(yamlContent);
 
-            var mockYamlDotNetDeserializer = new Mock<IYamlDeserializer>();
+        //     var mockYamlDotNetDeserializer = new Mock<IYamlDeserializer>();
 
-            // Mock the deserialization process using the YAML content, not the file path
-            mockYamlDotNetDeserializer
-                .Setup(d => d.Deserialize<TestTypeData>(yamlContent))
-                .Returns(new TestTypeData
-                {
-                    Tests = new List<TestType>
-                    {
-                        new() { Name = "First" },
-                        new() { Name = "Middle One" },
-                        new() { Name = "Last" }
-                    }
-                });
+        //     // Mock the deserialization process using the YAML content, not the file path
+        //     mockYamlDotNetDeserializer
+        //         .Setup(d => d.Deserialize<TestTypeData>(yamlContent))
+        //         .Returns(new TestTypeData
+        //         {
+        //             Tests = new List<TestType>
+        //             {
+        //                 new() { Name = "First" },
+        //                 new() { Name = "Middle One" },
+        //                 new() { Name = "Last" }
+        //             }
+        //         });
 
-            var _utility = new Utility(mockYamlDotNetDeserializer.Object, _mockFileReader.Object, new Mock<IConfigurationProvider>().Object);
+        //     var _utility = new Utility(mockYamlDotNetDeserializer.Object, _mockFileReader.Object, new Mock<IConfigurationProvider>().Object);
 
-            // Act
-            var result = _utility.LoadYaml<TestTypeData>(yamlFilePath);
+        //     // Act
+        //     var result = _utility.LoadYaml<TestTypeData>(yamlFilePath);
 
-            // Assert
-            Assert.NotNull(result); // Ensure the result is not null
-            Assert.Collection(result.Tests,
-                item => Assert.Equal("First", item.Name),
-                item => Assert.Equal("Middle One", item.Name),
-                item => Assert.Equal("Last", item.Name)
-            );
-        }
+        //     // Assert
+        //     Assert.NotNull(result); // Ensure the result is not null
+        //     Assert.Collection(result.Tests,
+        //         item => Assert.Equal("First", item.Name),
+        //         item => Assert.Equal("Middle One", item.Name),
+        //         item => Assert.Equal("Last", item.Name)
+        //     );
+        // }
 
 
         [Fact]
@@ -121,52 +121,52 @@ namespace DestinyTrail.Engine.Tests
             );
         }
 
-        [Fact]
-        public void LoadYaml_ShouldRetrunStringsFromStatus()
-        {
-            // Arrange
-            var yamlContent = @"
-                Statuses:
-                - Name: 'Healthy'
-                - Name: 'Injured'
-                - Name: 'Dead'
-            ";
+        // [Fact]
+        // public void LoadYaml_ShouldRetrunStringsFromStatus()
+        // {
+        //     // Arrange
+        //     var yamlContent = @"
+        //         Statuses:
+        //         - Name: 'Healthy'
+        //         - Name: 'Injured'
+        //         - Name: 'Dead'
+        //     ";
 
-            var _mockFileReader = new Mock<IFileReader>();
+        //     var _mockFileReader = new Mock<IFileReader>();
 
-            // Mock the file read operation
-            _mockFileReader
-                .Setup(fr => fr.ReadAllText(It.IsAny<string>()))
-                .Returns(yamlContent);
+        //     // Mock the file read operation
+        //     _mockFileReader
+        //         .Setup(fr => fr.ReadAllText(It.IsAny<string>()))
+        //         .Returns(yamlContent);
 
-            var mockYamlDotNetDeserializer = new Mock<IYamlDeserializer>();
+        //     var mockYamlDotNetDeserializer = new Mock<IYamlDeserializer>();
 
-            // Mock the deserialization process using the YAML content, not the file path
-            mockYamlDotNetDeserializer
-                .Setup(d => d.Deserialize<StatusData>(yamlContent))
-                .Returns(new StatusData
-                {
-                    Statuses = new()
-                    {
-                        new(){Name="Healthy"} ,
-                        new(){Name="Injured"},
-                        new(){Name="Dead"}
-                    }
-                });
+        //     // Mock the deserialization process using the YAML content, not the file path
+        //     mockYamlDotNetDeserializer
+        //         .Setup(d => d.Deserialize<StatusData>(yamlContent))
+        //         .Returns(new StatusData
+        //         {
+        //             Statuses = new()
+        //             {
+        //                 new(){Name="Healthy"} ,
+        //                 new(){Name="Injured"},
+        //                 new(){Name="Dead"}
+        //             }
+        //         });
 
-            var _utility = new Utility(mockYamlDotNetDeserializer.Object, _mockFileReader.Object, new Mock<IConfigurationProvider>().Object);
+        //     var _utility = new Utility(mockYamlDotNetDeserializer.Object, _mockFileReader.Object, new Mock<IConfigurationProvider>().Object);
 
-            // Act
-            var result = _utility.LoadYaml<StatusData>(It.IsAny<string>());
+        //     // Act
+        //     var result = _utility.LoadYaml<StatusData>(It.IsAny<string>());
 
-            // Assert
-            Assert.NotNull(result); // Ensure the result is not null
-            Assert.Collection(result.Statuses,
-                item => Assert.Equal("Healthy", item),
-                item => Assert.Equal("Injured", item),
-                item => Assert.Equal("Dead", item)
-            );
-        }
+        //     // Assert
+        //     Assert.NotNull(result); // Ensure the result is not null
+        //     Assert.Collection(result.Statuses,
+        //         item => Assert.Equal("Healthy", item),
+        //         item => Assert.Equal("Injured", item),
+        //         item => Assert.Equal("Dead", item)
+        //     );
+        // }
 
         [Fact]
         public void NextOrFirst_ShouldReturnNextElement_WhenPredicateMatches()

@@ -31,31 +31,31 @@ namespace DestinyTrail.Engine.Tests
 
             // Mocking YAML loading
             _mockUtility.Setup(u => u.GetAppSetting(It.IsAny<string>())).Returns(string.Empty);
-            _mockUtility.Setup(u => u.LoadYaml<StatusData>(It.IsAny<string>()))
-                .Returns(new StatusData { Statuses = new() {new() { Name ="Healthy"},new(){  Name ="Sick"} } });
+            _mockUtility.Setup(u => u.LoadYamlAsync<StatusData>(It.IsAny<string>()))
+                .ReturnsAsync(new StatusData { Statuses = new() {new() { Name ="Healthy"},new(){  Name ="Sick"} } });
 
-            _mockUtility.Setup(u => u.LoadYaml<PaceData>(It.IsAny<string>()))
-                .Returns(new PaceData { Paces = [new Pace { Name = "Slow", Factor = 10 }, new Pace { Name = "Fast", Factor = 20 } ]});
+            _mockUtility.Setup(u => u.LoadYamlAsync<PaceData>(It.IsAny<string>()))
+                .ReturnsAsync(new PaceData { Paces = [new Pace { Name = "Slow", Factor = 10 }, new Pace { Name = "Fast", Factor = 20 } ]});
 
-            _mockUtility.Setup(u => u.LoadYaml<RationData>(It.IsAny<string>()))
-                .Returns(new RationData { Rations = [new Rations { Name = "Meager", Factor = 1 }, new Rations { Name = "Full", Factor = 2 } ]});
+            _mockUtility.Setup(u => u.LoadYamlAsync<RationData>(It.IsAny<string>()))
+                .ReturnsAsync(new RationData { Rations = [new Rations { Name = "Meager", Factor = 1 }, new Rations { Name = "Full", Factor = 2 } ]});
 
-            _mockUtility.Setup(u => u.LoadYaml<OccurrenceData>(It.IsAny<string>()))
-                .Returns(new OccurrenceData { Occurrences = [
+            _mockUtility.Setup(u => u.LoadYamlAsync<OccurrenceData>(It.IsAny<string>()))
+                .ReturnsAsync(new OccurrenceData { Occurrences = [
                     new Occurrence { Name = "ATE_IT", DisplayText = "{name} ate it", Effect = "none" }, 
                     new Occurrence { Name = "Occurrence 2", DisplayText = "{name} is an occurrence", Effect = "dead" } ]});
 
-            _mockUtility.Setup(u => u.LoadYaml<LandmarksData>(It.IsAny<string>()))
-                .Returns(new LandmarksData { Landmarks = [
+            _mockUtility.Setup(u => u.LoadYamlAsync<LandmarksData>(It.IsAny<string>()))
+                .ReturnsAsync(new LandmarksData { Landmarks = [
                     new Landmark { ID = "FORT_LARAMIE", Name = "Fort Laramie", Distance = 150, Lore = "Fun place" },
                     new Landmark { ID = "second_landmark", Name = "Second Landmark", Distance = 100, Lore = "other place" } 
                     ]});
 
             // Creating the Travel object with mocked dependencies
-            _travel = new Travel(_mockWagonParty.Object,
+            _travel = Travel.CreateAsync(_mockWagonParty.Object,
             _mockUtility.Object,
              _mockDisplay.Object, 
-             _mockWorldStatus.Object);
+             _mockWorldStatus.Object).GetAwaiter().GetResult();
 
             Assert.NotNull(_travel);
 
@@ -66,13 +66,13 @@ namespace DestinyTrail.Engine.Tests
         public void Constructor_InitializesDependencies()
         {
             // Assert
-            _mockUtility.Verify(u => u.LoadYaml<PaceData>(It.IsAny<string>()), Times.Once);
-            _mockUtility.Verify(u => u.LoadYaml<RationData>(It.IsAny<string>()), Times.Once);
+            _mockUtility.Verify(u => u.LoadYamlAsync<PaceData>(It.IsAny<string>()), Times.Once);
+            _mockUtility.Verify(u => u.LoadYamlAsync<RationData>(It.IsAny<string>()), Times.Once);
 
 
             Assert.NotNull(_travel.Pace);
             Assert.NotNull(_travel.Rations);
-            Assert.NotNull(_travel.OccurrenceEngine);
+            Assert.NotNull(_travel.occurrenceEngine);
 
             Assert.Equal(0, _travel.MilesTraveled);
             Assert.Equal(150, _travel.MilesToNextLandmark);
@@ -137,7 +137,7 @@ namespace DestinyTrail.Engine.Tests
                 .Setup(o => o.ProcessOccurrence(mockOccurrence))
                 .Returns(mockOccurrence);
 
-            _travel.OccurrenceEngine = mockOccurrenceEngine.Object;
+            _travel.occurrenceEngine = mockOccurrenceEngine.Object;
 
             // Act
             _travel.TravelLoop();

@@ -7,36 +7,53 @@ namespace DestinyTrail.Engine
     public class OccurrenceEngine : IOccurrenceEngine
     {
 
+        public static OccurrenceEngine Default = new OccurrenceEngine(WagonParty.Default);
         public string[] Statuses { get; private set; }
 
         private readonly IWagonParty _party;
         private readonly IUtility _utility;
-        private readonly Occurrence[] _occurrences;
-        private readonly string[] _statuses;
+        private Occurrence[] _occurrences;
+        private string[] _statuses;
 
         private static Regex DecrementEventPattern = new Regex(@"\[(.*?)\] -= (\d+)");
         private static Regex IncrementEventPattern = new Regex(@"\[(.*?)\] \+= (\d+)");
         public static Regex SetItemQuantityPattern = new Regex(@"\[(.*?)\] = (\d+)");
         private static Regex BooleanEventPattern = new Regex(@"\[Flags\.(.*?)\] = (true|false)");
 
-        public OccurrenceEngine(IWagonParty party) : this(party, new Utility()) { }
-        public OccurrenceEngine(IWagonParty party, IUtility utility)
+        public static async Task<OccurrenceEngine> CreateAsync(IWagonParty party, IUtility utility)
         {
-            _utility = utility;
+            var oe = new OccurrenceEngine(party, utility);
 
+            await oe.GetStatusesAsync();
+            await oe.LoadOccurrencesAsync();
+
+            return oe;
+        }
+
+
+        private async Task GetStatusesAsync()
+        {
             string statusesFilePath = _utility.GetAppSetting("StatusesFilePath");
-            Statuses = [.. _utility.LoadYamlAsync<StatusData>(statusesFilePath).GetAwaiter().GetResult()];
+            var statusYaml = await _utility.LoadYamlAsync<StatusData>(statusesFilePath);
+            Statuses = [.. statusYaml];
             _statuses = Statuses;
-            
-            var yamlFilePath = _utility.GetAppSetting("OccurrencesFilePath");
-            _occurrences = LoadOccurrences(yamlFilePath);
+        }
 
+        private OccurrenceEngine(IWagonParty party) : this(party, new Utility()) { }
+        private OccurrenceEngine(IWagonParty party, IUtility utility)
+        {
+            Statuses= [];
+            _occurrences = [];
+            _statuses = [];
+            _utility = utility;
             _party = party;
         }
 
-        private Occurrence[] LoadOccurrences(string yamlFilePath)
+        private async Task LoadOccurrencesAsync()
         {
-            return _utility.LoadYamlAsync<OccurrenceData>(yamlFilePath).GetAwaiter().GetResult();
+            var yamlFilePath = _utility.GetAppSetting("OccurrencesFilePath");
+            _occurrences = await _utility.LoadYamlAsync<OccurrenceData>(yamlFilePath);
+
         }
 
 

@@ -27,9 +27,23 @@ namespace DestinyTrail.Engine
         public IShoppingEngine ShoppingEngine { get; set; }
         private bool _shouldInitializeAtLandmark { get; set; }
 
+        public static async Task<Game> CreateAsync(IDisplay Output, 
+            IDisplay Status, 
+            IUtility Utility, 
+            IWagonParty Party,
+            ITravel Travel,
+            IWorldStatus worldStatus) 
+        {
+            var game = new Game(Output,    Status,   Utility,   Party,  Travel, worldStatus);
+            string inventoryFilePath = Utility.GetAppSetting("InventoryFilePath");
+            string inventoryCustomItemsFilePath = Utility.GetAppSetting("InventoryCustomItemsFilePath");
+            game.Inventory = await Utility.LoadYamlAsync<Inventory>(inventoryFilePath);
+            game.Inventory.CustomItems = await Utility.LoadYamlAsync<Inventory>(inventoryCustomItemsFilePath);
+            game.ShoppingEngine = new ShoppingEngine(game.MainDisplay, game.Inventory);
+            return game;
+        }
 
-
-        public Game(
+        private Game(
             IDisplay Output, 
             IDisplay Status, 
             IUtility Utility, 
@@ -44,23 +58,18 @@ namespace DestinyTrail.Engine
             travel = Travel;
             _party = Party;
             WorldStatus = worldStatus;
-
+            GameMode = Modes.Travelling;
             _cancellationTokenSource = new CancellationTokenSource();
-
 
             MainDisplay.Write(_party.GetDisplayNames());
 
-            string inventoryFilePath = Utility.GetAppSetting("InventoryFilePath");
-            string inventoryCustomItemsFilePath = Utility.GetAppSetting("InventoryCustomItemsFilePath");
-            Inventory = Utility.LoadYamlAsync<Inventory>(inventoryFilePath).GetAwaiter().GetResult();
-            Inventory.CustomItems = Utility.LoadYamlAsync<Inventory>(inventoryCustomItemsFilePath).GetAwaiter().GetResult();
-
-    
-
-            GameMode = Modes.Travelling;
-            ShoppingEngine = new ShoppingEngine(MainDisplay, Inventory);
-
             travel.ModeChanged += OnModeChanged;
+
+
+            // dummy loads
+            Inventory = new Inventory();
+            ShoppingEngine = new ShoppingEngine(new Display(), Inventory);
+
         }
 
         private void OnModeChanged(Modes mode)
@@ -92,7 +101,7 @@ namespace DestinyTrail.Engine
                         default:
                             break;
                     }
-                    await Task.Delay(1000, token);
+                    await Task.Delay(10000, token);
                 }
             }
             catch (TaskCanceledException)
