@@ -1,11 +1,30 @@
 ﻿@using DestinyTrail.Engine
 @using DestinyTrail.Blazor.Components
+@using DestinyTrail.Engine.Abstractions
+@inject HttpClient HttpClient
 
 <h3>MainGame</h3>
 
-
+<BlazorDisplay @ref="outputDisplay"></BlazorDisplay>
+<BlazorDisplay @ref="statusDisplay"></BlazorDisplay>
 @code {
 
 
+    private Game? game { get; set; }
+    private BlazorDisplay? outputDisplay;
+    private BlazorDisplay? statusDisplay;
 
+    protected override async Task OnInitializedAsync()
+    {
+
+  
+        var worldStatus = new WorldStatus();
+        var configurationProvider = new DestinyTrail.Blazor.ConfigurationProvider();
+        var fileReader = new DestinyTrail.Blazor.FileReader(HttpClient); // Use the injected HttpClient
+        var utility = new Utility(new YamlDeserializer(), fileReader, configurationProvider);
+        var wagonParty = await WagonParty.CreateAsync(utility);
+        var travel = await Travel.CreateAsync(wagonParty, utility, (IDisplay)statusDisplay, worldStatus);
+        game = await Game.CreateAsync((IDisplay)outputDisplay, (IDisplay)statusDisplay, utility, wagonParty, travel, worldStatus);
+        await game.StartGameLoop();
+    }
 }

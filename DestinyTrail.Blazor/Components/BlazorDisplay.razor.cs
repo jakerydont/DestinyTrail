@@ -3,7 +3,7 @@ using DestinyTrail.Engine;
 
 namespace DestinyTrail.Blazor;
 
-public class BlazorDisplay : IDisplay
+public partial class BlazorDisplay : IDisplay
 {
     public string outputText = "";
 
