@@ -1,7 +1,7 @@
 
-  - "OUTSTANDING"
-  - "Good"
-  - "Fair"
-  - "Poor"
-  - "Very Poor"
-  - "Dead"
+  - Name: "OUTSTANDING"
+  - Name: "Good"
+  - Name: "Fair"
+  - Name: "Poor"
+  - Name: "Very Poor"
+  - Name: "Dead"
