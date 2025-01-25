@@ -101,7 +101,7 @@ namespace DestinyTrail.Engine
                         default:
                             break;
                     }
-                    await Task.Delay(10000, token);
+                    await Task.Delay(100, token);
                 }
             }
             catch (TaskCanceledException)
