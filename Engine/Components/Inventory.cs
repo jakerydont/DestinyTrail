@@ -54,6 +54,7 @@ namespace DestinyTrail.Engine
         public bool TryGetByName(string name, out IInventoryItem item)
         {
             item = GetByName(name);
+            item ??= CustomItems.Where(i => i.Name == name).FirstOrDefault()!;
             return item != null;
         }
 
