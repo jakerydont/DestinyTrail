@@ -14,13 +14,15 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/DebugConsole/bin/Debug/net8.0/DebugConsole.exe",
+            "program": "${workspaceFolder}/DebugConsole/bin/Debug/net8.0/DestinyTrail.DebugConsole.exe",
             "args": [],
             "cwd": "${workspaceFolder}/DebugConsole/bin/Debug/net8.0",
             "stopAtEntry": false,
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
-            }
+            },
+            "justMyCode": false
+
         },
         {
             "name": "Avalonia DEBUG",
