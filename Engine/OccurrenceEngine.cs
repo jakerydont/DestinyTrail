@@ -157,12 +157,22 @@ namespace DestinyTrail.Engine
                 throw new Exception($"Bad zeroing on occurrence {occurrence.DisplayText}. Must be in the form '[item] = amount'. Actual: {occurrence.Effect}");
             }
 
-            var item = _party.Inventory.TryGetByName(itemZeroMatch.Groups[1].Value, out var itemResult) ? itemResult
-                : throw new Exception($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
+            var item = _party.Inventory.TryGetByName(itemZeroMatch.Groups[1].Value, out var itemResult) ? itemResult : null;
+            if (item == null) {
+                // throw new Exception($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
 
+                Console.WriteLine($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
+                return;
+            }
+                
             
             var amount = int.TryParse(itemZeroMatch.Groups[2].Value, out var amountResult) ? amountResult 
-                : throw new Exception($"Invalid amount {itemZeroMatch.Groups[2].Value}.");
+                : 0;
+            if (amount == 0) {
+                // throw new Exception($"Invalid amount {itemZeroMatch.Groups[2].Value}.");
+                Console.WriteLine($"Invalid amount {itemZeroMatch.Groups[2].Value}.");
+                return;
+            }
 
 
             item.SetQuantity(amount);
