@@ -186,19 +186,26 @@ namespace DestinyTrail.Engine
             var itemDecrementMatch = DecrementEventPattern.Match(occurrence.Effect);
             if (!itemDecrementMatch.Success)
             {
-                throw new Exception($"Bad decrement on occurrence {occurrence.DisplayText}. Must be in the form '[item] -= 1'. Actual: {occurrence.Effect}");
+                //throw new Exception($"Bad decrement on occurrence {occurrence.DisplayText}. Must be in the form '[item] -= 1'. Actual: {occurrence.Effect}");
+                Console.WriteLine($"Bad decrement on occurrence {occurrence.DisplayText}. Must be in the form '[item] -= 1'. Actual: {occurrence.Effect}");
+                return;
             }
 
             var item = _party.Inventory.GetByName(itemDecrementMatch.Groups[1].Value);
             if (item == null)
             {
-                throw new Exception($"Inventory item {itemDecrementMatch.Groups[1].Value} not found.");
+                //throw new Exception($"Inventory item {itemDecrementMatch.Groups[1].Value} not found.");
+                Console.WriteLine($"Inventory item {itemDecrementMatch.Groups[1].Value} not found.");
+                return;
             }
             var amount = int.Parse(itemDecrementMatch.Groups[2].Value);
             var success = item.Subtract(amount);
             if (!success)
             {
-                throw new Exception($"Not enough {item.Name} to subtract {amount}.");
+                //throw new Exception($"Not enough {item.Name} to subtract {amount}.");
+                Console.WriteLine($"Not enough {item.Name} to subtract {amount}.");
+                return;
+                
             }
         }
 
@@ -207,13 +214,17 @@ namespace DestinyTrail.Engine
             var itemIncrementMatch = IncrementEventPattern.Match(occurrence.Effect);
             if (!itemIncrementMatch.Success)
             {
-                throw new Exception($"Bad increment on occurrence {occurrence.DisplayText}. Must be in the form '[item] += 1'. Actual: {occurrence.Effect}");
+                //throw new Exception($"Bad increment on occurrence {occurrence.DisplayText}. Must be in the form '[item] += 1'. Actual: {occurrence.Effect}");
+                Console.WriteLine($"Bad increment on occurrence {occurrence.DisplayText}. Must be in the form '[item] += 1'. Actual: {occurrence.Effect}");
+                return;
             }
 
             var item = _party.Inventory.GetByName(itemIncrementMatch.Groups[1].Value);
             if (item == null)
             {
-                throw new Exception($"Inventory item {itemIncrementMatch.Groups[1].Value} not found.");
+                //throw new Exception($"Inventory item {itemIncrementMatch.Groups[1].Value} not found.");
+                Console.WriteLine($"Inventory item {itemIncrementMatch.Groups[1].Value} not found.");
+                return;
             }
             var amount = int.Parse(itemIncrementMatch.Groups[2].Value);
             item.Add(amount);
