@@ -11,15 +11,17 @@ namespace DestinyTrail.Engine.Tests
         private readonly InputHandler _inputHandler;
 
         public InputHandlerTests()
-        {
+        {            
+            _inputHandler = new InputHandler();
             _mockGame = new Mock<IGame>();
+
             _mockTravel = new Mock<ITravel>();
             _mockShoppingEngine = new Mock<IShoppingEngine>();
 
             _mockGame.SetupGet(g => g.travel).Returns(_mockTravel.Object);
             _mockGame.SetupGet(g => g.ShoppingEngine).Returns(_mockShoppingEngine.Object);
+            _mockGame.Setup(g => g._inputHandler).Returns(_inputHandler);
 
-            _inputHandler = new InputHandler(_mockGame.Object);
         }
 
         [Fact]

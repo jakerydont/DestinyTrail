@@ -2,6 +2,8 @@
 using DestinyTrail.Engine;
 using System.Threading;
 
+var inputHandler = new InputHandler();
+
 var display = new Display();
 var utility = new Utility();
 
@@ -11,7 +13,7 @@ var occurrenceEngine = OccurrenceEngine.CreateAsync(wagonParty, utility);
 var worldStatus = new WorldStatus();
 
 var travelEngine = await Travel.CreateAsync(wagonParty, utility, display, worldStatus);
-var game = await Game.CreateAsync(display, display, utility, wagonParty, travelEngine, worldStatus);
+var game = await Game.CreateAsync(display, display, utility, wagonParty, travelEngine, worldStatus, inputHandler);
 var gameLoopTask = game.StartGameLoop();
 var inputTask = Task.Run(() => ProcessUserInput(game));
 
@@ -27,7 +29,7 @@ static void ProcessUserInput(Game game)
 
             string input = Console.ReadLine() ?? "";
 
-            game.InputHandler.ProcessCommand(input);
+            game._inputHandler.ProcessCommand(input);
         }
         else
         {

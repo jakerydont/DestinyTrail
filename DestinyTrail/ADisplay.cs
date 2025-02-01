@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using DestinyTrail.Engine;
 
@@ -30,17 +32,17 @@ public class ADisplay : IDisplay
         _output = output;
     }
 
-    public void Write(string message)
+    public async Task Write(string message)
     {
         _output.Items.Add(message);
     }
 
-    public void WriteTitle(string message)
+    public async Task WriteTitle(string message)
     {
         _output.Items.Add("TODO: BUILD A TITLE DISPLAY FOR THIS...\n" + message);
     }
 
-    public void Clear()
+    public async Task Clear()
     {
         if (_output != null)
         {
@@ -53,7 +55,7 @@ public class ADisplay : IDisplay
     }
 
 
-    public void ScrollToBottom()
+    public async Task ScrollToBottom()
     {
         if (_output != null)
         {
@@ -69,7 +71,7 @@ public class ADisplay : IDisplay
         }
     }
 
-    public void WriteError(string message)
+    public async Task WriteError(string message)
     {
         _output.Items.Add(message);
     }

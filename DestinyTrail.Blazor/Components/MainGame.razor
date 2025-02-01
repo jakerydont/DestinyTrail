@@ -6,7 +6,7 @@
 <h3>MainGame</h3>
 
 <input @bind="commandInput" placeholder="Enter command..." />
-<button @onclick="() => inputHandler.ProcessCommandAsync(commandInput)">Submit</button>
+<button @onclick="() => _inputHandler.ProcessCommandAsync(commandInput)">Submit</button>
 
 <BlazorDisplay Heading="Output" @ref="outputDisplay"></BlazorDisplay>
 

@@ -14,10 +14,10 @@ public partial class MainGame
 
     private string commandInput = "";
 
-    private InputHandler inputHandler;
+    private InputHandler _inputHandler;
 
     public MainGame() {
-        inputHandler = new InputHandler();
+        _inputHandler = new InputHandler();
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -35,7 +35,7 @@ public partial class MainGame
             var utility = new Utility(new YamlDeserializer(), fileReader, configurationProvider);
             var wagonParty = await WagonParty.CreateAsync(utility);
             var travel = await Travel.CreateAsync(wagonParty, utility, statusDisplay, worldStatus);
-            game = await Game.CreateAsync(outputDisplay, statusDisplay, utility, wagonParty, travel, worldStatus, inputHandler);
+            game = await Game.CreateAsync(outputDisplay, statusDisplay, utility, wagonParty, travel, worldStatus, _inputHandler);
             
 
             await game.StartGameLoop();

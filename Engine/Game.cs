@@ -13,7 +13,7 @@ namespace DestinyTrail.Engine
         public ITravel travel {get;set;}
 
         public IInventory Inventory { get; set; }
-        public IInputHandler InputHandler { get; private set; }
+        public IInputHandler _inputHandler { get; set; }
 
         public IDisplay MainDisplay { get; set; }
 
@@ -53,8 +53,8 @@ namespace DestinyTrail.Engine
             IWorldStatus worldStatus,
             IInputHandler inputHandler)   
         {
-            InputHandler = inputHandler;
-            InputHandler.Initialize(this);
+            _inputHandler = inputHandler;
+            _inputHandler.Initialize(this);
 
             MainDisplay = Output;
             StatusDisplay = Status;

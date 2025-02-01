@@ -2,6 +2,8 @@ namespace DestinyTrail.Engine
 {
     public interface IGame
     {
+
+        public IInputHandler _inputHandler { get; set; }
         public IWagonParty _party { get; set; }
 
 

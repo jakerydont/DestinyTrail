@@ -11,13 +11,14 @@ namespace DestinyTrail
         public MainWindow()
         {
             InitializeComponent();
+            var inputHandler = new InputHandler();
             var OutputDisplay = new ADisplay(OutputListBox);
             var StatusDisplay = new ADisplay(Status);
             var WorldStatus = new WorldStatus();
             var Utility = new Utility();
             var wagonParty = WagonParty.CreateAsync(Utility).GetAwaiter().GetResult();
             var travel = Travel.CreateAsync(wagonParty, Utility, StatusDisplay, WorldStatus).GetAwaiter().GetResult();
-            game = Game.CreateAsync(OutputDisplay, StatusDisplay, Utility, wagonParty, travel, WorldStatus).GetAwaiter().GetResult();
+            game = Game.CreateAsync(OutputDisplay, StatusDisplay, Utility, wagonParty, travel, WorldStatus, inputHandler).GetAwaiter().GetResult();
             game.StartGameLoop();
         }
 
