@@ -25,3 +25,5 @@ There is no release build of this yet. This is still in the "Run it from within 
 * NPC dialog
 * Win conditions and Game Over conditions
 * Profession selection
+* Weight of wagon makes wagon travel slower
+* Different areas of game make different hazards more likely
