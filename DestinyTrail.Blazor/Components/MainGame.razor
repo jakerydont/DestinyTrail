@@ -5,8 +5,11 @@
 
 <h3>MainGame</h3>
 
-<BlazorDisplay @ref="outputDisplay"></BlazorDisplay>
-<BlazorDisplay @ref="statusDisplay"></BlazorDisplay>
+<BlazorDisplay Heading="Output" @ref="outputDisplay"></BlazorDisplay>
+
+<BlazorDisplay Heading="Status" @ref="statusDisplay"></BlazorDisplay>
+
+
 @code {
 
 
@@ -14,6 +17,7 @@
     private BlazorDisplay? outputDisplay;
     private BlazorDisplay? statusDisplay;
     private bool isGameInitialized = false;
+    private bool _running = true;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -26,14 +30,12 @@
 
             var worldStatus = new WorldStatus();
             var configurationProvider = new DestinyTrail.Blazor.ConfigurationProvider();
-            var fileReader = new DestinyTrail.Blazor.FileReader(HttpClient); // Use the injected HttpClient
+            var fileReader = new DestinyTrail.Blazor.FileReader(HttpClient);
             var utility = new Utility(new YamlDeserializer(), fileReader, configurationProvider);
             var wagonParty = await WagonParty.CreateAsync(utility);
             var travel = await Travel.CreateAsync(wagonParty, utility, statusDisplay, worldStatus);
             game = await Game.CreateAsync(outputDisplay, statusDisplay, utility, wagonParty, travel, worldStatus);
             await game.StartGameLoop();
-            isGameInitialized = true;
-            StateHasChanged();
         }
     }
 }
