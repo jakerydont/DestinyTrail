@@ -14,6 +14,8 @@ namespace DestinyTrail.Engine.Tests
         private readonly Mock<IDisplay> _mockStatus;
         private readonly Mock<IUtility> _mockUtility;
         private readonly Mock<IWorldStatus> _mockWorldStatus;
+
+        private readonly Mock<IInputHandler> _mockInputHandler;
         private Mock<ITravel> _mockTravel;
         private Mock<IWagonParty> _mockWagonParty;
         private readonly Game _game;
@@ -31,8 +33,10 @@ namespace DestinyTrail.Engine.Tests
             _mockUtility = new Mock<IUtility>();
             _mockTravel = new Mock<ITravel>();
             _mockWorldStatus = new Mock<IWorldStatus>();
+            _mockInputHandler = new Mock<IInputHandler>();
 
             _mockWagonParty = new Mock<IWagonParty>();
+
             _mockWagonParty.Setup(p => p.GetRandomMember()).Returns(new Person { ID = 0, Name = "Greg", Status = new Status { Name = "Healthy" } });
             _mockWagonParty.Setup(p => p.Members).Returns(new List<IPerson> { new Person { ID = 0, Name = "Greg", Status = new Status { Name = "Healthy" } } });
 
@@ -49,8 +53,6 @@ namespace DestinyTrail.Engine.Tests
                 ]});
 
 
-
-
             var mockOccurrenceEngine = new Mock<IOccurrenceEngine>();
             // Initialize the Game with the mocked dependencies
             _game = Game.CreateAsync(
@@ -59,7 +61,9 @@ namespace DestinyTrail.Engine.Tests
                 _mockUtility.Object, 
                 _mockWagonParty.Object,
                 _mockTravel.Object,
-                _mockWorldStatus.Object
+                _mockWorldStatus.Object,
+                _mockInputHandler.Object
+
             ).GetAwaiter().GetResult();
 
         }

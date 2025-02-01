@@ -103,7 +103,7 @@ public class Travel : ITravel
     }
 
 
-    public void TravelLoop()
+    public async Task TravelLoop()
     {
         var todaysMiles = CalculateMilesTraveled();
         if (todaysMiles > MilesToNextLandmark)
@@ -132,8 +132,8 @@ public class Travel : ITravel
 
 
 
-        Display.Write($"{Utility.GetFormatted(WorldStatus.CurrentDate)}: {occurrenceMessage}");
-        Display.ScrollToBottom();
+        await Display.Write($"{Utility.GetFormatted(WorldStatus.CurrentDate)}: {occurrenceMessage}");
+        await Display.ScrollToBottom();
 
         if (_advanceDay)
         {
@@ -147,15 +147,20 @@ public class Travel : ITravel
         return Pace.Factor;
     }
 
-    public void ContinueTravelling()
+    public async Task ContinueTravelling()
     {
-        Display.Write($"You decided to continue.");
+        // Simulating asynchronous work, such as logging or waiting for a task to complete
+        await Task.Run(() => Display.Write($"You decided to continue."));
+
+        // Assuming there's no async operation here; if so, keep as is.
         NextLandmark = Utility.NextOrFirst(
             _landmarksData.Landmarks,
             landmark => landmark.ID == NextLandmark.ID
-            );
+        );
         MilesToNextLandmark = NextLandmark.Distance;
-        ModeChanged.Invoke(Modes.Travelling);
 
+        // Invoke the mode change
+        ModeChanged.Invoke(Modes.Travelling);
     }
+
 }

@@ -1,23 +1,30 @@
 namespace DestinyTrail.Engine;
 
-public class InputHandler
+public class InputHandler : IInputHandler
 {
-    private IGame Game;
+    private IGame? Game;
 
-    public InputHandler(IGame game)
+    public void Initialize(IGame game)
     {
         Game = game;
     }
-    public void ProcessCommand(string input)
+
+    public virtual void ProcessCommand(string command)
     {
+        _ = ProcessCommandAsync(command);
+    }
+
+    public virtual async Task ProcessCommandAsync(string command) 
+    {
+        if (Game == null)  throw new NullReferenceException("Game variable null. Initialize method must be called to set game variable.");
         if (Game.GameMode == Modes.AtLandmark)
         {
-            if (input == "")
+            if (command == "")
             {
-                Game.travel.ContinueTravelling();
+                await Game.travel.ContinueTravelling();
             }
 
-            if (input == "buy")
+            if (command == "buy")
             {
                 Game.ChangeMode(Modes.Shopping);
             }
@@ -25,7 +32,7 @@ public class InputHandler
 
         if (Game.GameMode == Modes.Shopping)
         {
-            Game.ShoppingEngine.ProcessInput(input);
+            Game.ShoppingEngine.ProcessInput(command);
         }
     }
 }

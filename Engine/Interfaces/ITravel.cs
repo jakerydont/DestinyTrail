@@ -9,8 +9,8 @@ public interface ITravel
     Pace Pace { get; }
     Rations Rations { get; set; }
 
-    void TravelLoop();
-    void ContinueTravelling();
+    Task TravelLoop();
+    Task ContinueTravelling();
 
     double MilesToNextLandmark { get; set; }
     double MilesTraveled { get; set; }

@@ -13,31 +13,31 @@ public partial class BlazorDisplay : IDisplay
 
     public List<string> Items { get; set; } = new();
 
-    public void Write(string message)
+    public async Task Write(string message)
     {
         outputText += $"<div>{message}</div>";
         InvokeAsync(StateHasChanged);
     }
 
-    public void WriteTitle(string message)
+    public async Task WriteTitle(string message)
     {
         outputText += $"<div class='title'>{message}</div>";
         InvokeAsync(StateHasChanged);
     }
 
-    public void Clear()
+    public async Task Clear()
     {
         outputText = "";
         InvokeAsync(StateHasChanged);
     }
 
 
-    public void ScrollToBottom()
+    public async Task ScrollToBottom()
     {
         // TODO;
     }
 
-    public void WriteError(string message)
+    public async Task WriteError(string message)
     {
         outputText += $"<span class='error'>{message}</span>";
         InvokeAsync(StateHasChanged);

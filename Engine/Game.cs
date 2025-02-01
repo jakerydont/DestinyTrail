@@ -13,7 +13,7 @@ namespace DestinyTrail.Engine
         public ITravel travel {get;set;}
 
         public IInventory Inventory { get; set; }
-        public InputHandler InputHandler { get; private set; }
+        public IInputHandler InputHandler { get; private set; }
 
         public IDisplay MainDisplay { get; set; }
 
@@ -32,9 +32,10 @@ namespace DestinyTrail.Engine
             IUtility Utility, 
             IWagonParty Party,
             ITravel Travel,
-            IWorldStatus worldStatus) 
+            IWorldStatus worldStatus,
+            IInputHandler InputHandler) 
         {
-            var game = new Game(Output,    Status,   Utility,   Party,  Travel, worldStatus);
+            var game = new Game(Output,    Status,   Utility,   Party,  Travel, worldStatus, InputHandler);
             string inventoryFilePath = Utility.GetAppSetting("InventoryFilePath");
             string inventoryCustomItemsFilePath = Utility.GetAppSetting("InventoryCustomItemsFilePath");
             game.Inventory = await Utility.LoadYamlAsync<Inventory>(inventoryFilePath);
@@ -49,9 +50,12 @@ namespace DestinyTrail.Engine
             IUtility Utility, 
             IWagonParty Party,
             ITravel Travel,
-            IWorldStatus worldStatus)   
+            IWorldStatus worldStatus,
+            IInputHandler inputHandler)   
         {
-            InputHandler = new InputHandler(this);
+            InputHandler = inputHandler;
+            InputHandler.Initialize(this);
+
             MainDisplay = Output;
             StatusDisplay = Status;
             _utility = Utility;
@@ -89,7 +93,7 @@ namespace DestinyTrail.Engine
                     switch (GameMode)
                     {
                         case Modes.Travelling:
-                            travel.TravelLoop();
+                            await travel.TravelLoop();
                             DrawStatusPanel();
                             break;
                         case Modes.AtLandmark:

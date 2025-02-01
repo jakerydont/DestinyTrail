@@ -10,16 +10,16 @@ namespace DestinyTrail.Engine
 
         private readonly ConsoleColor ErrorColor = ConsoleColor.Red;
 
-        public void Write(string message) 
+        public async Task Write(string message) 
         {
-            Console.WriteLine(message);
+            await Task.Run(() =>Console.WriteLine(message));
         }
 
 
-        public void WriteTitle(string message) 
+        public async Task WriteTitle(string message) 
         {
             var formattedTitle = BuildConsoleTitle(message);
-            Console.WriteLine(formattedTitle);
+            await Task.Run(() => Console.WriteLine(formattedTitle));
         }
 
 
@@ -38,25 +38,30 @@ namespace DestinyTrail.Engine
             return sb.ToString(); 
         }
 
-        public void Clear() {
-            for (var i = 0; i < 10; i++){
-                Console.WriteLine(".");
-                Console.WriteLine(",");
-            }
+        public virtual async Task Clear() {
+            await Task.Run(() => {
+                for (var i = 0; i < 10; i++){
+                    Console.WriteLine(".");
+                    Console.WriteLine(",");
+                }
+            });
         }
+        
 
          
-        public void ScrollToBottom()
+        public virtual async Task ScrollToBottom()
         {
             // noop
         }
 
-        public void WriteError(string message)
+        public virtual async Task WriteError(string message)
         {
-            var previousColor = Console.ForegroundColor;
-            Console.ForegroundColor = ErrorColor;
-            Console.WriteLine(message);
-            Console.ForegroundColor = previousColor;
+            await Task.Run(() => {
+                var previousColor = Console.ForegroundColor;
+                Console.ForegroundColor = ErrorColor;
+                Console.WriteLine(message);
+                Console.ForegroundColor = previousColor;
+            });
         }
     }
 }

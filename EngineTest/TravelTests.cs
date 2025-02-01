@@ -1,5 +1,6 @@
 using Xunit;
 using Moq;
+using System.Threading.Tasks;
 
 namespace DestinyTrail.Engine.Tests
 {
@@ -79,13 +80,13 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
-        public void TravelLoop_UpdatesMilesTraveledAndStatus_WhenTraveling()
+        public async Task TravelLoop_UpdatesMilesTraveledAndStatus_WhenTraveling()
          {
             // Arrange
              _travel.MilesToNextLandmark = 50;
 
             // Act
-            _travel.TravelLoop();
+            await _travel.TravelLoop();
 
             // Assert           
             Assert.Equal(50 - _travel.Pace.Factor, _travel.MilesToNextLandmark);
