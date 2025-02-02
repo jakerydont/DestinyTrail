@@ -33,10 +33,7 @@ namespace DestinyTrail.Engine
 
 
 
-        public T GetByName(string value)
-        {
-            return GetByPropertyValue("Name", value);
-        }
+        public T GetByName(string value) => GetByPropertyValue("Name", value);
 
         public bool TryGetByName(string name, out T outItem)
         {
@@ -77,39 +74,18 @@ namespace DestinyTrail.Engine
         }
 
 
-        public T FirstOrDefaultSafe()
-        {
-            return this.FirstOrDefault() ?? Default;
-        }
+        public T FirstOrDefaultSafe() => this.FirstOrDefault() ?? Default;
 
-        public T LastOrDefaultSafe()
-        {
-            return this.LastOrDefault() ?? Default;
-        }
+        public T LastOrDefaultSafe() => this.LastOrDefault() ?? Default;
 
-        public T MinBy<TKey>(Func<T, TKey> keySelector)
-        {
-            return this.OrderBy(keySelector).First();
-        }
+        public T MinBy<TKey>(Func<T, TKey> keySelector) => this.OrderBy(keySelector).First();
 
-        public T MaxBy<TKey>(Func<T, TKey> keySelector)
-        {
-            return this.OrderByDescending(keySelector).First();
-        }
+        public T MaxBy<TKey>(Func<T, TKey> keySelector) => this.OrderByDescending(keySelector).First();
 
-        public new T[] ToArray()
-        {
-            return base.ToArray();
-        }
+        public new T[] ToArray() => base.ToArray();
 
-        void IGameData<T>.Remove(T item)
-        {
-            Remove(item);
-        }
+        void IGameData<T>.Remove(T item) => Remove(item);
 
-        T IGameData<T>.First()
-        {
-            return this.First();
-        }
+        T IGameData<T>.First() => this.First();
     }
 }
