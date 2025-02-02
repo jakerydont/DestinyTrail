@@ -1,14 +1,21 @@
 ﻿@using DestinyTrail.Engine
 @using DestinyTrail.Blazor.Components
 @using DestinyTrail.Engine.Abstractions
+
 @inject HttpClient HttpClient
 
-<h3>MainGame</h3>
+<h3>Main Screen</h3>
+<div id="destinyTrail">
 
-<input @bind="commandInput" placeholder="Enter command..." />
-<button @onclick="() => _inputHandler.ProcessCommandAsync(commandInput)">Submit</button>
+    <WagonView></WagonView>
 
-<BlazorDisplay Heading="Output" @ref="outputDisplay"></BlazorDisplay>
+    <BlazorDisplay Heading="Output" @ref="outputDisplay" CssClass="output"></BlazorDisplay>
 
-<BlazorDisplay Heading="Status" @ref="statusDisplay"></BlazorDisplay>
+    <BlazorDisplay Heading="Status" @ref="statusDisplay" CssClass="status"></BlazorDisplay>
 
+    <div class="input-container">
+        <input @bind="commandInput" placeholder="Enter command..." />
+        <button @onclick="async () => {await _inputHandler.ProcessCommandAsync(commandInput); commandInput = string.Empty;}">Submit</button>
+    </div>
+
+</div>

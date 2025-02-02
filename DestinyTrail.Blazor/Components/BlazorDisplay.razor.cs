@@ -9,6 +9,8 @@ public partial class BlazorDisplay : IDisplay
     [Parameter]
     public string Heading { get; set; } = "BlazorDisplay";
 
+    [Parameter]
+    public string CssClass { get; set; } = "";
     public string outputText = "";
 
     public List<string> Items { get; set; } = new();
@@ -16,19 +18,19 @@ public partial class BlazorDisplay : IDisplay
     public async Task Write(string message)
     {
         outputText += $"<div>{message}</div>";
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     public async Task WriteTitle(string message)
     {
         outputText += $"<div class='title'>{message}</div>";
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
     public async Task Clear()
     {
         outputText = "";
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 
 
@@ -40,6 +42,6 @@ public partial class BlazorDisplay : IDisplay
     public async Task WriteError(string message)
     {
         outputText += $"<span class='error'>{message}</span>";
-        InvokeAsync(StateHasChanged);
+        await InvokeAsync(StateHasChanged);
     }
 }

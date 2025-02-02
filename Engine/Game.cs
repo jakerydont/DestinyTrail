@@ -105,7 +105,7 @@ namespace DestinyTrail.Engine
                         default:
                             break;
                     }
-                    await Task.Delay(100, token);
+                    await Task.Delay(1000, token);
                 }
             }
             catch (TaskCanceledException)
@@ -119,6 +119,8 @@ namespace DestinyTrail.Engine
             if (!_shouldInitializeAtLandmark) return;
             _shouldInitializeAtLandmark = false;
             MainDisplay.WriteTitle(travel.NextLandmark.Name);
+
+            //TODO: Adapt for GUI
             MainDisplay.Write("Press enter to continue.");
 
         }

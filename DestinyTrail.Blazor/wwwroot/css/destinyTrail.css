@@ -1,0 +1,57 @@
+
+#destinyTrail {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive columns */
+    gap: 16px; /* Space between grid items */
+    padding: 20px; /* Padding around the content */
+}
+
+#destinyTrail #wagonView {
+    grid-column: span 2;
+}
+
+#destinyTrail .input-container {
+    display: flex;
+    flex-direction: column; /* Stacks the input and button vertically */
+}
+
+#destinyTrail h1,
+#destinyTrail h3 {
+    grid-column: span 2; /* Makes the headers span across the grid */
+}
+
+
+
+/* Define layout for output and status */
+#destinyTrail .output,
+#destinyTrail .status {
+    height:20em;
+    overflow-y: scroll;
+
+    background-color: #ffe683; /* Light background for better visibility */
+    padding: 10px; /* Padding inside the output and status sections */
+    border-radius: 5px; /* Rounded corners */
+    
+
+    border: 4px solid #a17902; /* Gold/yellow border */
+    box-shadow:   inset  2px 2px 4px rgba(128, 128, 0, 0.5), 
+                  inset -2px -2px 4px rgba(255, 255, 0, 0.5), 
+              
+                2px 2px 5px rgba(0, 0, 0, 0.3); /* Beveled effect */
+}
+
+/* Responsive layout for larger screens */
+@media (min-width: 768px) {
+    #destinyTrail {
+        grid-template-columns: repeat(2, 1fr); /* Two columns layout */
+    }
+
+    #destinyTrail .output,
+    #destinyTrail .status {
+        grid-column: span 1; /* Each takes one column in desktop view */
+    }
+
+    #destinyTrail .input-container {
+        grid-column: span 2;
+    }
+}

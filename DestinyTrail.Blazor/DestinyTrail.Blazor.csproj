@@ -25,10 +25,7 @@
     <ItemGroup>
       <SourceData Include="..\Engine\data\**\*.*" />
     </ItemGroup>
-    <Copy
-      SourceFiles="@(SourceData)"
-      DestinationFolder="$(ProjectDir)wwwroot\data\%(RecursiveDir)"
-      SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(SourceData)" DestinationFolder="$(ProjectDir)wwwroot\data\%(RecursiveDir)" SkipUnchangedFiles="true" />
   </Target>
 
 </Project>
