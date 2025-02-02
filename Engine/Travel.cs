@@ -53,11 +53,11 @@ public class Travel : ITravel
 
     }
 
-    public static async Task<Travel> CreateAsync(IWagonParty party, IUtility utility, IDisplay display, IWorldStatus worldStatus)
+    public static async Task<Travel> CreateAsync(IWagonParty party, IUtility utility, IDisplay display, IWorldStatus worldStatus, IStatusData statuses)
     {
         var travel = new Travel(party, utility, display, worldStatus);
 
-        var occurrenceEngineTask = OccurrenceEngine.CreateAsync(travel.Party, travel.Utility);
+        var occurrenceEngineTask = OccurrenceEngine.CreateAsync(travel.Party, travel.Utility, statuses);
 
         string pacesFilePath = travel.Utility.GetAppSetting("PacesFilePath");
         var paceDataTask = travel.Utility.LoadYamlAsync<PaceData>(pacesFilePath);

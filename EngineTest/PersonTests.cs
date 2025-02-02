@@ -23,6 +23,18 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
+        public void HealthStatus_ShouldReturnCorrectStatus() {
+             var person = new Person
+            {
+                ID = 1,
+                Name = "Test Person",
+                Status = new Status { Name = "Healthy" },
+                Health = 100
+            };      
+            Assert.Equal("OUTSTANDING", person.GetHealthStatus()); 
+        }
+
+        [Fact]
         public void IsAlive_ShouldReturnTrueIfStatusIsNotDead()
         {
             // Arrange

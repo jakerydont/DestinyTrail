@@ -6,6 +6,7 @@ namespace DestinyTrail.Engine.Tests
 {
     public class TravelTests
     {
+        private readonly Mock<IStatusData> _mockStatusData;
         private readonly Mock<IWagonParty> _mockWagonParty;
         private readonly Mock<IUtility> _mockUtility;
         private readonly Mock<IDisplay> _mockDisplay;
@@ -16,6 +17,7 @@ namespace DestinyTrail.Engine.Tests
 
         public TravelTests()
         {
+            _mockStatusData = new Mock<IStatusData>();
             _mockUtility = new Mock<IUtility>();
 
             _mockWorldStatus = new Mock<IWorldStatus>();
@@ -56,11 +58,12 @@ namespace DestinyTrail.Engine.Tests
             _travel = Travel.CreateAsync(_mockWagonParty.Object,
             _mockUtility.Object,
              _mockDisplay.Object, 
-             _mockWorldStatus.Object).GetAwaiter().GetResult();
+             _mockWorldStatus.Object,
+             _mockStatusData.Object).GetAwaiter().GetResult();
 
             Assert.NotNull(_travel);
 
-             _travel.MilesTraveled =0;
+             _travel.MilesTraveled = 0;
         }
 
         [Fact]

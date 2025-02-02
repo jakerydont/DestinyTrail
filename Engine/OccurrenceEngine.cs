@@ -13,38 +13,32 @@ namespace DestinyTrail.Engine
         private readonly IWagonParty _party;
         private readonly IUtility _utility;
         private Occurrence[] _occurrences;
-        private string[] _statuses;
+        private IStatusData _statuses;
 
         private static Regex DecrementEventPattern = new Regex(@"\[(.*?)\] -= (\d+)");
         private static Regex IncrementEventPattern = new Regex(@"\[(.*?)\] \+= (\d+)");
         public static Regex SetItemQuantityPattern = new Regex(@"\[(.*?)\] = (\d+)");
         private static Regex BooleanEventPattern = new Regex(@"\[Flags\.(.*?)\] = (true|false)");
 
-        public static async Task<OccurrenceEngine> CreateAsync(IWagonParty party, IUtility utility)
+        public static async Task<OccurrenceEngine> CreateAsync(IWagonParty party, IUtility utility, IStatusData statuses)
         {
             var oe = new OccurrenceEngine(party, utility);
 
-            await oe.GetStatusesAsync();
+            oe._statuses = statuses;  
             await oe.LoadOccurrencesAsync();
 
             return oe;
         }
 
 
-        private async Task GetStatusesAsync()
-        {
-            string statusesFilePath = _utility.GetAppSetting("StatusesFilePath");
-            var statusYaml = await _utility.LoadYamlAsync<StatusData>(statusesFilePath);
-            Statuses = [.. statusYaml];
-            _statuses = Statuses;
-        }
+
 
         private OccurrenceEngine(IWagonParty party) : this(party, new Utility()) { }
         private OccurrenceEngine(IWagonParty party, IUtility utility)
         {
             Statuses= [];
             _occurrences = [];
-            _statuses = [];
+            _statuses = new StatusData{Statuses=new()};
             _utility = utility;
             _party = party;
         }
