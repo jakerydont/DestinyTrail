@@ -130,8 +130,7 @@ namespace DestinyTrail.Engine
 
         public void KillMember(IPerson person)
         {
-            person.Status.Name = "dead";
-            
+            person.Kill();    
         }
     }
 
