@@ -15,8 +15,8 @@ There is no release build of this yet. This is still in the "Run it from within 
 * Each day a random occurrence is selected and affects a party member
 * Items can be purchased when stopped at a location
 
-# Roadmap
-* Blazor implementation
+# Roadmap status
+* Blazor implementation -- partial, will try to keep feature parity with console as I go
 * Implement health system and death for party members
 * Weather system
 * River crossing system
