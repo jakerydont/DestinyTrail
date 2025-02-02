@@ -1,7 +1,13 @@
 
   - Name: "OUTSTANDING"
+    UpperThreshold: 100
   - Name: "Good"
+    UpperThreshold: 80
   - Name: "Fair"
+    UpperThreshold: 60
   - Name: "Poor"
+    UpperThreshold: 40
   - Name: "Very Poor"
+    UpperThreshold: 20
   - Name: "Dead"
+    UpperThreshold: 0
