@@ -10,7 +10,6 @@ public partial class MainGame
     private BlazorDisplay? outputDisplay;
     private BlazorDisplay? statusDisplay;
     private bool isGameInitialized = false;
-    private bool _running = true;
 
     private string commandInput = "";
 
