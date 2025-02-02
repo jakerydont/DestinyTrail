@@ -34,10 +34,12 @@ public partial class BlazorDisplay : IDisplay
     }
 
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
     public async Task ScrollToBottom()
     {
         // TODO;
     }
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
 
     public async Task WriteError(string message)
     {
