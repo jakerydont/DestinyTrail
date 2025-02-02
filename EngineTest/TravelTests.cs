@@ -150,7 +150,7 @@ namespace DestinyTrail.Engine.Tests
 
 
         [Fact]
-        public void ContinueTravelling_ResetsMilesAndChangesMode()
+        public async Task ContinueTravelling_ResetsMilesAndChangesMode()
         {
             // Arrange
             var nextLandmark = new Landmark { ID = "FORT_LARAMIE" , Name = "Fort Laramie", Distance = 150, Lore="Fun place" };
@@ -164,7 +164,7 @@ namespace DestinyTrail.Engine.Tests
                         .Returns(nextLandmark);
 
             // Act
-            _travel.ContinueTravelling();
+            await _travel.ContinueTravelling();
 
             // Assert
             Assert.Equal(_travel.MilesToNextLandmark, nextLandmark.Distance);

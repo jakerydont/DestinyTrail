@@ -15,6 +15,8 @@ namespace DestinyTrail.Engine.Tests
             _inputHandler = new InputHandler();
             _mockGame = new Mock<IGame>();
 
+            _inputHandler.Initialize(_mockGame.Object);
+
             _mockTravel = new Mock<ITravel>();
             _mockShoppingEngine = new Mock<IShoppingEngine>();
 

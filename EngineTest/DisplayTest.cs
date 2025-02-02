@@ -7,7 +7,7 @@ namespace DestinyTrail.Engine.Tests
     public class DisplayTest
     {
         [Fact]
-        public void Write_ShouldOutputMessage()
+        public async Task Write_ShouldOutputMessage()
         {
             // Arrange
             var display = new Display();
@@ -16,7 +16,7 @@ namespace DestinyTrail.Engine.Tests
             Console.SetOut(sw);
 
             // Act
-            display.Write(message);
+            await display.Write(message);
 
             // Assert
             var result = sw.ToString().Trim();
@@ -24,7 +24,7 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
-        public void WriteTitle_ShouldOutputFormattedTitle()
+        public async Task WriteTitle_ShouldOutputFormattedTitle()
         {
             // Arrange
             var display = new Display();
@@ -33,7 +33,7 @@ namespace DestinyTrail.Engine.Tests
             Console.SetOut(sw);
 
             // Act
-            display.WriteTitle(message);
+            await display.WriteTitle(message);
 
             // Assert
             var result = sw.ToString().Trim();
