@@ -38,7 +38,6 @@ namespace DestinyTrail.Engine
         {
             Statuses= [];
             _occurrences = [];
-            _statuses = new StatusData{Statuses=new()};
             _utility = utility;
             _party = party;
         }

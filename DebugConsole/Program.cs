@@ -8,11 +8,12 @@ var display = new Display();
 var utility = new Utility();
 
 var wagonParty = await WagonParty.CreateAsync(utility);
-var occurrenceEngine = OccurrenceEngine.CreateAsync(wagonParty, utility);
+await StatusData.Instance.InitializeAsync(utility);
+var occurrenceEngine = OccurrenceEngine.CreateAsync(wagonParty, utility, StatusData.Instance);
 
 var worldStatus = new WorldStatus();
 
-var travelEngine = await Travel.CreateAsync(wagonParty, utility, display, worldStatus);
+var travelEngine = await Travel.CreateAsync(wagonParty, utility, display, worldStatus, StatusData.Instance);
 var game = await Game.CreateAsync(display, display, utility, wagonParty, travelEngine, worldStatus, inputHandler);
 var gameLoopTask = game.StartGameLoop();
 var inputTask = Task.Run(() => ProcessUserInput(game));

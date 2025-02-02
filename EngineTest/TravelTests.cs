@@ -34,8 +34,8 @@ namespace DestinyTrail.Engine.Tests
 
             // Mocking YAML loading
             _mockUtility.Setup(u => u.GetAppSetting(It.IsAny<string>())).Returns(string.Empty);
-            _mockUtility.Setup(u => u.LoadYamlAsync<StatusData>(It.IsAny<string>()))
-                .ReturnsAsync(new StatusData { Statuses = new() {new() { Name ="Healthy"},new(){  Name ="Sick"} } });
+           // _mockUtility.Setup(u => u.LoadYamlAsync<StatusData>(It.IsAny<string>()))
+           //     .ReturnsAsync(new StatusData { Statuses = new() {new() { Name ="Healthy"},new(){  Name ="Sick"} } });
 
             _mockUtility.Setup(u => u.LoadYamlAsync<PaceData>(It.IsAny<string>()))
                 .ReturnsAsync(new PaceData { Paces = [new Pace { Name = "Slow", Factor = 10 }, new Pace { Name = "Fast", Factor = 20 } ]});

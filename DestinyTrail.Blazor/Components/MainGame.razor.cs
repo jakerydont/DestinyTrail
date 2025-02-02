@@ -29,12 +29,14 @@ public partial class MainGame
                 throw new InvalidOperationException("Blazor displays are not initialized.");
             }
 
+
             var worldStatus = new WorldStatus();
             var configurationProvider = new DestinyTrail.Blazor.ConfigurationProvider();
             var fileReader = new DestinyTrail.Blazor.FileReader(HttpClient);
             var utility = new Utility(new YamlDeserializer(), fileReader, configurationProvider);
+            await StatusData.Instance.InitializeAsync(utility);
             var wagonParty = await WagonParty.CreateAsync(utility);
-            var travel = await Travel.CreateAsync(wagonParty, utility, outputDisplay, worldStatus);
+            var travel = await Travel.CreateAsync(wagonParty, utility, outputDisplay, worldStatus, StatusData.Instance);
             game = await Game.CreateAsync(outputDisplay, statusDisplay, utility, wagonParty, travel, worldStatus, _inputHandler);
             
 

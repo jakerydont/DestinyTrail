@@ -4,6 +4,7 @@ namespace DestinyTrail.Engine
 {
     public class WagonParty : IWagonParty
     {
+        public static Lazy<WagonParty> Instance = new (()=> new WagonParty());
         public static WagonParty Default = new ();
         private int memberCounter = 0;
         public IUtility Utility;
@@ -13,7 +14,7 @@ namespace DestinyTrail.Engine
         public double Health { get; private set; }
 
         public IInventory Inventory { get; set; }
-        private int _maxRationFactor {get;set;}
+        private int _maxRationFactor { get; set; }
         public IDictionary<string, object> Flags { 
             get => new Dictionary<string, object>{
                 { "CanHunt", true }
@@ -26,7 +27,7 @@ namespace DestinyTrail.Engine
             return wagonParty;
         }
 
-        public WagonParty() : this(new Utility()) {}
+        private WagonParty() : this(new Utility()) {}
         private WagonParty(IUtility utility)
         {
             Members = [];
