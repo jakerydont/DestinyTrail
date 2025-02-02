@@ -21,10 +21,4 @@ namespace DestinyTrail.Engine
             Statuses = [.. statusYaml];
         }
     }
-
-    public interface IStatusData
-    {   
-        public Task CreateAsync(IUtility _utility);
-        public List<Status> Statuses{ get; set; }
-    }
 }
