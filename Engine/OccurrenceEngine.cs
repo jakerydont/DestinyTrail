@@ -159,23 +159,23 @@ namespace DestinyTrail.Engine
 
             var item = _party.Inventory.TryGetByName(itemZeroMatch.Groups[1].Value, out var itemResult) ? itemResult : null;
             if (item == null) {
-                // throw new Exception($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
+                throw new Exception($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
 
                 Console.WriteLine($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
                 return;
             }
                 
             
-            var amount = int.TryParse(itemZeroMatch.Groups[2].Value, out var amountResult) ? amountResult 
-                : 0;
-            if (amount == 0) {
-                // throw new Exception($"Invalid amount {itemZeroMatch.Groups[2].Value}.");
+            int? amount = int.TryParse(itemZeroMatch.Groups[2].Value, out var amountResult) ? amountResult 
+                : null;
+            if (amount == null) {
+                throw new Exception($"Invalid amount {itemZeroMatch.Groups[2].Value}.");
                 Console.WriteLine($"Invalid amount {itemZeroMatch.Groups[2].Value}.");
                 return;
             }
 
 
-            item.SetQuantity(amount);
+            item.SetQuantity((int)amount);
         }
 
 
