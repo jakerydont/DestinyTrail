@@ -161,8 +161,8 @@ namespace DestinyTrail.Engine
             if (item == null) {
                 throw new Exception($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
 
-                Console.WriteLine($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
-                return;
+               // Console.WriteLine($"Inventory item {itemZeroMatch.Groups[1].Value} not found.");
+               // return;
             }
                 
             
@@ -170,8 +170,8 @@ namespace DestinyTrail.Engine
                 : null;
             if (amount == null) {
                 throw new Exception($"Invalid amount {itemZeroMatch.Groups[2].Value}.");
-                Console.WriteLine($"Invalid amount {itemZeroMatch.Groups[2].Value}.");
-                return;
+                //Console.WriteLine($"Invalid amount {itemZeroMatch.Groups[2].Value}.");
+               // return;
             }
 
 
