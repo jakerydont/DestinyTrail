@@ -79,6 +79,7 @@ namespace DestinyTrail.Engine.Tests
             Assert.Equal(150, _travel.MilesToNextLandmark);
         }
 
+
         [Fact]
         public async Task TravelLoop_UpdatesMilesTraveledAndStatus_WhenTraveling()
          {
