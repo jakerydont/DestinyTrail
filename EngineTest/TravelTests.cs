@@ -105,7 +105,7 @@ namespace DestinyTrail.Engine.Tests
             _travel.ModeChanged += (mode) => { if (mode == Modes.AtLandmark) eventTriggered = true; };
 
             // Act
-            _travel.TravelLoop();
+            await _travel.TravelLoop();
 
             // Assert
             Assert.True(eventTriggered);
@@ -116,7 +116,7 @@ namespace DestinyTrail.Engine.Tests
 
 
         [Fact]
-        public void TravelLoop_ProcessesOccurrence_WhenStillTraveling()
+        public async Task TravelLoop_ProcessesOccurrence_WhenStillTraveling()
         {
             // Arrange
 
@@ -142,7 +142,7 @@ namespace DestinyTrail.Engine.Tests
             _travel.occurrenceEngine = mockOccurrenceEngine.Object;
 
             // Act
-            _travel.TravelLoop();
+            await _travel.TravelLoop();
 
             // Assert
             mockOccurrenceEngine.Verify(o => o.PickRandomOccurrence(), Times.Once);
