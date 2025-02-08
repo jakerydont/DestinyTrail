@@ -11,6 +11,10 @@ namespace DestinyTrail.Engine
         public IDictionary<string, object> Flags { get; }
         public IPerson GetRandomMember();
 
+        public IEnumerable<IPerson> GetLivingMembers();
+
+        public bool IsAnybodyAlive();
+
         
         public IPerson GeneratePerson(string name);
         public IPerson GenerateRandomPerson(string[] randomNames);

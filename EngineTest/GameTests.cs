@@ -55,7 +55,7 @@ namespace DestinyTrail.Engine.Tests
 
             var mockOccurrenceEngine = new Mock<IOccurrenceEngine>();
             // Initialize the Game with the mocked dependencies
-            _game = Game.CreateAsync(
+            _game = Task.Run(() =>Game.CreateAsync(
                 _mockDisplay.Object,
                 _mockStatus.Object,
                 _mockUtility.Object, 
@@ -64,7 +64,7 @@ namespace DestinyTrail.Engine.Tests
                 _mockWorldStatus.Object,
                 _mockInputHandler.Object
 
-            ).GetAwaiter().GetResult();
+            )).Result;
 
         }
 

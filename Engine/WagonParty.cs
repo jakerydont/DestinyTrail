@@ -56,7 +56,7 @@ namespace DestinyTrail.Engine
         }
 
         
-        private async Task LoadMembersAsync()
+        public async Task LoadMembersAsync()
         {
             string randomNamesPath = Utility.GetAppSetting("RandomNamesFilePath");
             var randomNamesData = await Utility.LoadYamlAsync<RandomNamesData>(randomNamesPath);
@@ -72,6 +72,8 @@ namespace DestinyTrail.Engine
 
             Leader = Members.First();
         }
+
+
         public IPerson GetRandomMember()
         {
             Random random = new Random();
@@ -84,6 +86,7 @@ namespace DestinyTrail.Engine
         {
             return Members.Where(p => p.isAlive);
         }
+        public bool IsAnybodyAlive() => GetLivingMembers().Any();
 
         public IPerson GeneratePerson(string name)
         {
