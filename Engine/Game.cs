@@ -3,12 +3,13 @@ using System.Formats.Asn1;
 using System.Runtime.CompilerServices;
 using YamlDotNet.Serialization;
 using System.Configuration;
+using YamlDotNet.Core.Tokens;
 
 namespace DestinyTrail.Engine
 {
     public class Game : IGame
     {
-        private CancellationTokenSource _cancellationTokenSource { get; set; }
+        private CancellationTokenSource _defaultCancellationTokenSource { get; set; }
 
         public ITravel travel {get;set;}
 
@@ -63,7 +64,7 @@ namespace DestinyTrail.Engine
             _party = Party;
             WorldStatus = worldStatus;
             GameMode = Modes.Travelling;
-            _cancellationTokenSource = new CancellationTokenSource();
+            _defaultCancellationTokenSource = new CancellationTokenSource();
 
             MainDisplay.Write(_party.GetDisplayNames());
 
@@ -81,15 +82,18 @@ namespace DestinyTrail.Engine
             ChangeMode(mode);
         }
 
-        
-        public async Task StartGameLoop()
+        public async Task StartGameLoop(CancellationToken? cts = null)
         {
-            var token = _cancellationTokenSource.Token;
+            var token = cts ?? _defaultCancellationTokenSource.Token;
 
             try
             {
                 while (!token.IsCancellationRequested)
                 {
+                    if (!_party.IsAnybodyAlive())
+                    {
+                        GameMode = Modes.GameOver;
+                    }
                     switch (GameMode)
                     {
                         case Modes.Travelling:

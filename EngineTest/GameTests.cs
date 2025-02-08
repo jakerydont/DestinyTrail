@@ -31,7 +31,10 @@ namespace DestinyTrail.Engine.Tests
             _mockDisplay = new Mock<IDisplay>();
             _mockStatus = new Mock<IDisplay>();
             _mockUtility = new Mock<IUtility>();
+
             _mockTravel = new Mock<ITravel>();
+            _mockTravel.Setup(t => t.TravelLoop()).Returns(Task.CompletedTask);
+
             _mockWorldStatus = new Mock<IWorldStatus>();
             _mockInputHandler = new Mock<IInputHandler>();
 
@@ -93,8 +96,45 @@ namespace DestinyTrail.Engine.Tests
 
             // Assert: The mode should be changed to Shopping
             Assert.Equal(Modes.Shopping, _game.GameMode);
+
+            _game.ChangeMode(Modes.GameOver); 
+            Assert.Equal(Modes.GameOver, _game.GameMode);
         }
 
+        [Fact]
+        public async Task StartGameLoop_ShouldExitWhenCancelled()
+        {
+            _mockWagonParty.Setup(p => p.IsAnybodyAlive()).Returns(true);
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(1000); 
+
+
+            // Act
+            var task = _game.StartGameLoop(cts.Token);
+            await task;
+
+            // Assert
+            _mockWagonParty.Verify(p => p.IsAnybodyAlive(), Times.AtLeastOnce);
+
+        }
+
+
+
+        [Fact]
+        public async Task  StartGameLoop_ShouldSwitchModeToGameOver_WhenAllMembersDead() {
+
+            _mockWagonParty.Setup(p => p.IsAnybodyAlive()).Returns(false);
+            _game._party = _mockWagonParty.Object;
+
+
+            var cts = new CancellationTokenSource();
+            cts.CancelAfter(1000); 
+
+            // Act
+            await _game.StartGameLoop(cts.Token);
+
+            Assert.Equal(Modes.GameOver, _game.GameMode);
+        }
 
         [Fact]
         public void DrawStatusPanel_UpdatesStatusDisplay()
