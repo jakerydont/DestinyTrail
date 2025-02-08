@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using YamlDotNet.Serialization;
 using System.Configuration;
 using YamlDotNet.Core.Tokens;
+using System.Reflection.Metadata.Ecma335;
 
 namespace DestinyTrail.Engine
 {
@@ -26,7 +27,13 @@ namespace DestinyTrail.Engine
         
         public IWorldStatus WorldStatus { get; set; }
         public IWagonParty _party { get; set; }
-        public Modes GameMode { get; private set; }
+
+        private Modes _gameMode;
+        public Modes GameMode 
+        { 
+            get => _gameMode; 
+            set => ChangeMode(value); 
+        }
         public IShoppingEngine ShoppingEngine { get; set; }
         private bool _shouldInitializeAtLandmark { get; set; }
 
@@ -92,9 +99,13 @@ namespace DestinyTrail.Engine
             {
                 while (!token.IsCancellationRequested)
                 {
-                    if (!_party.IsAnybodyAlive())
+                    if (GameMode != Modes.GameOver)
                     {
-                        GameMode = Modes.GameOver;
+                        _party.KillCheckParty();
+                        if (!_party.IsAnybodyAlive())
+                        {
+                            GameMode = Modes.GameOver;
+                        }
                     }
                     switch (GameMode)
                     {
@@ -142,7 +153,7 @@ namespace DestinyTrail.Engine
 
             //TODO: Adapt for GUI
             MainDisplay.Write("Everybody in your party died or went lost and is unaccounted for. Many wagons fail to fulfill their destiny.");
-
+            DrawStatusPanel();
         }
 
         public void DrawStatusPanel()
@@ -163,16 +174,16 @@ namespace DestinyTrail.Engine
 
         public void ChangeMode(Modes mode)
         {
-            GameMode = mode;
-            if (GameMode == Modes.AtLandmark)
+            _gameMode = mode;
+            if (_gameMode == Modes.AtLandmark)
             {
                 _shouldInitializeAtLandmark = true;
             }
-            else if (GameMode == Modes.GameOver) 
+            else if (_gameMode == Modes.GameOver) 
             {
                 _shouldInitializeGameOver = true;
             }
-            else if (GameMode == Modes.Shopping)
+            else if (_gameMode == Modes.Shopping)
             {
                 ShoppingEngine.InitializeState();
             }

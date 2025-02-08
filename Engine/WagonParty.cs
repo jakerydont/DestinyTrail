@@ -8,6 +8,7 @@ namespace DestinyTrail.Engine
         private int memberCounter = 0;
         public IUtility Utility;
 
+        
         public List<IPerson> Members {get;set;}
         public IPerson Leader {get;set;}
 
@@ -33,8 +34,6 @@ namespace DestinyTrail.Engine
             Leader = Person.Nobody;
             Utility = utility;
 
-            SetHealth(100);
-
             Inventory = new Inventory();
         }
 
@@ -50,7 +49,7 @@ namespace DestinyTrail.Engine
                 Members.Add(member);
             }
             Leader = Members.First();
-            SetHealth( 100 );
+
             
             Inventory = new Inventory();
         }
@@ -71,6 +70,7 @@ namespace DestinyTrail.Engine
             }
 
             Leader = Members.First();
+            SetHealth( 2 );
         }
 
 
@@ -86,6 +86,15 @@ namespace DestinyTrail.Engine
         {
             return Members.Where(p => p.isAlive).ToList();
         }
+
+        public void KillCheckParty() 
+        {
+            GetLivingMembers()
+            .ForEach((m) => {
+                m.KillCheck();
+            });
+        }
+
         public bool IsAnybodyAlive() => GetLivingMembers().Any();
 
         public IPerson GeneratePerson(string name)

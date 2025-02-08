@@ -7,10 +7,17 @@ namespace DestinyTrail.Engine
         public required int ID { get; set; }
         public required Status Status { get; set; } 
         public double Health { get; set; }
+
+        public void KillCheck() {
+            if (Health <= 0)
+            {
+                Kill();
+            }
+        }
         
         public void Kill() {
             Health = 0;
-            Status.Name = "dead";
+            Status = Status.Dead;
         }
         
         public bool isAlive => Status.Name.ToLower() != "dead";

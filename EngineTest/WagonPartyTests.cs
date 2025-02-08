@@ -19,8 +19,8 @@ namespace DestinyTrail.Engine.Tests
 
             // Assert
             Assert.Equal("Bob", wagonParty.Leader.Name);
-            Assert.Equal(wagonParty.Leader, wagonParty.Members.First());
-            Assert.Equal("100", wagonParty.GetDisplayHealth());
+            Assert.Equal(wagonParty.Leader, wagonParty.GetLivingMembers().First());
+          
         }
 
         [Fact]

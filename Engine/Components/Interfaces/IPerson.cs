@@ -9,6 +9,7 @@ namespace DestinyTrail.Engine
         double Health { get; set; }
 
         void Kill();
+        void KillCheck();
         string ToString();
     }
 }

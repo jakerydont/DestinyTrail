@@ -45,7 +45,7 @@ namespace DestinyTrail.Engine.Tests
             {
                 ID = 1,
                 Name = "Test Person",
-                Status = new Status { Name = "Dead" }
+                Status = Status.Dead
             };
 
             // Act & Assert
