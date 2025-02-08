@@ -9,6 +9,8 @@ namespace DestinyTrail.Engine
 {
     public class Game : IGame
     {
+        private bool _shouldInitializeGameOver;
+
         private CancellationTokenSource _defaultCancellationTokenSource { get; set; }
 
         public ITravel travel {get;set;}
@@ -106,6 +108,9 @@ namespace DestinyTrail.Engine
                         case Modes.Shopping:
                             ShoppingEngine.ShoppingLoop();
                             break;
+                        case Modes.GameOver:
+                            GameOverLoop();
+                            break;
                         default:
                             break;
                     }
@@ -129,6 +134,16 @@ namespace DestinyTrail.Engine
 
         }
 
+        private void GameOverLoop()
+        {
+            if (!_shouldInitializeGameOver) return;
+            _shouldInitializeGameOver = false;
+            MainDisplay.WriteTitle("GAME OVER");
+
+            //TODO: Adapt for GUI
+            MainDisplay.Write("Everybody in your party died or went lost and is unaccounted for. Many wagons fail to fulfill their destiny.");
+
+        }
 
         public void DrawStatusPanel()
         {
@@ -152,6 +167,10 @@ namespace DestinyTrail.Engine
             if (GameMode == Modes.AtLandmark)
             {
                 _shouldInitializeAtLandmark = true;
+            }
+            else if (GameMode == Modes.GameOver) 
+            {
+                _shouldInitializeGameOver = true;
             }
             else if (GameMode == Modes.Shopping)
             {
