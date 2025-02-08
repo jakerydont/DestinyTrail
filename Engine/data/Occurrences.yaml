@@ -1,121 +1,156 @@
 
   - DisplayText: "Nothing remarkable happened."
-    Probability: 1
+    Probability: 1000
     Effect: ""
+
   - DisplayText: "{name} has a broken leg."
-    Probability: 0.2
+    Probability: 1
     Effect: "Broken Leg"
+
   - DisplayText: "{name} lost the trail."
-    Probability: 0.5
+    Probability: 1
     Effect: "Delay"
+
   - DisplayText: "{name} drank water with poo in it."
-    Probability: 0.3
+    Probability: 1
     Effect: "Dysentery"
+
   - DisplayText: "{name} was bitten by a snake."
-    Probability: 0.3
+    Probability: 1
     Effect: "Snakebite"
+
   - DisplayText: "{name} was eaten by the cursed child."
-    Probability: 0.001
+    Probability: 1
     Effect: "Dead"
+
   - DisplayText: "{name} has gotten cholera"
-    Probability: 0.01
+    Probability: 1
     Effect: "Cholera"
+
   - DisplayText: "{name} got bitten by a different snake"
-    Probability: 0.03
+    Probability: 1
     Effect: "Snakebite"  
+
   - DisplayText: "{name} got type 2 diabetes"
-    Probability: 0.3
+    Probability: 1
     Effect: "Type 2 Diabetes"
+
   - DisplayText: "{name} has gotten dysentery"
-    Probability: 0.3
+    Probability: 1
     Effect: "Dysentery"
+
   - DisplayText: "{name} is enjoying having yellow fever"
-    Probability: 0.3
+    Probability: 1
     Effect: "Yellow Fever"
+
   - DisplayText: "{name} fell pregnant"
-    Probability: 0.3
+    Probability: 1
     Effect: "Pregnant"
-  - DisplayText: "{name}'s anaconda don't want none unless you got buns hon"
-    Probability: 0.3
-    Effect: "???"
+
   - DisplayText: "your oxen got stolen overnight you dumb idiots"
-    Probability: 0.03
+    Probability: 1
     Effect: "[oxen] = 0"
+
   - DisplayText: "{name} has gotten consumption not to be confused with constipation"
-    Probability: 0.3
+    Probability: 1
     Effect: "Consumption"
+
   - DisplayText: "{name} has gotten constipation not to be confused with consumption"
-    Probability: 0.3
+    Probability: 1
     Effect: "constipation"
+
   - DisplayText: "{name} got cannibalized"
-    Probability: 0.001
+    Probability: 1
     Effect: "Dead,[Food] += 20"
+
   - DisplayText: "{name} got measles"
-    Probability: 0.3
+    Probability: 1
     Effect: "measles"
+
   - DisplayText: "{name} got Rocky Mountain High"
-    Probability: 0.3
+    Probability: 1
     Effect: "John Denver"
+
   - DisplayText: "You are out of Baja Blast"
-    Probability: 0.3
+    Probability: 1
     Effect: "[BajaBlast] = 0"
+
   - DisplayText: "SNAKES ON A WAGON"
-    Probability: 0.3
-    Effect: "???"
+    Probability: 1
+    Effect: "SNAKE SNAKE SNAAAAAAAKE"
+
   - DisplayText: "Buffalo are extinct now. Good job."
-    Probability: 0.0003
+    Probability: 1
     Effect: "[Flags.CanHunt] = false"
+
   - DisplayText: "{name}'s destiny was manifested"
-    Probability: 0.3
+    Probability: 1
     Effect: "???"
+
   - DisplayText: "{name} was carried off by a cursed Victorian child"
-    Probability: 0.3
+    Probability: 1
     Effect: "missing presumed dead"
+
   - DisplayText: "{name} fell in love with an indigenous guide"
-    Probability: 0.3
+    Probability: 1
     Effect: "missing presumed getting to 3rd base"
+
   - DisplayText: "{name} caulked too hard"
-    Probability: 0.3
+    Probability: 1
     Effect: "???"
+
   - DisplayText: "{name} is unclean"
-    Probability: 0.3
+    Probability: 1
     Effect: "???"
+
   - DisplayText: "{name} got their foot ran over by the wagon wheel"
-    Probability: 0.3
+    Probability: 1
     Effect: "Broken Foot"
+
   - DisplayText: "{name} is allergic to ASMR"
-    Probability: 0.3
+    Probability: 1
     Effect: "???"
+
   - DisplayText: "{name} got Hand Foot and Mouth Disease"
-    Probability: 0.3
+    Probability: 1
     Effect: "Hand Foot and Mouth Disease"
+
   - DisplayText: "{name} shat themselves. One clothing set ruined."
-    Probability: 0.3
+    Probability: 1
     Effect: "[clothes] -= 1"
+
   - DisplayText: "{name}'s horse broke its leg, time to make glue"
-    Probability: 0.3
+    Probability: 1
     Effect: "[horse] -= 1,[glue] += 1"
+
   - DisplayText: "{name} stepped in ox poop"
-    Probability: 0.3
+    Probability: 1
     Effect: "???"
+
   - DisplayText: "{name} wants to go home, Missouri wasn't THAT bad"
-    Probability: 0.3
+    Probability: 1
     Effect: "homesick"
+
   - DisplayText: "{name} caught the Rona 160 years early"
-    Probability: 0.3
+    Probability: 
     Effect: "COVID-19"
+
   - DisplayText: "{name} went the way of the mastodon"
-    Probability: 0.0003
+    Probability: 1
     Effect: "Dead"
+
   - DisplayText: "{name} became allergic to oxygen"
-    Probability: 0.3
+    Probability: 1
     Effect: "Oxygen Allergy"
+
   - DisplayText: "{name} stared at a solar eclipse and went blind"
-    Probability: 0.3
+    Probability: 1
     Effect: "Blind"
+
   - DisplayText: "{name} turned into a Samsung bespoke 4 door refrigerator"
-    Probability: 0.3
+    Probability: 1
     Effect: "Fridged"
+    
   - DisplayText: "{name} broke Pa's fiddle"
-    Probability: 0.3
+    Probability: 1
     Effect: "Ears Boxed"
