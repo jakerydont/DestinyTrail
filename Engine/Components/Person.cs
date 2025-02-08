@@ -6,7 +6,7 @@ namespace DestinyTrail.Engine
         public static IPerson Nobody => new Person { Name = "Nobody", ID = -1, Status = new Status { Name = "Healthy" } };
         public required int ID { get; set; }
         public required Status Status { get; set; } 
-        public int Health { get; set; }
+        public double Health { get; set; }
         
         public void Kill() {
             Health = 0;

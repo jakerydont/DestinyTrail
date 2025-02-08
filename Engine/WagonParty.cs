@@ -10,7 +10,7 @@ namespace DestinyTrail.Engine
 
         public List<IPerson> Members {get;set;}
         public IPerson Leader {get;set;}
-        public double Health { get; private set; }
+
 
         public IInventory Inventory { get; set; }
         private int _maxRationFactor {get;set;}
@@ -33,7 +33,7 @@ namespace DestinyTrail.Engine
             Leader = Person.Nobody;
             Utility = utility;
 
-            Health = 100;
+            SetHealth(100);
 
             Inventory = new Inventory();
         }
@@ -50,7 +50,7 @@ namespace DestinyTrail.Engine
                 Members.Add(member);
             }
             Leader = Members.First();
-            Health = 100;
+            SetHealth( 100 );
             
             Inventory = new Inventory();
         }
@@ -82,9 +82,9 @@ namespace DestinyTrail.Engine
             return person;
         }
 
-        public IEnumerable<IPerson> GetLivingMembers()
+        public List<IPerson> GetLivingMembers()
         {
-            return Members.Where(p => p.isAlive);
+            return Members.Where(p => p.isAlive).ToList();
         }
         public bool IsAnybodyAlive() => GetLivingMembers().Any();
 
@@ -122,13 +122,31 @@ namespace DestinyTrail.Engine
             return sb.ToString();
         }
 
-        public string GetDisplayHealth() => Utility.Abbreviate(Health);
+        public string GetDisplayHealth() => Utility.Abbreviate(Members.Average(m=>m.Health));
         
+        public void SetHealth(double amount)
+        {
+            GetLivingMembers().ForEach((m)=>{
+                m.Health = amount;
+            });
+        }
+
+        public void IncreaseHealth(double amount) 
+        {
+            GetLivingMembers().ForEach((m)=>{
+                m.Health = amount;
+            });;
+        }
+
+        static readonly double minimumDailyHealthSpend = -0.5;
 
         public void SpendDailyHealth(Pace pace, Rations rations)
         {
-            double healthChange = -((100 / rations.Factor) * (pace.Factor / 8) - 0.5);
-            Health += healthChange;
+            
+            double healthChange = Math.Min(minimumDailyHealthSpend, -((100 / rations.Factor) * (pace.Factor / 8) - 0.5));
+            Members.ForEach((m)=>{
+                m.Health += healthChange;
+            });
         }
 
         public void KillMember(IPerson person)

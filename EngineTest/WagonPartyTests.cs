@@ -20,7 +20,7 @@ namespace DestinyTrail.Engine.Tests
             // Assert
             Assert.Equal("Bob", wagonParty.Leader.Name);
             Assert.Equal(wagonParty.Leader, wagonParty.Members.First());
-            Assert.Equal(100, wagonParty.Health);
+            Assert.Equal("100", wagonParty.GetDisplayHealth());
         }
 
         [Fact]
@@ -57,15 +57,16 @@ namespace DestinyTrail.Engine.Tests
             // Arrange
             string[] names = { "Alice", "Bob" };
             var wagonParty = new WagonParty(names);
-            var initialHealth = wagonParty.Health;
-            var pace = new Pace { Name="TestPace", Factor = 4 }; // Example pace factor
-            var rations = new Rations { Name="TestRation", Factor = 2 }; // Example rations factor
+            var initialHealth = 100;
+            wagonParty.SetHealth(initialHealth);
+            var pace = new Pace { Name="TestPace", Factor = 8 }; 
+            var rations = new Rations { Name="TestRation", Factor = 2 }; 
 
             // Act
             wagonParty.SpendDailyHealth(pace, rations);
 
             // Assert
-            Assert.NotEqual(initialHealth, wagonParty.Health);
+            Assert.NotEqual(initialHealth.ToString(), wagonParty.GetDisplayHealth());
         }
 
         [Fact]
@@ -195,26 +196,27 @@ namespace DestinyTrail.Engine.Tests
         Assert.Equal(5, wagonParty.Members.Count);
     }
 
-    [Fact]
-    public async Task GetDisplayHealth_ShouldReturnFormattedHealth()
-    {
+        [Fact]
+        public async Task GetDisplayHealth_ShouldReturnFormattedHealth()
+        {
 
-                // Arrange
-        var mockUtility = new Mock<IUtility>();
-        var mockData = new RandomNamesData { RandomNames = ["Alice", "Bob", "Charlie", "Dave", "Eve"] };
-        mockUtility.Setup(u => u.GetAppSetting("RandomNamesFilePath")).Returns("mockPath");
-        mockUtility.Setup(u => u.LoadYamlAsync<RandomNamesData>("mockPath")).ReturnsAsync(mockData);
-        // Arrange
+                    // Arrange
+            var mockUtility = new Mock<IUtility>();
+            var mockData = new RandomNamesData { RandomNames = ["Alice", "Bob", "Charlie", "Dave", "Eve"] };
+            mockUtility.Setup(u => u.GetAppSetting("RandomNamesFilePath")).Returns("mockPath");
+            mockUtility.Setup(u => u.LoadYamlAsync<RandomNamesData>("mockPath")).ReturnsAsync(mockData);
+            // Arrange
 
-        mockUtility.Setup(u => u.Abbreviate(It.IsAny<double>())).Returns<double>(h => Convert.ToInt32(h).ToString());
-        var wagonParty = await WagonParty.CreateAsync(mockUtility.Object);
-        
-        // Act
-        string result = wagonParty.GetDisplayHealth();
+            mockUtility.Setup(u => u.Abbreviate(It.IsAny<double>())).Returns<double>(h => Convert.ToInt32(h).ToString());
+            var wagonParty = await WagonParty.CreateAsync(mockUtility.Object);
+            wagonParty.SetHealth(100.5);
 
-        // Assert
-        Assert.Equal("100", result);
-    }
+            // Act
+            string result = wagonParty.GetDisplayHealth();
+
+            // Assert
+            Assert.Equal("100", result);
+        }
     }
 
 }

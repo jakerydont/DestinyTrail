@@ -5,13 +5,12 @@ namespace DestinyTrail.Engine
         
         public List<IPerson> Members {get;set;}
         public IPerson Leader {get;set;}
-        public double Health { get; }
         public IInventory Inventory { get; set; }
 
         public IDictionary<string, object> Flags { get; }
         public IPerson GetRandomMember();
 
-        public IEnumerable<IPerson> GetLivingMembers();
+        public List<IPerson> GetLivingMembers();
 
         public bool IsAnybodyAlive();
 
@@ -22,7 +21,9 @@ namespace DestinyTrail.Engine
         public string GetDisplayNames();
         public string GetDisplayHealth();
         
-
+        public void SetHealth(double amount);
+        public void IncreaseHealth(double amount);
+        
         public void SpendDailyHealth(Pace pace, Rations rations);
         void KillMember(IPerson person);
     }

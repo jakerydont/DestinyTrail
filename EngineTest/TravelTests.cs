@@ -96,7 +96,7 @@ namespace DestinyTrail.Engine.Tests
         }
 
         [Fact]
-        public void TravelLoop_ChangesModeToAtLandmark_WhenMilesToNextLandmarkIsZero()
+        public async Task TravelLoop_ChangesModeToAtLandmark_WhenMilesToNextLandmarkIsZero()
         {
             // Arrange
             _travel.MilesToNextLandmark = 0;

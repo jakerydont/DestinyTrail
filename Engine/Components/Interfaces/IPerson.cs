@@ -6,7 +6,7 @@ namespace DestinyTrail.Engine
         Status Status { get; set; }
         string Name { get; set; } // Inherited from GameComponent
         bool isAlive { get; }
-        int Health { get; set; }
+        double Health { get; set; }
 
         void Kill();
         string ToString();
