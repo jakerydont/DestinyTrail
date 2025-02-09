@@ -14,10 +14,11 @@ There is no release build of this yet. This is still in the "Run it from within 
 * Every loop simulates one day of travel
 * Each day a random occurrence is selected and affects a party member
 * Items can be purchased when stopped at a location
-
-# Roadmap status
-
 * Implement health system and death for party members
+* Game over when all party members run out of health
+
+# Roadmap
+
 * Weather system
 * River crossing system
 * GUI
