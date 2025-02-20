@@ -34,7 +34,8 @@ public partial class MainGame
             var utility = new Utility(new YamlDeserializer(), fileReader, configurationProvider);
             var wagonParty = await WagonParty.CreateAsync(utility);
             var travel = await Travel.CreateAsync(wagonParty, utility, outputDisplay, worldStatus);
-            game = await Game.CreateAsync(outputDisplay, statusDisplay, utility, wagonParty, travel, worldStatus, _inputHandler);
+            var twitchChatService = new TwitchIntegration.TwitchChatService();
+            game = await Game.CreateAsync(outputDisplay, statusDisplay, utility, wagonParty, travel, worldStatus, _inputHandler, twitchChatService);
             
 
             await game.StartGameLoop();

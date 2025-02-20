@@ -5,11 +5,13 @@ using YamlDotNet.Serialization;
 using System.Configuration;
 using YamlDotNet.Core.Tokens;
 using System.Reflection.Metadata.Ecma335;
+using DestinyTrail.TwitchIntegration;
 
 namespace DestinyTrail.Engine
 {
     public class Game : IGame
     {
+        public ITwitchChatService TwitchChatService {get;set;}
         private bool _shouldInitializeGameOver;
 
         private CancellationTokenSource _defaultCancellationTokenSource { get; set; }
@@ -43,9 +45,10 @@ namespace DestinyTrail.Engine
             IWagonParty Party,
             ITravel Travel,
             IWorldStatus worldStatus,
-            IInputHandler InputHandler) 
+            IInputHandler InputHandler,
+            ITwitchChatService twitchChatService) 
         {
-            var game = new Game(Output,    Status,   Utility,   Party,  Travel, worldStatus, InputHandler);
+            var game = new Game(Output,    Status,   Utility,   Party,  Travel, worldStatus, InputHandler, twitchChatService);
             string inventoryFilePath = Utility.GetAppSetting("InventoryFilePath");
             string inventoryCustomItemsFilePath = Utility.GetAppSetting("InventoryCustomItemsFilePath");
             game.Inventory = await Utility.LoadYamlAsync<Inventory>(inventoryFilePath);
@@ -61,7 +64,8 @@ namespace DestinyTrail.Engine
             IWagonParty Party,
             ITravel Travel,
             IWorldStatus worldStatus,
-            IInputHandler inputHandler)   
+            IInputHandler inputHandler,
+            ITwitchChatService twitchChatService)   
         {
             _inputHandler = inputHandler;
             _inputHandler.Initialize(this);
@@ -73,6 +77,7 @@ namespace DestinyTrail.Engine
             _party = Party;
             WorldStatus = worldStatus;
             GameMode = Modes.Travelling;
+
             _defaultCancellationTokenSource = new CancellationTokenSource();
 
             MainDisplay.Write(_party.GetDisplayNames());
@@ -83,6 +88,11 @@ namespace DestinyTrail.Engine
             // dummy loads
             Inventory = new Inventory();
             ShoppingEngine = new ShoppingEngine(new Display(), Inventory);
+
+            TwitchChatService = twitchChatService;
+            var secrets = TwitchAuth.LoadSecrets();
+            twitchChatService.Initialize("jakeydont",secrets.AccessToken,"jakerydont");
+            twitchChatService.Connect();
 
         }
 
@@ -99,6 +109,13 @@ namespace DestinyTrail.Engine
             {
                 while (!token.IsCancellationRequested)
                 {
+
+                    foreach (var (username, message) in TwitchChatService.GetMessages())
+                    {
+                        ProcessChatMessage(username, message);
+                    }
+
+
                     if (GameMode != Modes.GameOver)
                     {
                         _party.KillCheckParty();
@@ -133,6 +150,27 @@ namespace DestinyTrail.Engine
                 // Task was canceled, handle if needed
             }
         }
+
+        private void ProcessChatMessage(string username, string message)
+        {
+            // Example logic: handle commands or interactions
+            if (message.StartsWith("!travel", StringComparison.OrdinalIgnoreCase))
+            {
+                // Handle a travel command
+                Console.WriteLine($"{username} triggered a travel event!");
+            }
+            else if (message.StartsWith("!buy", StringComparison.OrdinalIgnoreCase))
+            {
+                // Handle a shopping command
+                Console.WriteLine($"{username} wants to buy something!");
+            }
+            else
+            {
+                // General chat message
+                Console.WriteLine($"Chat: {username} says: {message}");
+            }
+        }
+
 
         private void AtLandmarkLoop()
         {

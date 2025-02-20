@@ -2,3 +2,4 @@ bin/
 obj/
 DestinyTrail.Blazor/wwwroot/appsettings.json
 DestinyTrail.Blazor/wwwroot/data/
+twitch-secrets.json
