@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using DestinyTrail.Engine;
+using DestinyTrail.TwitchIntegration;
 using System.Threading;
 
 var inputHandler = new InputHandler();
@@ -13,7 +14,9 @@ var occurrenceEngine = OccurrenceEngine.CreateAsync(wagonParty, utility);
 var worldStatus = new WorldStatus();
 
 var travelEngine = await Travel.CreateAsync(wagonParty, utility, display, worldStatus);
-var game = await Game.CreateAsync(display, display, utility, wagonParty, travelEngine, worldStatus, inputHandler);
+
+var twitchChatService = new TwitchChatService();
+var game = await Game.CreateAsync(display, display, utility, wagonParty, travelEngine, worldStatus, inputHandler,twitchChatService);
 var gameLoopTask = game.StartGameLoop();
 var inputTask = Task.Run(() => ProcessUserInput(game));
 

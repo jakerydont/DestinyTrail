@@ -1,6 +1,8 @@
+using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using DestinyTrail.Engine;
+using DestinyTrail.TwitchIntegration;
 
 namespace DestinyTrail
 {
@@ -18,7 +20,8 @@ namespace DestinyTrail
             var Utility = new Utility();
             var wagonParty = WagonParty.CreateAsync(Utility).GetAwaiter().GetResult();
             var travel = Travel.CreateAsync(wagonParty, Utility, StatusDisplay, WorldStatus).GetAwaiter().GetResult();
-            game = Game.CreateAsync(OutputDisplay, StatusDisplay, Utility, wagonParty, travel, WorldStatus, inputHandler).GetAwaiter().GetResult();
+            var twitchChatService = new TwitchChatService();
+            game = Task.Run(() => Game.CreateAsync(OutputDisplay, StatusDisplay, Utility, wagonParty, travel, WorldStatus, inputHandler,twitchChatService)).Result;
             game.StartGameLoop();
         }
 

@@ -4,6 +4,7 @@ using Moq;
 using DestinyTrail.Engine;
 using System.Threading.Tasks;
 using DestinyTrail.Engine.Abstractions;
+using DestinyTrail.TwitchIntegration;
 
 namespace DestinyTrail.Engine.Tests
 {
@@ -14,6 +15,8 @@ namespace DestinyTrail.Engine.Tests
         private readonly Mock<IDisplay> _mockStatus;
         private readonly Mock<IUtility> _mockUtility;
         private readonly Mock<IWorldStatus> _mockWorldStatus;
+
+        private readonly Mock<ITwitchChatService> _mockTwichChatService;
 
         private readonly Mock<IInputHandler> _mockInputHandler;
         private Mock<ITravel> _mockTravel;
@@ -54,7 +57,8 @@ namespace DestinyTrail.Engine.Tests
                     new() { Name = "Sick" }, 
                     new() { Name = "Injured" }
                 ]});
-
+            
+            _mockTwichChatService = new Mock<ITwitchChatService>();
 
             var mockOccurrenceEngine = new Mock<IOccurrenceEngine>();
             // Initialize the Game with the mocked dependencies
@@ -65,8 +69,8 @@ namespace DestinyTrail.Engine.Tests
                 _mockWagonParty.Object,
                 _mockTravel.Object,
                 _mockWorldStatus.Object,
-                _mockInputHandler.Object
-
+                _mockInputHandler.Object,                
+                _mockTwichChatService.Object
             )).Result;
 
         }
