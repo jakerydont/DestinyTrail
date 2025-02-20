@@ -39,12 +39,15 @@ public class TwitchChatService : ITwitchChatService
         };
     }
 
-    public void Connect()
+    public async Task Connect()
     {
-        if (!_client.IsConnected)
+        await Task.Run(() =>
         {
-            _client.Connect();
-        }
+            if (!_client.IsConnected)
+            {
+                _client.Connect();
+            }
+        });
     }
 
     public async Task DisconnectAsync()

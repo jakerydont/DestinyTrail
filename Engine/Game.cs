@@ -54,6 +54,11 @@ namespace DestinyTrail.Engine
             game.Inventory = await Utility.LoadYamlAsync<Inventory>(inventoryFilePath);
             game.Inventory.CustomItems = await Utility.LoadYamlAsync<Inventory>(inventoryCustomItemsFilePath);
             game.ShoppingEngine = new ShoppingEngine(game.MainDisplay, game.Inventory);
+
+                        //var secrets = TwitchAuth.LoadSecrets();
+            
+            await game.TwitchChatService.Connect();
+
             return game;
         }
 
@@ -90,9 +95,7 @@ namespace DestinyTrail.Engine
             ShoppingEngine = new ShoppingEngine(new Display(), Inventory);
 
             TwitchChatService = twitchChatService;
-            var secrets = TwitchAuth.LoadSecrets();
-            twitchChatService.Initialize("jakeydont",secrets.AccessToken,"jakerydont");
-            twitchChatService.Connect();
+
 
         }
 
@@ -110,10 +113,10 @@ namespace DestinyTrail.Engine
                 while (!token.IsCancellationRequested)
                 {
 
-                    foreach (var (username, message) in TwitchChatService.GetMessages())
-                    {
-                        ProcessChatMessage(username, message);
-                    }
+                   // foreach (var (username, message) in TwitchChatService.GetMessages())
+                   // {
+                  //      ProcessChatMessage(username, message);
+                  //  }
 
 
                     if (GameMode != Modes.GameOver)
