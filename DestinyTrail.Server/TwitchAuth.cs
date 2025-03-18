@@ -1,7 +1,7 @@
 using System;
 using System.Text.Json;
 
-namespace DestinyTrail.TwitchIntegration;
+namespace DestinyTrail.Server;
 
 public class TwitchAuth
 {

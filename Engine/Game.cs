@@ -5,7 +5,7 @@ using YamlDotNet.Serialization;
 using System.Configuration;
 using YamlDotNet.Core.Tokens;
 using System.Reflection.Metadata.Ecma335;
-using DestinyTrail.TwitchIntegration;
+using DestinyTrail.Server;
 
 namespace DestinyTrail.Engine
 {
@@ -39,6 +39,9 @@ namespace DestinyTrail.Engine
         public IShoppingEngine ShoppingEngine { get; set; }
         private bool _shouldInitializeAtLandmark { get; set; }
 
+        private Task _gameLoopTask;
+        private bool _isRunning;
+
         public static async Task<Game> CreateAsync(IDisplay Output, 
             IDisplay Status, 
             IUtility Utility, 
@@ -56,8 +59,8 @@ namespace DestinyTrail.Engine
             game.ShoppingEngine = new ShoppingEngine(game.MainDisplay, game.Inventory);
 
                         //var secrets = TwitchAuth.LoadSecrets();
-            
-            await game.TwitchChatService.Connect();
+            game.TwitchChatService.Initialize("jakerydont","rq9a4v2r0l2co77um7f3nm06xd2iaz","jakerydont");
+            await game.TwitchChatService.ConnectAsync();
 
             return game;
         }
@@ -104,76 +107,138 @@ namespace DestinyTrail.Engine
             ChangeMode(mode);
         }
 
-        public async Task StartGameLoop(CancellationToken? cts = null)
-        {
-            var token = cts ?? _defaultCancellationTokenSource.Token;
+    public async Task StartGameLoop(CancellationToken? cts = null)
+    {
+        if (_isRunning) return; // Prevent multiple loops
+        
+        _isRunning = true;
+        var token = cts ?? _defaultCancellationTokenSource.Token;
 
+        _gameLoopTask = Task.Run(async () =>
+        {
             try
             {
-                while (!token.IsCancellationRequested)
+                while (_isRunning && !token.IsCancellationRequested)
                 {
-
-                   // foreach (var (username, message) in TwitchChatService.GetMessages())
-                   // {
-                  //      ProcessChatMessage(username, message);
-                  //  }
-
-
-                    if (GameMode != Modes.GameOver)
-                    {
-                        _party.KillCheckParty();
-                        if (!_party.IsAnybodyAlive())
-                        {
-                            GameMode = Modes.GameOver;
-                        }
-                    }
-                    switch (GameMode)
-                    {
-                        case Modes.Travelling:
-                            await travel.TravelLoop();
-                            DrawStatusPanel();
-                            break;
-                        case Modes.AtLandmark:
-                            AtLandmarkLoop();
-                            break;
-                        case Modes.Shopping:
-                            ShoppingEngine.ShoppingLoop();
-                            break;
-                        case Modes.GameOver:
-                            GameOverLoop();
-                            break;
-                        default:
-                            break;
-                    }
-                    await Task.Delay(1000, token);
+                    await ProcessGameTick();
+                    await Task.Delay(1000, token); // 1 second delay between ticks
                 }
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
-                // Task was canceled, handle if needed
+                // Handle cancellation gracefully
+                MainDisplay.Write("Game loop cancelled.");
             }
-        }
+            catch (Exception ex)
+            {
+                MainDisplay.Write($"Error in game loop: {ex.Message}");
+            }
+            finally
+            {
+                _isRunning = false;
+            }
+        }, token);
 
-        private void ProcessChatMessage(string username, string message)
+        await Task.CompletedTask; // Return immediately while loop runs in background
+    }
+
+    private async Task ProcessGameTick()
+    {
+        // Process chat messages
+        foreach (var (username, message) in TwitchChatService.GetMessages())
         {
-            // Example logic: handle commands or interactions
-            if (message.StartsWith("!travel", StringComparison.OrdinalIgnoreCase))
+            ProcessChatMessage(username, message);
+        }
+
+        if (GameMode != Modes.GameOver)
+        {
+            _party.KillCheckParty();
+            if (!_party.IsAnybodyAlive())
             {
-                // Handle a travel command
-                Console.WriteLine($"{username} triggered a travel event!");
-            }
-            else if (message.StartsWith("!buy", StringComparison.OrdinalIgnoreCase))
-            {
-                // Handle a shopping command
-                Console.WriteLine($"{username} wants to buy something!");
-            }
-            else
-            {
-                // General chat message
-                Console.WriteLine($"Chat: {username} says: {message}");
+                GameMode = Modes.GameOver;
             }
         }
 
+        switch (GameMode)
+        {
+            case Modes.Travelling:
+                await travel.TravelLoop();
+                DrawStatusPanel();
+                break;
+            case Modes.AtLandmark:
+                AtLandmarkLoop();
+                break;
+            case Modes.Shopping:
+                ShoppingEngine.ShoppingLoop();
+                break;
+            case Modes.GameOver:
+                GameOverLoop();
+                break;
+        }
+    }
+
+    public async Task StopGameLoop()
+    {
+        _isRunning = false;
+        if (_gameLoopTask != null)
+        {
+            await _gameLoopTask;
+        }
+    }
+    private void ProcessQueuedMessages()
+    {
+        foreach (var (username, message) in TwitchChatService.GetMessages())
+        {
+            ProcessChatMessage(username, message);
+        }
+    }
+
+    private void ProcessChatMessage(string username, string message)
+    {
+        // Handle game-specific commands
+        if (message.StartsWith("!help", StringComparison.OrdinalIgnoreCase))
+        {
+            TwitchChatService.SendMessageAsync("Available commands: !status, !health, !travel, !shop").Wait();
+            return;
+        }
+
+        if (message.StartsWith("!status", StringComparison.OrdinalIgnoreCase))
+        {
+            var status = $"Current mode: {GameMode}, Miles traveled: {_utility.Abbreviate(travel.MilesTraveled)}";
+            TwitchChatService.SendMessageAsync(status).Wait();
+            return;
+        }
+
+        if (message.StartsWith("!health", StringComparison.OrdinalIgnoreCase))
+        {
+            var health = _party.GetDisplayHealth();
+            TwitchChatService.SendMessageAsync($"Party health: {health}").Wait();
+            return;
+        }
+
+        // Add more game-specific commands as needed
+        switch (GameMode)
+        {
+            case Modes.Shopping when message.StartsWith("!shop", StringComparison.OrdinalIgnoreCase):
+                HandleShopCommand(username, message);
+                break;
+            case Modes.Travelling when message.StartsWith("!travel", StringComparison.OrdinalIgnoreCase):
+                HandleTravelCommand(username, message);
+                break;
+        }
+    }
+
+    private void HandleShopCommand(string username, string message)
+    {
+        // Implement shop-specific commands
+        MainDisplay.Write($"{username} is shopping");
+    }
+
+    private void HandleTravelCommand(string username, string message)
+    {
+        // Implement travel-specific commands
+        MainDisplay.Write($"{username} is affecting travel");
+    }
 
         private void AtLandmarkLoop()
         {

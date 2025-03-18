@@ -9,6 +9,7 @@
   <ItemGroup>
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.0" />
     <PackageReference Include="YamlDotNet" Version="16.1.3" />
+    <ProjectReference Include="..\DestinyTrail.Server\DestinyTrail.Server.csproj" />
     <ProjectReference Include="..\DestinyTrail.TwitchIntegration\DestinyTrail.TwitchIntegration.csproj" />
     
     <Using Include="System.Configuration" />

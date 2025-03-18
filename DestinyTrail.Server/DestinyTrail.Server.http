@@ -1,0 +1,6 @@
+@DestinyTrail.Server_HostAddress = http://localhost:5193
+
+GET {{DestinyTrail.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

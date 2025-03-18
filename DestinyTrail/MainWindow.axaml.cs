@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Input;
 using DestinyTrail.Engine;
-using DestinyTrail.TwitchIntegration;
+using DestinyTrail.Server;
 
 namespace DestinyTrail
 {
