@@ -1,4 +1,4 @@
-namespace DestinyTrail.Engine;
+namespace DestinyTrail.Engine.Interfaces;
 
 public interface IInputHandler
 {

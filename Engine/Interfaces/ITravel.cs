@@ -1,4 +1,4 @@
-namespace DestinyTrail.Engine;
+namespace DestinyTrail.Engine.Interfaces;
 
 public interface ITravel
 {
@@ -16,6 +16,4 @@ public interface ITravel
     double MilesTraveled { get; set; }
     public Landmark NextLandmark { get; set; }
 
-
 }
-

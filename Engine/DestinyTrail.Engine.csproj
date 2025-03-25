@@ -11,6 +11,7 @@
     <PackageReference Include="YamlDotNet" Version="16.1.3" />
     
     <Using Include="System.Configuration" />
+    <Using Include="DestinyTrail.Engine.Interfaces" />
     
     <None Update="data\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

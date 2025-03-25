@@ -1,14 +1,14 @@
-namespace DestinyTrail.Engine
-{
-    public interface IDisplay
-    { 
-        public List<string> Items { get; }
-        Task Write(string message);
+namespace DestinyTrail.Engine.Interfaces;
 
-        Task WriteError(string message);
+public interface IDisplay
+{ 
+    public List<string> Items { get; }
+    Task Write(string message);
 
-        Task WriteTitle(string message);
-        Task Clear();
-        Task ScrollToBottom();
-    }
+    Task WriteError(string message);
+
+    Task WriteTitle(string message);
+    Task Clear();
+    Task ScrollToBottom();
 }
+

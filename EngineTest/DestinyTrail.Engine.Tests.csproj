@@ -20,6 +20,8 @@
   <ItemGroup>
     <Using Include="Xunit" />
     <Using Include="Moq" />
+    <Using Include="DestinyTrail.Engine.Interfaces" />
+    
   </ItemGroup>
 
   <ItemGroup>

@@ -1,5 +1,6 @@
 using System;
 using DestinyTrail.Engine;
+using DestinyTrail.Engine.Interfaces;
 using Microsoft.AspNetCore.Components;
 
 namespace DestinyTrail.Blazor.Components;

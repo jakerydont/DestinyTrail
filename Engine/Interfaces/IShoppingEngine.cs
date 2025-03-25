@@ -1,12 +1,11 @@
-namespace DestinyTrail.Engine
+namespace DestinyTrail.Engine.Interfaces;
+
+public interface IShoppingEngine
 {
-    public interface IShoppingEngine
-    {
-        ShoppingState ShoppingState { get; set; }
-        InventoryItem SelectedItem { get; set; }
-        int Quantity { get; }
-        void InitializeState();
-        void ShoppingLoop();
-        void ProcessInput(string input);
-    }
+    ShoppingState ShoppingState { get; set; }
+    InventoryItem SelectedItem { get; set; }
+    int Quantity { get; }
+    void InitializeState();
+    void ShoppingLoop();
+    void ProcessInput(string input);
 }

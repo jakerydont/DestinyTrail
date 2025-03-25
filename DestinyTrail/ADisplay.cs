@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using DestinyTrail.Engine;
+using DestinyTrail.Engine.Interfaces;
 
 
 namespace DestinyTrail;
