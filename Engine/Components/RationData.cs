@@ -1,7 +1,6 @@
-namespace DestinyTrail.Engine
+namespace DestinyTrail.Engine;
+
+public class RationData : GameData<Rations>
 {
-    public class RationData : GameData<Rations>
-    {
-        public required List<Rations> Rations { get => _items; set => _items = value; }
-    }
+    public required List<Rations> Rations { get => _items; set => _items = value; }
 }

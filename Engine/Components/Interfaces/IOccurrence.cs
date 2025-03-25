@@ -1,9 +1,8 @@
-namespace DestinyTrail.Engine
+namespace DestinyTrail.Engine;
+
+public interface IOccurrence
 {
-    public interface IOccurrence
-    {
-        string DisplayText { get; set; }
-        double Probability { get; set; }
-        string Effect { get; set; }
-    }
+    string DisplayText { get; set; }
+    double Probability { get; set; }
+    string Effect { get; set; }
 }

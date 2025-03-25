@@ -1,7 +1,6 @@
-namespace DestinyTrail.Engine
+namespace DestinyTrail.Engine;
+
+public class LandmarksData : GameData<Landmark>
 {
-    public class LandmarksData : GameData<Landmark>
-    {
-        public List<Landmark> Landmarks { get => _items; set => _items = value; }
-    }
+    public List<Landmark> Landmarks { get => _items; set => _items = value; }
 }

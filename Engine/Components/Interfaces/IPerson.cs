@@ -1,15 +1,14 @@
-namespace DestinyTrail.Engine
-{
-    public interface IPerson 
-    {
-        int ID { get; set; }
-        Status Status { get; set; }
-        string Name { get; set; } // Inherited from GameComponent
-        bool isAlive { get; }
-        double Health { get; set; }
+namespace DestinyTrail.Engine;
 
-        void Kill();
-        void KillCheck();
-        string ToString();
-    }
+public interface IPerson 
+{
+    int ID { get; set; }
+    Status Status { get; set; }
+    string Name { get; set; } // Inherited from GameComponent
+    bool isAlive { get; }
+    double Health { get; set; }
+
+    void Kill();
+    void KillCheck();
+    string ToString();
 }

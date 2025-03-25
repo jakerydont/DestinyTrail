@@ -1,17 +1,16 @@
-namespace DestinyTrail.Engine
+namespace DestinyTrail.Engine;
+
+public abstract class GameComponent
 {
-    public abstract class GameComponent
-    {
-        public virtual string Name { get; set; } = "";
+    public virtual string Name { get; set; } = "";
 
-        public override string ToString() => Name;
+    public override string ToString() => Name;
 
-        // FIXME: This method shouldn't be necessary. Tokenized strings think we're trying to call MemoryExtensions.ToLower() if we don't spell this out (even without override keyword). I don't know why.
-        public string ToLower() => Name.ToLower();
+    // FIXME: This method shouldn't be necessary. Tokenized strings think we're trying to call MemoryExtensions.ToLower() if we don't spell this out (even without override keyword). I don't know why.
+    public string ToLower() => Name.ToLower();
 
-        public static implicit operator string(GameComponent gc) => gc.Name;
+    public static implicit operator string(GameComponent gc) => gc.Name;
 
-        public override int GetHashCode() => HashCode.Combine(Name);
-        
-    }
+    public override int GetHashCode() => HashCode.Combine(Name);
+    
 }

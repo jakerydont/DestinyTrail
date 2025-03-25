@@ -1,7 +1,6 @@
-namespace DestinyTrail.Engine
+namespace DestinyTrail.Engine;
+
+public class Rations : GameComponent, ITravelSetting
 {
-    public class Rations : GameComponent, ITravelSetting
-    {
-        public int Factor { get; set; }
-    }
+    public int Factor { get; set; }
 }
