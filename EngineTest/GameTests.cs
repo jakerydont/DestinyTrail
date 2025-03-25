@@ -4,7 +4,7 @@ using Moq;
 using DestinyTrail.Engine;
 using System.Threading.Tasks;
 using DestinyTrail.Engine.Abstractions;
-using DestinyTrail.TwitchIntegration;
+using DestinyTrail.Server;
 
 namespace DestinyTrail.Engine.Tests
 {

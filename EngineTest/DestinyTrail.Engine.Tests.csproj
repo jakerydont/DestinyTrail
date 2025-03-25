@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DestinyTrail.Server\DestinyTrail.Server.csproj" />
     <ProjectReference Include="..\Engine\DestinyTrail.Engine.csproj" />
     <None Update="data\**\*.*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

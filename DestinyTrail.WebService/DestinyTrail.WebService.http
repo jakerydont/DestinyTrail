@@ -1,0 +1,6 @@
+@DestinyTrail.WebService_HostAddress = http://localhost:5254
+
+GET {{DestinyTrail.WebService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
